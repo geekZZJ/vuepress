@@ -4,7 +4,7 @@ heroImage: /logo.png
 heroText: 前端自省清单
 tagline: 前端进阶之路
 actionText: 开始阅读 →
-actionLink: /guide/
+actionLink: /interview/
 features:
   - title: 简洁至上
     details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
