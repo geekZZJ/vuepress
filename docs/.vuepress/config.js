@@ -5,6 +5,7 @@ module.exports = {
     logo: "/logo.png",
     nav: [
       { text: "首页", link: "/" },
+      { text: "面试", link: "/interview/" },
       { text: "算法", link: "/algorithm/" },
       { text: "github", link: "https://github.com/geekZZJ" },
     ],
