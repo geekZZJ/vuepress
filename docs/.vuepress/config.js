@@ -9,6 +9,17 @@ module.exports = {
       { text: "算法", link: "/algorithm/" },
       { text: "github", link: "https://github.com/geekZZJ" },
     ],
-    sidebar: "auto",
+    sidebar: {
+      '/interview/': [
+        {
+          title: '面试',
+          collapsable: false,
+          children: [
+            '',
+            'css'
+          ]
+        }
+      ]
+    }
   },
 };
