@@ -11,3 +11,18 @@
 ![defer script](/html/2.png "defer script")  
 ![async script](/html/3.png "async script")  
 详细解析：[图解 script 标签中的 async 和 defer 属性](https://juejin.cn/post/6894629999215640583 "图解 script 标签中的 async 和 defer 属性")
+
+### 3. HTML5 新特性
+语义化标签，如`<header>`、`<nav>`、`<article>`、`<section>`等  
+表单增强，表单中添加了很多输入型控件，比如：number、url、email、range、color、date等，通过input的type属性使用  
+新的API，如离线存储、音视频、绘图、实时通讯、设备能力等
+
+### 4. 哪些元素可以自闭合
+表单元素 input、图片 img、br、hr、meta、link
+
+### 5. 块级元素与行内元素
+行内元素：i、a、img、span、button、input、label、select、textarea  
+块级元素：aside、article、div、form、ul、ol、p、table  
+区别：  
+块级元素独占一行，元素的宽高、内外边距都可设置，元素宽度在不设置的情况下，是父容器的100%  
+行内元素不会自动进行换行，元素的高度不可设置，内边距可以设置，外边距水平方向有效，锤子方向无效，元素宽度在不设置的情况下，随内容变化

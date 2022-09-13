@@ -16,7 +16,8 @@ module.exports = {
           collapsable: false,
           children: [
             '',
-            'css'
+            'css',
+            'network'
           ]
         }
       ]
