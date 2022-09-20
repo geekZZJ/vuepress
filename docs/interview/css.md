@@ -95,7 +95,7 @@ BFC 的应用
 
 ### 9. 垂直居中
 ![垂直居中](/css/8.png "垂直居中")
-详细解析：[面试官：你能实现多少种水平垂直居中的布局（定宽高和不定宽高](https://juejin.cn/post/6844903982960214029 "面试官：你能实现多少种水平垂直居中的布局（定宽高和不定宽高")
+详细解析：[面试官：你能实现多少种水平垂直居中的布局（定宽高和不定宽高）](https://juejin.cn/post/6844903982960214029 "面试官：你能实现多少种水平垂直居中的布局（定宽高和不定宽高）")
 
 ### 10. 实现两栏布局（左侧固定+右侧自适应）
 ```html
@@ -172,6 +172,47 @@ BFC 的应用
     top: 0;
     right: 0;
     bottom: 0;
+    background-color: green;
+}
+```
+
+### 11. 实现圣杯布局和双飞翼布局（经典三分栏布局）
+- 三栏布局，中间一栏最先加载和渲染（**内容最重要，这就是为什么还需要了解这种布局的原因**）
+- 两侧内容固定，中间内容随着宽度自适应
+- 一般用于 PC 网页  
+
+![三栏布局](/css/9.png "三栏布局")
+
+**圣杯布局**：
+```html
+<div id="container">
+    <div class="center">我是中间</div>
+    <div class="left">我是左边</div>
+    <div class="right">我是右边</div>
+</div>
+```
+```css
+#container {
+    padding-left: 200px;
+    padding-right: 150px;
+}
+#container div {
+    float: left;
+}
+.center {
+    width: 100%;
+    background-color: red;
+}
+.left {
+    width: 200px;
+    position: relative;
+    left: -200px;
+    margin-left: -100%;
+    background-color: blue;
+}
+.right {
+    width: 150px;
+    margin-right: -150px;
     background-color: green;
 }
 ```
