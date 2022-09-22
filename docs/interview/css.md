@@ -216,3 +216,65 @@ BFC 的应用
     background-color: green;
 }
 ```
+
+**双飞翼布局**：
+```html
+<div class="main">
+    <div class="main-wrap">main</div>
+</div>
+<div class="left">left</div>
+<div class="right">right</div>
+```
+```css
+.main {
+    width: 100%;
+    background-color: pink;
+    float: left;
+}
+.main-wrap {
+    margin: 0 190px;
+}
+.left {
+    width: 190px;
+    background-color: green;
+    margin-left: -100%;
+    float: left;
+}
+.right {
+    width: 190px;
+    background-color: blue;
+    margin-left: -190px;
+    float: left;
+}
+```
+tips：上述代码中`margin-left: -100%`相对的是父元素的`content`宽度，即不包含`paddig`、`border`的宽度
+
+### 12. clip-path 属性
+#### `basic-shape`  
+1. `circle`  
+用于定义一个圆
+```
+circle( [<shape-radius>]? [at <position>]? )
+```
+其中`shape-radius`为圆形的半径，`position`为圆心的位置  
+如果`shape-radius`为百分比，则100%相当于：`sqrt(width^2+height^2)/sqrt(2)`,`width`、`height`分别为被剪裁元素的宽高  
+2. inset  
+用于定义一个矩形
+```
+inset( <shape-arg>{1,4} [round <border-radius>]? )
+```
+其中`shape-arg`分别为矩形的上右下左顶点到被剪裁元素边缘的距离（和`margin`、`padding`参数类似），`border-radius`为可选参数，用于定义`border`的圆角  
+3. ellipse  
+用于定义一个椭圆
+```
+ellipse( [<shape-radius>{2}]? [at <position>]? )
+```
+其中`shape-radius`为椭圆x、y轴的半径，`position`为椭圆中心的位置
+4. polygon  
+用于定义一个多边形
+```
+polygon( [<fill-rule>,]? [<shape-arg> <shape-arg>]# )
+```
+其中`fill-rule`为填充规则，即通过一系列点去定义多边形的边界
+
+#### clip-source
