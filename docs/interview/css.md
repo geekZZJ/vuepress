@@ -305,3 +305,64 @@ polygon( [<fill-rule>,]? [<shape-arg> <shape-arg>]# )
     clip-path: url("#svgCircle");
 }
 ```
+
+### 13. position:absolute/fixed 有什么区别
+- `absolute`实质上是相对于`static`定位以外的第一个父元素进行定位的
+- `fixed`相对于屏幕（`viewport`）进行定位
+
+### 14. 如何清除浮动，为什么要清除浮动
+- 原因：浮动元素可能会超出父元素（不受父元素约束），从而对其他元素造成影响
+- 清除浮动方法
+  1. 父元素设置`overflow: hidden`
+  2. 末尾增加空元素设置`clear`
+  ```html
+    <div class="box">
+        <div class="left"></div>
+        <div class="right"></div>
+        <div class="bottomDiv"></div>
+    </div>
+    .bottomDiv {
+        clear: both;
+    }
+    <!-- bottomDiv设置成clear: both，代表了它左右都不能有浮动元素，迫使往下移动，进而撑开了父级盒子的高度 -->
+  ```
+  3. 给父级添加伪元素进行`clear`（原理同上）
+
+### 15. CSS 单位
+CSS 单位分为相对长度单位、绝对长度单位  
+- `px（绝对长度单位）`
+- `em（相对长度单位）`  
+浏览器的默认字体都是16px，那么1em=16px，以此类推计算12px=0.75em，10px=0.625em，2em=32px；  
+为了简化`font-size`的换算，我们在`body`中写入一下代码
+```css
+body {font-size: 62.5%;} /*  公式16px*62.5%=10px  */
+```
+> 缺点：  
+`em`的值并不是固定的  
+`em`会继承父级元素的字体大小（参考物是父元素的`font-size`）  
+`em`中所有的字体都是相对于父元素的大小决定的
+
+```html
+<div class="big">
+    我是大字体
+   <div class="small">我是小字体</div>
+</div>
+
+<style>
+     body {font-size: 62.5%; } /*  公式:16px*62.5%=10px  */ 
+    .big{font-size: 1.2em}
+    .small{font-size: 1.2em}
+</style>
+
+// 运行结果small的字体大小为：1.2em*1.2em=1.44em
+```
+- `rem（相对长度单位）`  
+浏览器的默认字体都是16px，那么1rem=16px，以此类推计算12px=0.75rem，10px=0.625rem，2rem=32px； 
+为了简化font-size的换算，我们在根元素html中加入font-size: 62.5%
+```css
+html {font-size: 62.5%;} /*  公式16px*62.5%=10px  */
+```
+> 特点：
+`rem`单位可谓集相对大小和绝对大小的优点于一身  
+和`em`不同的是，`rem`总是相对于根元素(如:root{})，而不像`em`一样使用级联的方式来计算尺寸  
+`rem`支持`IE9`及以上，意思是相对于根元素`html（网页）`，不会像`em`那样，依赖于父元素的字体大小，而造成混乱
