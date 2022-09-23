@@ -278,3 +278,30 @@ polygon( [<fill-rule>,]? [<shape-arg> <shape-arg>]# )
 其中`fill-rule`为填充规则，即通过一系列点去定义多边形的边界
 
 #### clip-source
+即通过引用一个`svg`的`clipPath`元素来作为剪裁路径。比如，使用在`<clipPath>`中定义一个圆：
+```html
+<svg class="svg">
+    <defs>
+        <clipPath id="svgCircle">
+            <circle cx="150" cy="150" r="150" />
+        </clipPath>
+    </defs>
+</svg>
+
+<img
+    class="img svg-circle"
+    src="https://qpic.y.qq.com/music_cover/xiabfMZAmQ0PYUzgCvOicArIoGLzqL3n6q3fDiawWkhTTVWgGNM52HBNA/300?n=1"
+/>
+```
+```css
+.img {
+    width: 300px;
+    height: 300px;
+}
+.svg{
+    position: absolute;
+}
+.svg-circle {
+    clip-path: url("#svgCircle");
+}
+```
