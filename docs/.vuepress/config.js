@@ -10,17 +10,13 @@ module.exports = {
       { text: "github", link: "https://github.com/geekZZJ" },
     ],
     sidebar: {
-      '/interview/': [
+      "/interview/": [
         {
-          title: '面试',
+          title: "面试",
           collapsable: false,
-          children: [
-            '',
-            'css',
-            'network'
-          ]
-        }
-      ]
-    }
+          children: ["", "css", "js", "network"],
+        },
+      ],
+    },
   },
 };
