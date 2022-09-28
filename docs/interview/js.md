@@ -14,3 +14,55 @@
 >   `注`：按引用访问：JS 不允许直接访问保存在堆内存中的对象，所以在访问一个对象时，首先得到的是这个对象在堆内存中的地址，然后再按照这个地址去获得这个对象中的值
 
 ### 数据类型的判断
+
+- typeof：能判断所有**值类型，函数**。不可对**null、对象、数组**进行精确判断，因为都返回`object`
+- instanceof：能判断**对象**类型，不能判断基本数据类型，其**内部运行机制是判断在其原型链中能否找到该类型的原型**
+
+```js
+class People {}
+class Student extends People {}
+
+const zzj = new Student();
+
+console.log(zzj instanceof People); // true
+console.log(zzj instanceof Student); // true
+```
+
+其实现就是顺着**原型链**去找，如果能找到对应的`xxxx.prototype`即为`true`。比如这里的`zzj`作为实例，顺着原型链能找到`Student.prototype`及`People.prototype`，所以都为`true`
+
+- Object.prototype.toString.call()：所有原始数据类型都是能判断的，还有**Error 对象、Date 对象**等
+
+```js
+Object.prototype.toString.call(2); // "[object Number]"
+Object.prototype.toString.call(""); // "[object String]"
+Object.prototype.toString.call(true); // "[object Boolean]"
+Object.prototype.toString.call(undefined); // "[object Undefined]"
+Object.prototype.toString.call(null); // "[object Null]"
+Object.prototype.toString.call(Math); // "[object Math]"
+Object.prototype.toString.call({}); // "[object Object]"
+Object.prototype.toString.call([]); // "[object Array]"
+Object.prototype.toString.call(function() {}); // "[object Function]"
+```
+
+> 如何判断变量是否为数组？
+
+```js
+Array.isArray(arr); // true
+arr.__proto__ === Array.prototype; // true
+arr instanceof Array; // true
+Object.prototype.toString.call(arr); // "[object Array]"
+```
+
+### 深拷贝和浅拷贝的定义
+
+浅拷贝：
+![浅拷贝](/js/1.png "浅拷贝")
+
+> 创建一个新对象，这个对象有着原始对象属性值的一份精确拷贝。如果属性是基本类型，拷贝的就是基本类型的值，如果属性是引用类型，拷贝的就是内存地址，所以如果其中一个对象改变了这个地址，就会影响到另一个对象
+
+深拷贝：
+![深拷贝](/js/2.png "深拷贝")
+
+> 将一个对象从内存中完整的拷贝一份出来，从堆内存中开辟一个新的区域存放新对象，且修改新对象不会影响原对象
+
+### 手写深拷贝
