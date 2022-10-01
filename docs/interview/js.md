@@ -66,3 +66,55 @@ Object.prototype.toString.call(arr); // "[object Array]"
 > 将一个对象从内存中完整的拷贝一份出来，从堆内存中开辟一个新的区域存放新对象，且修改新对象不会影响原对象
 
 ### 手写深拷贝
+
+```js
+function clone(target, map = new Map()) {
+  if (typeof target === "object" && target !== null) {
+    const cloneTarget = Array.isArray(target) ? [] : {};
+    if (map.get(target)) {
+      return map.get(target);
+    }
+    // 防止循环引用
+    map.set(target, cloneTarget);
+    for (const key in target) {
+      // 保证 key 不是原型属性
+      if (target.hasOwnProperty(key)) {
+        cloneTarget[key] = clone(target[key], map);
+      }
+    }
+    return cloneTarget;
+  } else {
+    return target;
+  }
+}
+```
+
+详细解析：[如何写出一个惊艳面试官的深拷贝](https://juejin.cn/post/6844903929705136141 "如何写出一个惊艳面试官的深拷贝")
+
+### IEEE 754 浮点数标准
+
+![浮点数标准](/js/3.png "浮点数标准")
+![浮点数标准](/js/4.png "浮点数标准")
+以双精度浮点格式为例，如上图，三个参数 S E M:
+
+```
+名称                        长度        比特位置
+
+符号位 Sign （S）            1bit        （b63）
+指数部分 Exponent （E）      11bit      （b62-b52）
+尾数部分 Mantissa （M）      52bit      （b51-b0）
+
+单精度的指数部分（E）采用的偏置码为 127
+双精度的指数部分（E）采用的偏置码为 1023
+
+S=1表示负数 S=0表示正数
+```
+
+求值公式`(-1)^S*2^(E-1023)*(1.M)`  
+举个例子，比如`103.0625`
+
+- `S`符号位：因为是正数，所以为`0`
+- `E`指数位：先转为二进制`1100111.0001`，然后进行规范化`1.1001110001 * 2^6`，`6 = E - 1023`，`E = 1029`，将`E = 1029`转为二进制`10000000101`
+- `M`尾数：对于`1.1001110001`，M 的值为`1001110001`，因为长度有`52`位，后面补充`0`就行，结果为`1001110001000000000000000000000000000000000000000000`
+
+大家知道，十进制有无限循坏小数，二进制也是存在的。遇到这种情况，10 进制是四舍五入，那二进制呢。 只有 0 和 1，那么是 1 就入。
