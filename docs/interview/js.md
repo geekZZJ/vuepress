@@ -158,3 +158,52 @@ S=1表示负数 S=0表示正数
 指数没有溢出  
 S 为 0，E 为 1021，`(-1)^S*2^(E-1023)*(1.M) => (1.0011001100110011001100110011001100110011001100110100)\*2^(-2) => 0.010011001100110011001100110011001100110011001100110100`转为 10 进制为`0.30000000000000004`  
 所以**0.1 + 0.2 != 0.3**
+
+### 如何使 0.1 + 0.2 === 0.3
+
+- 使用`Number.EPSILON`误差范围
+
+```js
+function isEqual(a, b) {
+  return Math.abs(a - b) < Number.EPSILON;
+}
+
+console.log(isEqual(0.1 + 0.2, 0.3)); // true
+```
+
+`Number.EPSILON`的实质是一个可以接受的最小误差范围，一般来说为`Math.pow(2, -52)`
+
+- 转成字符串，对字符串做加法运算
+
+```js
+// 字符串数字相加
+const addStrings = (num1, num2) => {
+  let i = num1.length - 1;
+  let j = num2.length - 1;
+  const res = [];
+  let carry = 0;
+  while (i >= 0 || j >= 0) {
+    const n1 = i >= 0 ? Number(num1[i]) : 0;
+    const n2 = j >= 0 ? Number(num2[j]) : 0;
+    const sum = n1 + n2 + carry;
+    res.unshift(sum % 10);
+    carry = Math.floor(sum / 10);
+    i--;
+    j--;
+  }
+  if (carry) res.unshift(carry);
+  return res.join("");
+};
+
+const isEqual = (a, b, sum) => {
+  const [intStr1, decStr1] = a.toString().split(".");
+  const [intStr2, decStr2] = b.toString().split(".");
+  // 整数部分相加
+  const intSum = addStrings(intStr1, intStr2);
+  // 小数部分相加
+  const decSum = addStrings(decStr1, decStr2);
+  return intSum + "." + decSum === String(sum);
+};
+
+console.log(isEqual(0.1, 0.2, 0.3)); // true
+```
