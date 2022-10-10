@@ -237,3 +237,80 @@ const citrus = fruits.slice(1, 3);
 - `every()`用于检测数组所有元素是否都符合指定条件，**不会改变原始数组**
 - `filter(),forEach(),map(),some()`，**不会改变原始数组**
 - `reduce()`
+
+### `reduce`深入理解
+
+#### 定义
+
+`reduce()`接收一个函数作为累加器，数组中的每个值（从左到右）开始缩减，最终计算为一个值
+
+#### 语法：
+
+`array.reduce(function(total, currentValue, currentIndex, arr), initialValue)`
+
+#### 参数
+
+- `callbackFn`
+  - `total`：上一次调用`callbackFn`时的返回值。在第一次调用时，若指定了初始值`initialValue`，其值则为`initialValue`，否则为数组索引为 0 的元素`array[0]`
+  - `currentValue`：数组中正在处理的元素。在第一次调用时，若指定了初始值`initialValue`，其值则为数组索引为 0 的元素`array[0]`，否则为`array[1]`
+  - `currentIndex`：数组中正在处理的元素的索引。若指定了初始值`initialValue`，则起始索引号为 0，否则从索引 1 起始
+  - `arr`：用于遍历的数组
+- `initialValue`: 作为第一次调用`callback`函数时参数`total`的值。若指定了初始值`initialValue`，则`currentValue`则将使用数组第一个元素；否则`total`将使用数组第一个元素，而`currentValue`将使用数组第二个元素
+
+#### 高级用法
+
+- 累加累乘
+
+```js
+// 累加
+function accumulation(arr) {
+  return arr.reduce((t, v) => t + v, 0);
+}
+
+// 累乘
+function multiplication(arr) {
+  return arr.reduce((t, v) => t * v, 1);
+}
+
+accumulation([1, 2, 3, 4]); // 10
+multiplication([1, 2, 3, 4]); // 24
+```
+
+- 权重求和
+
+```js
+const scores = [
+  { score: 90, subject: "chinese", weight: 0.5 },
+  { score: 95, subject: "math", weight: 0.3 },
+  { score: 85, subject: "english", weight: 0.2 },
+];
+
+const result = scores.reduce((t, v) => t + v.score * v.weight, 0); // 90.5
+```
+
+- 代替`reverse`
+
+```js
+// return a,b 最终返回值为b（最后的变量）
+function reverse(arr) {
+  return arr.reduceRight((t, v) => (t.push(v), t), []);
+}
+
+const result = reverse([1, 2, 3, 4, 5]); // [5, 4, 3, 2, 1]
+```
+
+- 代替`map`和`filter`
+
+```js
+const arr = [0, 1, 2, 3];
+// 代替map：[0, 2, 4, 6]
+const b = arr.reduce((t, v) => [...t, v * 2], []);
+
+// 代替filter：[2, 3]
+const d = arr.reduce((t, v) => (v > 1 ? [...t, v] : t), []);
+
+// 代替map和filter：[4, 6]
+const f = arr.reduce((t, v) => (v * 2 > 2 ? [...t, v * 2] : t), []);
+```
+
+### `sort`函数解析
