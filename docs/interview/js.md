@@ -313,4 +313,122 @@ const d = arr.reduce((t, v) => (v > 1 ? [...t, v] : t), []);
 const f = arr.reduce((t, v) => (v * 2 > 2 ? [...t, v * 2] : t), []);
 ```
 
+- 代替`some`和`every`
+
+```js
+const scores = [
+  { score: 45, subject: "chinese" },
+  { score: 90, subject: "math" },
+  { score: 60, subject: "english" },
+];
+
+// 代替some：至少一门合格
+const isAtLeastOneQualified = scores.reduce(
+  (t, v) => t || v.score >= 60,
+  false
+); // true
+// 代替every：全部合格
+const isAllQualified = scores.reduce((t, v) => t && v.score >= 60, true); // false
+```
+
+- 数组过滤
+
+```js
+// 将arr1中与arr2都含有的元素从arr1中过滤掉
+function difference(arr = [], oArr = []) {
+  return arr.reduce((t, v) => (!oArr.includes(v) && t.push(v), t), []);
+}
+
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [2, 3, 6];
+const result = difference(arr1, arr2); // [1, 4, 5]
+```
+
+- 数组扁平
+
+```js
+function flat(arr = []) {
+  return arr.reduce((t, v) => t.concat(Array.isArray(v) ? flat(v) : v), []);
+}
+
+const arr = [0, 1, [2, 3], [4, 5, [6, 7]], [8, [9, 10, [11, 12]]]];
+const result = flat(arr); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+```
+
+- 数组去重
+
+```js
+function uniq(arr) {
+  return arr.reduce((t, v) => (t.includes(v) ? t : [...t, v]), []);
+}
+
+const arr = [2, 1, 0, 3, 2, 1, 2];
+const result = uniq(arr); // [2, 1, 0, 3]
+```
+
+- 数组最大最小值
+
+```js
+// 求最大值
+function max(arr) {
+  return arr.reduce((t, v) => (t > v ? t : v));
+}
+
+// 求最小值
+function min(arr) {
+  return arr.reduce((t, v) => (t < v ? t : v));
+}
+
+const arr = [12, 45, 21, 65, 38, 76, 108, 43];
+const result = max(arr); // 108
+const result1 = min(arr); // 12
+```
+
+- 数组成员个数统计
+
+```js
+function count(arr) {
+  return arr.reduce((t, v) => ((t[v] = (t[v] || 0) + 1), t), {});
+}
+
+const arr = [0, 1, 1, 2, 2, 2];
+const result = count(arr); // { 0: 1, 1: 2, 2: 3 }
+```
+
+- 数组成员位置记录
+
+```js
+function position(arr, val) {
+  return arr.reduce((t, v, i) => (v === val && t.push(i), t), []);
+}
+
+const arr = [2, 1, 5, 4, 2, 1, 6, 6, 7];
+const result = position(arr, 2); // [0, 4]
+```
+
+- 字符串翻转
+
+```js
+function reverseStr(str) {
+  return str.split("").reduceRight((t, v) => t + v);
+}
+
+const str = "reduce最牛逼";
+const result = reverseStr(str); // "逼牛最ecuder"
+```
+
+- 斐波那契数列
+
+```js
+function fibonacci(len = 2) {
+  const arr = [...new Array(len).keys()];
+  return arr.reduce((t, v, i) => (i > 1 && t.push(t[i - 1] + t[i - 2]), t), [
+    0,
+    1,
+  ]);
+}
+
+const result = fibonacci(10); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+```
+
 ### `sort`函数解析
