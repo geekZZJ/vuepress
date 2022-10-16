@@ -432,3 +432,49 @@ const result = fibonacci(10); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
 ```
 
 ### `sort`函数解析
+
+#### 无参时的使用
+
+此时排序的方式是按照`ascii`码进行排序，它会先将数组里的元素全部转为字符串进行比较
+
+```js
+const arr = [23, 12, 32, 5, 21, 7, 1];
+arr.sort();
+console.log(arr); // [1, 12, 21, 23, 32, 5, 7]
+```
+
+#### 有参数时的使用
+
+- 首先我们来看一下`a`指代的到底是什么
+
+```js
+const arr = [23, 12, 32, 5, 21, 7, 1];
+
+arr.sort((a, b) => {
+  console.log("a:" + a);
+  return 1;
+});
+console.log(arr);
+```
+
+![有参数](/js/5.png "有参数")  
+很容易看出`a`的范围是`[arr[1],arr[arr.length-1]]`；另外我们还能看出当函数返回一个正值时，数组并没有发生变化（0 也是）
+
+- 我们再看一`b`指的是什么
+
+```js
+const arr = [23, 12, 32, 5, 21, 7, 1];
+
+arr.sort((a, b) => {
+  console.log("b:" + b);
+  return -1;
+});
+console.log(arr);
+```
+
+![有参数](/js/6.png "有参数")  
+`b`的范围`[arr[0],arr[arr.length-2]`；另外在这里我们还得到一个使数组反序的方法
+
+- 结论：如果数据量较小使用二分插入排序；当数据量较大时，就会使用归并排序的思想
+
+详细解析：[v8 array-sort](https://github.com/v8/v8/blob/master/third_party/v8/builtins/array-sort.tq "v8 array-sort")
