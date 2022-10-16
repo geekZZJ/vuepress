@@ -478,3 +478,16 @@ console.log(arr);
 - 结论：如果数据量较小使用二分插入排序；当数据量较大时，就会使用归并排序的思想
 
 详细解析：[v8 array-sort](https://github.com/v8/v8/blob/master/third_party/v8/builtins/array-sort.tq "v8 array-sort")
+
+### 原型和原型链
+
+```js
+function Foo() {}
+
+let f1 = new Foo();
+let f2 = new Foo();
+```
+
+![原型和原型链](/js/7.png "原型和原型链")
+
+### 手写`bind`函数
