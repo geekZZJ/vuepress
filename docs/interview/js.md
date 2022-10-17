@@ -488,6 +488,7 @@ let f1 = new Foo();
 let f2 = new Foo();
 ```
 
-![原型和原型链](/js/7.png "原型和原型链")
+![原型和原型链](/js/7.png "原型和原型链")  
+推荐阅读：[JavaScript 深入之从原型到原型链](https://github.com/mqyqingfeng/blog/issues/2 "JavaScript深入之从原型到原型链")、[轻松理解 JS 原型原型链](https://juejin.cn/post/6844903989088092174 "轻松理解JS原型原型链")
 
 ## 手写`bind`函数
