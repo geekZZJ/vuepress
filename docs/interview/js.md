@@ -510,4 +510,73 @@ function bar() {
 bar();
 ```
 
+- 在进入执行上下文时，首先会处理函数声明，其次会处理变量声明，如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性
+
+```js
+console.log(foo);
+
+function foo() {
+  console.log("foo");
+}
+
+var foo = 1;
+```
+
+> `a = 1`事实上是对属性赋值操作。首先，它会尝试在当前作用域链中解析`a`；如果在当前作用域链中找到`a`作用域链，则对其进行属性进行赋值，如果没有找到`a`，则它会在全局对象（即当前作用域链的最顶层对象，如`window`对象）中创造`a`属性并赋值。**注意！它并不是声明了一个全局变量，而是创建了一个全局对象的属性**
+
+顺序阅读：[JavaScript 深入之执行上下文栈](https://github.com/mqyqingfeng/Blog/issues/4 "JavaScript深入之执行上下文栈")、[JavaScript 深入之变量对象](https://github.com/mqyqingfeng/Blog/issues/5 "JavaScript深入之变量对象")、[JavaScript 深入之作用域链](https://github.com/mqyqingfeng/Blog/issues/6 "JavaScript深入之作用域链")、[JavaScript 深入之执行上下文](https://github.com/mqyqingfeng/Blog/issues/8 "JavaScript深入之执行上下文")
+
+## 闭包难题
+
+先看个简单的例子：
+
+```js
+var t = function() {
+  var n = 99;
+  var t2 = function() {
+    n++;
+    console.log(n);
+  };
+  return t2;
+};
+
+var a1 = t();
+var a2 = t();
+
+a1(); // 100
+a1(); // 101
+
+a2(); // 100
+a2(); // 101
+```
+
+我们会发现，`n`的值都是从 99 开始，执行一次`a1()`的时候，值会加一，再执行一次，值再加一，但是`n`在`a1()`和`a2()`并不是公用的。你可以理解为：同一个函数形成的多个闭包的值都是相互独立的。  
+接下来看这道题目，关键在于`nAdd`函数
+
+```js
+var nAdd;
+var t = function() {
+  var n = 99;
+  nAdd = function() {
+    n++;
+  };
+  var t2 = function() {
+    console.log(n);
+  };
+  return t2;
+};
+
+var a1 = t();
+var a2 = t();
+
+nAdd();
+
+a1(); // 99
+a2(); // 100
+```
+
+当执行`var a1 = t()`的时候，变量`nAdd`被赋值为一个函数，这个函数是`function (){n++}`，我们命名这个匿名函数为`fn1`吧。接着执行`var a = t()`的时候，变量`nAdd`又被重写了，这个函数跟以前的函数长得一模一样，也是`function (){n++}`，但是这已经是一个新的函数了，我们就命名为`fn2`吧
+
+所以当执行`nAdd`函数，我们执行的是其实是`fn2`，而不是`fn1`，我们更改的是`a2`形成的闭包里的`n`的值，并没有更改`a1`形成的闭包里的`n`的值。所以`a1()`的结果为 99 ，`a2()`的结果为 100
+
 ## 手写`bind`函数
