@@ -526,6 +526,8 @@ var foo = 1;
 
 顺序阅读：[JavaScript 深入之执行上下文栈](https://github.com/mqyqingfeng/Blog/issues/4 "JavaScript深入之执行上下文栈")、[JavaScript 深入之变量对象](https://github.com/mqyqingfeng/Blog/issues/5 "JavaScript深入之变量对象")、[JavaScript 深入之作用域链](https://github.com/mqyqingfeng/Blog/issues/6 "JavaScript深入之作用域链")、[JavaScript 深入之执行上下文](https://github.com/mqyqingfeng/Blog/issues/8 "JavaScript深入之执行上下文")
 
+## 闭包
+
 ## 闭包难题
 
 先看个简单的例子：
