@@ -17,6 +17,13 @@ module.exports = {
           children: ["", "css", "js", "network", "utilFun"],
         },
       ],
+      "/algorithm/": [
+        {
+          title: "算法",
+          collapsable: false,
+          children: [""],
+        },
+      ],
     },
   },
 };

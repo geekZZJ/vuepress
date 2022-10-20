@@ -475,7 +475,43 @@ console.log(arr);
 ![有参数](/js/6.png "有参数")  
 `b`的范围`[arr[0],arr[arr.length-2]`；另外在这里我们还得到一个使数组反序的方法
 
-- 结论：如果数据量较小使用二分插入排序；当数据量较大时，就会使用归并排序的思想
+- 数字排序  
+  若`a`小于`b`，在排序后的数组中`a`应该出现在`b`之前，则返回一个小于 0 的值。若`a`等于`b`，则返回 0。若`a`大于`b`，则返回一个大于 0 的值
+
+```js
+// 从小到大排序
+function sortNumber(a, b) {
+  return a - b;
+}
+```
+
+### 结论
+
+如果数据量较小使用二分插入排序；当数据量较大时，就会使用归并排序的思想
+
+- 判断数组长度，小于 2 直接返回，不排序
+- `sort`无参数时，先将数组里的元素全部转为字符串进行比较。此时排序的方式是按照`ascii`码进行排序
+
+```js
+// 5. Let xString be ? ToString(x).
+const xString = ToString_Inline(x);
+
+// 6. Let yString be ? ToString(y).
+const yString = ToString_Inline(y);
+
+// 7. Let xSmaller be the result of performing
+//    Abstract Relational Comparison xString < yString.
+// 8. If xSmaller is true, return -1.
+if (StringLessThan(context, xString, yString) == True) return -1;
+
+// 9. Let ySmaller be the result of performing
+//    Abstract Relational Comparison yString < xString.
+// 10. If ySmaller is true, return 1.
+if (StringLessThan(context, yString, xString) == True) return 1;
+
+// 11. Return +0.
+return 0;
+```
 
 详细解析：[v8 array-sort](https://github.com/v8/v8/blob/master/third_party/v8/builtins/array-sort.tq "v8 array-sort")
 
