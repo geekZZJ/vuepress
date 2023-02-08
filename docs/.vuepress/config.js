@@ -1,4 +1,5 @@
 module.exports = {
+  port: "8099",
   title: "zzj的小站",
   description: "我的小站",
   themeConfig: {
