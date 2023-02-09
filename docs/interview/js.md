@@ -617,4 +617,78 @@ a2(); // 100
 
 所以当执行`nAdd`函数，我们执行的是其实是`fn2`，而不是`fn1`，我们更改的是`a2`形成的闭包里的`n`的值，并没有更改`a1`形成的闭包里的`n`的值。所以`a1()`的结果为 99 ，`a2()`的结果为 100
 
+## 3 个判断数组的方法，介绍它们之间的区别和优劣
+
+> Object.prototype.toString.call() 、 instanceof 以及 Array.isArray()
+
+### Object.prototype.toString.call()
+
+每一个继承 Object 的对象都有`toString`方法，如果`toString`方法没有重写的话，会返回`[Object type]`，其中 type 为对象的类型。但当除了 Object 类型的对象外，其他类型直接使用`toString`方法时，会直接返回都是内容的字符串，所以我们需要使用`call`或者`apply`方法来改变`toString`方法的执行上下文
+
+```js
+const an = ["Hello", "An"];
+an.toString(); // "Hello,An"
+Object.prototype.toString.call(an); // "[object Array]"
+```
+
+这种方法对于所有基本的数据类型都能进行判断，即使是 null 和 undefined
+
+```js
+Object.prototype.toString.call("An"); // "[object String]"
+Object.prototype.toString.call(1); // "[object Number]"
+Object.prototype.toString.call(Symbol(1)); // "[object Symbol]"
+Object.prototype.toString.call(null); // "[object Null]"
+Object.prototype.toString.call(undefined); // "[object Undefined]"
+Object.prototype.toString.call(function() {}); // "[object Function]"
+Object.prototype.toString.call({ name: "An" }); // "[object Object]"
+```
+
+`Object.prototype.toString.call()`常用于判断浏览器内置对象时
+
+### instanceof
+
+`instanceof`的内部机制是通过判断对象的原型链中是不是能找到类型的`prototype`
+使用`instanceof`判断一个对象是否为数组，`instanceof`会判断这个对象的原型链上是否会找到对应的`Array`的原型，找到返回`true`，否则返回`false`
+
+```js
+[] instanceof Array; // true
+```
+
+但`instanceof`只能用来判断对象类型，原始类型不可以。并且所有对象类型`instanceof Object`都是`true`
+
+```js
+[] instanceof Object; // true
+```
+
+### Array.isArray()
+
+功能：用来判断对象是否为数组
+
+- `instanceof`与`isArray`
+  当检测 Array 实例时，`Array.isArray`优于`instanceof`，因为`Array.isArray`可以检测出`iframe`
+
+```js
+const iframe = document.createElement("iframe");
+document.body.appendChild(iframe);
+xArray = window.frames[window.frames.length - 1].Array;
+const arr = new xArray(1, 2, 3); // [1,2,3]
+
+// Correctly checking for Array
+Array.isArray(arr); // true
+Object.prototype.toString.call(arr); // '[object Array]'
+// Considered harmful, because doesn't work though iframe
+arr instanceof Array; // false
+```
+
+- `isArray`与`Object.prototype.toString.call()`
+  `Array.isArray()`是 ES5 新增的方法，当不存在`Array.isArray()`，可以用`Object.prototype.toString.call()`实现
+
+```js
+if (!Array.isArray) {
+  Array.isArray = function(arg) {
+    return Object.prototype.toString.call(arg) === "[object Array]";
+  };
+}
+```
+
 ## 手写`bind`函数
