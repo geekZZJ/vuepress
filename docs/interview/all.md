@@ -230,3 +230,100 @@ footer 为需要清除浮动的元素
   /* 子元素继承来的行高为20*200%=40 */
 }
 ```
+
+# JS
+
+## 数据类型
+
+### 实现深拷贝
+
+```js
+function deepClone(obj) {
+  if (typeof obj !== "object" || obj === null) {
+    return obj;
+  }
+  let result;
+  if (obj instanceof Array) {
+    result = [];
+  } else {
+    result = {};
+  }
+  for (const key in obj) {
+    // 保证key不是原型的属性
+    if (obj.hasOwnProperty(key)) {
+      // 递归调用
+      result[key] = deepClone(obj[key]);
+    }
+  }
+  return result;
+}
+```
+
+## 原型和原型链
+
+### 类型判断 instanceof
+
+```js
+[] instanceof Array; // true
+[] instanceof Object; // true
+{} instanceof Object // true
+```
+
+### 原型
+
+```js
+// class 实际上是函数，可见是语法糖
+typeof People; // 'function'
+typeof Student; // 'function'
+
+// 隐式原型和显式原型
+console.log(xialuo.__proto__);
+console.log(Student.prototype);
+console.log(xialuo.__proto__ === Student.prototype); // true
+```
+
+- 每个 class 都有显式原型 prototype
+- 每个实例都有隐式原型`__proto__`
+- 实例的`__proto__`指向对应 class 的 prototype
+
+## 作用域和闭包
+
+### 自由变量
+
+- 一个变量在当前作用域没有定义，但被使用了
+- 向上级作用域，一层一层依次寻找，直至找到为止
+- 如果到全局作用域都没找到，则报错 xxx is not defined
+
+### 闭包
+
+作用域应用的特殊情况，有两种表现：
+
+- 函数作为参数被传递
+- 函数作为返回值被返回
+
+**所有自由变量的查找，是在函数定义的地方向上级作用域查找，不是在执行的地方**
+
+### this
+
+this 取值为执行的地方决定
+![this](./images/2.png "this")
+
+### 手写 bind 函数
+
+```js
+// 模拟bind
+Function.prototype.bind1 = function() {
+  // 将参数拆解为数组
+  const args = Array.prototype.slice.call(arguments);
+  // 或者用...运算符
+  // const args = [...arguments].slice(1);
+  // 获取this(即数组第一项)
+  const t = args.shift();
+  // fn.bind(...)中的fn
+  const self = this;
+  // 返回一个函数
+  return function() {
+    return self.apply(t, args);
+  };
+};
+```
