@@ -335,3 +335,107 @@ Function.prototype.bind1 = function() {
 - 基于 JS 是单线程语言
 - 异步不会阳塞代码执行
 - 同步会阻塞代码执行
+
+### event loop（ 事件循环/事件轮询）
+
+- 同步代码，一行一行放在 Call Stack 执行
+- 遇到异步，会先“记录”下，等待时机（定时、网络请求等）
+- 时机到了，就移动到 Callback Queue
+- 如 Call Stack 为空（即同步代码执行完）Event Loop 开始工作
+- 轮询查找 Callback Queue，如有则移动到 Call Stack 执行
+- 然后继续轮询查找（永动机一样）
+
+### promise then 和 catch 的连接
+
+- promise 三种状态（pending、fulfilled、rejected）
+- pending 状态，不会触发 then 和 catch
+- fulfilled 状态，会触发后续的 then 回调函数
+- rejected 状态，会触发后续的 catch 回调函数
+
+#### then 和 catch 改变状态
+
+- then 正常返回 fulfilled，里面有报错则返回 rejected
+
+```js
+const p1 = Promise.resolve().then(() => {
+  return 100;
+});
+
+// p1执行后为fulfilled
+
+const p2 = Promise.resolve().then(() => {
+  throw new Error("抛出错误");
+});
+
+// p2执行后为rejected
+```
+
+- catch 正常返回 fulfilled， 里面有报错则返回 rejected
+
+```js
+const p3 = Promise.reject("错误").catch((err) => {
+  console.log(err);
+});
+
+// p3执行后为fulfilled
+
+const p4 = Promise.reject("错误").catch((err) => {
+  throw new Error(111);
+});
+
+// p4执行后为rejected
+```
+
+#### 面试题
+
+```js
+// 第一題
+Promise.resolve()
+  .then(() => {
+    console.log(1);
+    // 返回 fulfilled 不进入 catch
+  })
+  .catch(() => {
+    console.log(2);
+  })
+  .then(() => {
+    console.log(3);
+  });
+// 1 3
+```
+
+```js
+// 第二題
+Promise.resolve()
+  .then(() => {
+    console.log(1);
+    throw new Error("error1");
+    // 返回 rejected 进入 catch
+  })
+  .catch(() => {
+    console.log(2);
+    // 返回 fulfilled 进入 then
+  })
+  .then(() => {
+    console.log(3);
+  });
+// 1 2 3
+```
+
+```js
+// 第三題
+Promise.resolve()
+  .then(() => {
+    console.log(1);
+    throw new Error("error1");
+    // 返回 rejected 进入 catch
+  })
+  .catch(() => {
+    console.log(2);
+    // 返回 fulfilled 不进入 catch
+  })
+  .catch(() => {
+    console.log(3);
+  });
+// 1 2
+```
