@@ -439,3 +439,52 @@ Promise.resolve()
   });
 // 1 2
 ```
+
+### async/await 和 Promise 的关系
+
+- 执行 async 函数，返回的是 Promise 对象
+- await 相当于 Promise 的 then
+- try...catch 可捕获异常，代替了 Promise 的 catch
+
+```js
+(async function() {
+  const p = Promise.reject("错误");
+  const result = await p; // await相当于then，不会打印console
+  console.log("result", result);
+});
+```
+
+### for...of
+
+```js
+function muti(num) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(num * num);
+    }, 1000);
+  });
+}
+
+const nums = [1, 2, 3];
+
+// 一秒钟打印 1 4 9，因为forEach是同步的
+// nums.forEach(async (i) => {
+//   const res = await muti(i);
+//   console.log(res);
+// });
+
+// 没隔一秒钟打印 1 4 9
+(async function() {
+  for (const i of nums) {
+    const res = await muti(i);
+    console.log(res);
+  }
+})();
+```
+
+### 宏任务和微任务
+
+- 宏任务：setTimeout、setInterval、Ajax、DOM 事件，在 DOM 渲染后触发
+- 微任务：Promise、async/await，在 DOM 渲染前触发
+- 微任务执行时机比宏任务要早
+  ![宏任务和微任务](./images/3.png "宏任务和微任务")
