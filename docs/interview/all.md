@@ -488,3 +488,27 @@ const nums = [1, 2, 3];
 - 微任务：Promise、async/await，在 DOM 渲染前触发
 - 微任务执行时机比宏任务要早
   ![宏任务和微任务](./images/3.png "宏任务和微任务")
+
+## DOM 相关
+
+### DOM 性能
+
+- 对 DOM 查询做缓存
+- 将频繁操作改为一次性操作
+
+## BOM 相关
+
+### location 和 history
+
+```js
+// location
+console.log(location.href);
+console.log(location.protocol); // 'http:' 'https:
+console.log(location.pathname); // '/learn/199'
+console.log(location.search);
+console.log(location.hash);
+
+// history
+history.back();
+history.forward();
+```
