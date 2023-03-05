@@ -669,3 +669,60 @@ response.setHeader("Access-Control-Allow-Credentials", "true");
 - localStorage 数据会永久存储，除非代码或手动删除
 - sessionStorage 数据只存在于当前会话，浏览器关闭则清空
 - 一般用 localStorage 会更多一些
+
+## HTTP
+
+### http 状态码
+
+- 1xx 服务器收到请求
+- 2xx 请求成功，如 200
+- 3xx 重定向，如 302
+- 4xx 客户端错误，如 404
+- 5xx 服务端错误，如 500
+
+#### 常见状态码
+
+- 200 成功
+- 301 永久重定向（配合 location，浏览器自动处理）
+- 302 临时重定向（配合 location， 浏览器自动处理）
+- 304 资源未被修改
+- 403 没有权限
+- 404 资源未找到
+- 500 服务器错误
+- 504 网关超时
+
+### http methods
+
+- get 获取数据
+- post 新建数据
+- patch/put 更新数据
+- delete 删除数据
+
+### Restful API
+
+- 传统 API 设计：把每个 url 当做一个功能
+- Restful API 设计： 把每个 url 当做一个唯一的资源
+
+**对比**  
+传统 API 设计：/api/list?pageIndex=2  
+Restful API 设计：/api/list/2
+
+### http headers
+
+#### Request Headers
+
+- Accept 浏览器可接收的数据格式
+- Accept-Encoding 浏览器可接收的压缩算法，如 gzip
+- Accept-Language 浏览器可接收的语言，如 zh-CN
+- Connection: keep-alive 一次 TCP 连接重复使用
+- cookie
+- Host
+- User-Agent（简称 UA）浏览器信息
+- content-type 发送数据的格式，如 application/json
+
+#### Response Headers
+
+- Content-type 返回数据的格式，如 application/json
+- Content-length 返回数据的大小，多少字节
+- Content-Encoding 返回数据的压缩算法 ，如 gzip
+- Set-Cookie
