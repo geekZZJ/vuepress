@@ -547,3 +547,125 @@ bindEvent(div3, "click", "div", function() {
   console.log(this.innerHTML);
 });
 ```
+
+## ajax
+
+### ajax 简单实现
+
+get 请求
+
+```js
+const xhr = new XMLHttpRequest();
+xhr.open("get", "http://zhangblog.cn:7001/recommend/banner", true);
+xhr.onreadystatechange = function() {
+  if (xhr.readyState === 4) {
+    if (xhr.status === 200) {
+      console.log(xhr.responseText);
+    }
+  }
+};
+xhr.send();
+```
+
+post 请求
+
+```js
+const xhr = new XMLHttpRequest();
+xhr.open("post", "http://zhangblog.cn:7001/recommend/banner", true);
+xhr.onreadystatechange = function() {
+  if (xhr.readyState === 4) {
+    if (xhr.status === 200) {
+      console.log(xhr.responseText);
+    }
+  }
+};
+const postData = {
+  username: "abc",
+};
+xhr.send(JSON.stringify(postData));
+```
+
+**xhr.readyState**
+
+- 0-（未初始化）还没有调用 send() 方法
+- 1-（载入）已调用 send() 方法，正在发送请求
+- 2-（载入完成）send() 方法执行完成，已经接收到全部响应内容
+- 3-（交互）正在解析响应内容
+- 4-（完成）响应内容解析完成，可以在客户端调用
+
+**xhr.status**
+
+- 2xx - 表示成功处理请求，如 200
+- 3xx - 需要重定向，浏览器直接跳转，如 301 302 304
+- 4xx - 客户端请求错误，如 404 403
+- 5xx - 服务器端错误
+
+### 同源策略
+
+- ajax 请求时，浏览器要求当前网页和 server 必须同源（安全）
+- 同源：协议、域名、端口，三者必须一致
+- 加载图片 css js 可无视同源策略
+
+```js
+<img src="跨域的图片地址" />
+<link href="跨域的css地址" />
+＜script src='跨域的js地址'></script>
+```
+
+### 跨域
+
+所有的跨域，都心须经过 server 端允许和配合。未经 server 端允许就实现跨域，说明浏览器有漏洞
+
+- jsonp 实现跨域
+
+```js
+// jsonp.js 运行在8080端口
+
+callback({ name: "zhangsan" });
+```
+
+```html
+<!-- test.html 运行在5500端口 -->
+<script>
+  window.callback = function(data) {
+    console.log(data);
+  };
+</script>
+<script src="http://localhost:8080/jsonp.js"></script>
+<!-- 返回执行callback方法 -->
+```
+
+- CORS 服务器设置 http header
+
+```js
+// 第二个参数填写允许跨域的域名称，不建议直接写"*"
+response.setHeader("Access-Control-Allow-Origin", "http://localhost:8011");
+response.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
+response.setHeader(
+  "Access-Control-Allow-Methods",
+  "PUT, POST, GET, DELETE, OPTIONS"
+);
+
+// 接收跨域的cookie
+response.setHeader("Access-Control-Allow-Credentials", "true");
+```
+
+## 存储
+
+### Cookie
+
+- 存储大小，最大 4KB
+- http 请求时需要发送到服务端，增加请求数据量
+- 只能用`document.cookie='...'`来修改，太过简陋
+
+### localStorage 和 sessionStorage
+
+- HTML5 专门为存储而设计，最大可存 5M
+- API 简单易用 setItem getItem
+- 不会随着 http 请求被发送出去
+
+区别：
+
+- localStorage 数据会永久存储，除非代码或手动删除
+- sessionStorage 数据只存在于当前会话，浏览器关闭则清空
+- 一般用 localStorage 会更多一些
