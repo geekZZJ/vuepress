@@ -512,3 +512,38 @@ console.log(location.hash);
 history.back();
 history.forward();
 ```
+
+## 事件相关
+
+阻止事件冒泡-event.stopPropagation()
+阻止事件默认行为-event.preventDefault()
+
+### 事件代理
+
+```js
+// 通用事件绑定函数
+function bindEvent(elem, type, selector, fn) {
+  if (fn == null) {
+    fn = selector;
+    selector = null;
+  }
+  elem.addEventListener(type, (event) => {
+    const target = event.target;
+    if (selector) {
+      // 代理绑定
+      if (target.matches(selector)) {
+        fn.call(target, event);
+      }
+    } else {
+      fn.call(target, event);
+    }
+  });
+}
+
+// 事件代理，监听父元素事件
+const div3 = document.getElementById("div3");
+
+bindEvent(div3, "click", "div", function() {
+  console.log(this.innerHTML);
+});
+```
