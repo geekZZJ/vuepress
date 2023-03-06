@@ -487,7 +487,8 @@ const nums = [1, 2, 3];
 - 宏任务：setTimeout、setInterval、Ajax、DOM 事件，在 DOM 渲染后触发
 - 微任务：Promise、async/await，在 DOM 渲染前触发
 - 微任务执行时机比宏任务要早
-  ![宏任务和微任务](./images/3.png "宏任务和微任务")
+
+![宏任务和微任务](./images/3.png "宏任务和微任务")
 
 ## DOM 相关
 
@@ -726,3 +727,47 @@ Restful API 设计：/api/list/2
 - Content-length 返回数据的大小，多少字节
 - Content-Encoding 返回数据的压缩算法 ，如 gzip
 - Set-Cookie
+
+### http 缓存
+
+#### 强制缓存
+
+存在 Response Headers 中，控制强制缓存的逻辑，例如 Cache-Control: max-age=31536000（单位是秒）
+![强缓存](./images/4.png "强缓存")
+![强缓存过期](./images/5.png "强缓存过期")
+
+##### cache-control 的值
+
+- max-age
+- no-cache
+- no-store
+- private
+- public
+
+##### 关于 Expires
+
+- 同在 Response Headers 中
+- 同为控制缓存过期
+- 已被 Cache-Control 代替
+
+#### 协商缓存（对比缓存）
+
+- 服务器端缓存策略
+- 服务器判断客户端资源，是否和服务端资源一样
+- 一致则返回 304，否则返回 200 和最新的资源
+
+![协商缓存](./images/6.png "协商缓存")
+![协商缓存](./images/7.png "协商缓存")
+**资源标识**
+
+- 在 Response Headers 中，有两种
+- Last-Modified 资源的最后修改时间
+- Etag 资源的唯一标识（一个字符串，类似人类的指纹）
+
+##### Last-Modified 和 Etag
+
+- 会优先使用 Etag
+- Last-Modified 只能精确到秒级
+- 如果资源被复生成，而内容不变，则 Etag 更精确
+
+![缓存综述](./images/8.png "缓存综述")
