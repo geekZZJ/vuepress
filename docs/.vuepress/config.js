@@ -15,7 +15,7 @@ module.exports = {
         {
           title: "面试",
           collapsable: false,
-          children: ["", "css", "js", "network", "browser", "utilFun"],
+          children: ["", "css", "js", "network", "browser", "utilFun", "all"],
         },
       ],
       "/algorithm/": [

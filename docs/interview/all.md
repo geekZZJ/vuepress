@@ -1,3 +1,5 @@
+# 基础
+
 # HTML
 
 ## 如何理解 HTML 语义化
@@ -12,14 +14,14 @@
 
 # CSS
 
-## 盒模型竞度计算
+## 盒模型宽度计算
 
 offsetWidth = （内容宽度 ＋ 内边距 ＋ 边框），无外边距
 offsetHeight = （内容高度 ＋ 内边距 ＋ 边框），无外边距
 
 ## margin 纵向重叠问题
 
-![margin问题](./images/1.png "margin问题")
+![margin问题](/all/1.png "margin问题")
 
 - 相邻元素的 margin-top 和 margin-bottom 会发生重叠
 - 空白内容的`<p></p>`也会重叠
@@ -306,7 +308,7 @@ console.log(xialuo.__proto__ === Student.prototype); // true
 ### this
 
 this 取值为执行的地方决定
-![this](./images/2.png "this")
+![this](/all/2.png "this")
 
 ### 手写 bind 函数
 
@@ -328,15 +330,15 @@ Function.prototype.bind1 = function() {
 };
 ```
 
-## 异步和单线程
+# 异步和单线程
 
-### 异步和同步
+## 异步和同步
 
 - 基于 JS 是单线程语言
 - 异步不会阳塞代码执行
 - 同步会阻塞代码执行
 
-### event loop（ 事件循环/事件轮询）
+## event loop（ 事件循环/事件轮询）
 
 - 同步代码，一行一行放在 Call Stack 执行
 - 遇到异步，会先“记录”下，等待时机（定时、网络请求等）
@@ -345,14 +347,14 @@ Function.prototype.bind1 = function() {
 - 轮询查找 Callback Queue，如有则移动到 Call Stack 执行
 - 然后继续轮询查找（永动机一样）
 
-### promise then 和 catch 的连接
+## promise then 和 catch 的连接
 
 - promise 三种状态（pending、fulfilled、rejected）
 - pending 状态，不会触发 then 和 catch
 - fulfilled 状态，会触发后续的 then 回调函数
 - rejected 状态，会触发后续的 catch 回调函数
 
-#### then 和 catch 改变状态
+### then 和 catch 改变状态
 
 - then 正常返回 fulfilled，里面有报错则返回 rejected
 
@@ -386,7 +388,7 @@ const p4 = Promise.reject("错误").catch((err) => {
 // p4执行后为rejected
 ```
 
-#### 面试题
+### 面试题
 
 ```js
 // 第一題
@@ -440,7 +442,7 @@ Promise.resolve()
 // 1 2
 ```
 
-### async/await 和 Promise 的关系
+## async/await 和 Promise 的关系
 
 - 执行 async 函数，返回的是 Promise 对象
 - await 相当于 Promise 的 then
@@ -454,7 +456,7 @@ Promise.resolve()
 });
 ```
 
-### for...of
+## for...of
 
 ```js
 function muti(num) {
@@ -482,24 +484,24 @@ const nums = [1, 2, 3];
 })();
 ```
 
-### 宏任务和微任务
+## 宏任务和微任务
 
 - 宏任务：setTimeout、setInterval、Ajax、DOM 事件，在 DOM 渲染后触发
 - 微任务：Promise、async/await，在 DOM 渲染前触发
 - 微任务执行时机比宏任务要早
 
-![宏任务和微任务](./images/3.png "宏任务和微任务")
+![宏任务和微任务](/all/3.png "宏任务和微任务")
 
-## DOM 相关
+# DOM 相关
 
-### DOM 性能
+## DOM 性能
 
 - 对 DOM 查询做缓存
 - 将频繁操作改为一次性操作
 
-## BOM 相关
+# BOM 相关
 
-### location 和 history
+## location 和 history
 
 ```js
 // location
@@ -514,12 +516,12 @@ history.back();
 history.forward();
 ```
 
-## 事件相关
+# 事件相关
 
 阻止事件冒泡-event.stopPropagation()
 阻止事件默认行为-event.preventDefault()
 
-### 事件代理
+## 事件代理
 
 ```js
 // 通用事件绑定函数
@@ -549,9 +551,9 @@ bindEvent(div3, "click", "div", function() {
 });
 ```
 
-## ajax
+# ajax
 
-### ajax 简单实现
+## ajax 简单实现
 
 get 请求
 
@@ -601,7 +603,7 @@ xhr.send(JSON.stringify(postData));
 - 4xx - 客户端请求错误，如 404 403
 - 5xx - 服务器端错误
 
-### 同源策略
+## 同源策略
 
 - ajax 请求时，浏览器要求当前网页和 server 必须同源（安全）
 - 同源：协议、域名、端口，三者必须一致
@@ -613,7 +615,7 @@ xhr.send(JSON.stringify(postData));
 ＜script src='跨域的js地址'></script>
 ```
 
-### 跨域
+## 跨域
 
 所有的跨域，都心须经过 server 端允许和配合。未经 server 端允许就实现跨域，说明浏览器有漏洞
 
@@ -651,15 +653,15 @@ response.setHeader(
 response.setHeader("Access-Control-Allow-Credentials", "true");
 ```
 
-## 存储
+# 存储
 
-### Cookie
+## cookie
 
 - 存储大小，最大 4KB
 - http 请求时需要发送到服务端，增加请求数据量
 - 只能用`document.cookie='...'`来修改，太过简陋
 
-### localStorage 和 sessionStorage
+## localStorage 和 sessionStorage
 
 - HTML5 专门为存储而设计，最大可存 5M
 - API 简单易用 setItem getItem
@@ -671,9 +673,9 @@ response.setHeader("Access-Control-Allow-Credentials", "true");
 - sessionStorage 数据只存在于当前会话，浏览器关闭则清空
 - 一般用 localStorage 会更多一些
 
-## HTTP
+# HTTP
 
-### http 状态码
+## http 状态码
 
 - 1xx 服务器收到请求
 - 2xx 请求成功，如 200
@@ -681,7 +683,7 @@ response.setHeader("Access-Control-Allow-Credentials", "true");
 - 4xx 客户端错误，如 404
 - 5xx 服务端错误，如 500
 
-#### 常见状态码
+### 常见状态码
 
 - 200 成功
 - 301 永久重定向（配合 location，浏览器自动处理）
@@ -692,14 +694,14 @@ response.setHeader("Access-Control-Allow-Credentials", "true");
 - 500 服务器错误
 - 504 网关超时
 
-### http methods
+## http methods
 
 - get 获取数据
 - post 新建数据
 - patch/put 更新数据
 - delete 删除数据
 
-### Restful API
+## Restful API
 
 - 传统 API 设计：把每个 url 当做一个功能
 - Restful API 设计： 把每个 url 当做一个唯一的资源
@@ -708,9 +710,9 @@ response.setHeader("Access-Control-Allow-Credentials", "true");
 传统 API 设计：/api/list?pageIndex=2  
 Restful API 设计：/api/list/2
 
-### http headers
+## http headers
 
-#### Request Headers
+### Request Headers
 
 - Accept 浏览器可接收的数据格式
 - Accept-Encoding 浏览器可接收的压缩算法，如 gzip
@@ -721,22 +723,22 @@ Restful API 设计：/api/list/2
 - User-Agent（简称 UA）浏览器信息
 - content-type 发送数据的格式，如 application/json
 
-#### Response Headers
+### Response Headers
 
 - Content-type 返回数据的格式，如 application/json
 - Content-length 返回数据的大小，多少字节
 - Content-Encoding 返回数据的压缩算法 ，如 gzip
 - Set-Cookie
 
-### http 缓存
+## http 缓存
 
-#### 强制缓存
+### 强制缓存
 
 存在 Response Headers 中，控制强制缓存的逻辑，例如 Cache-Control: max-age=31536000（单位是秒）
-![强缓存](./images/4.png "强缓存")
-![强缓存过期](./images/5.png "强缓存过期")
+![强缓存](/all/4.png "强缓存")
+![强缓存过期](/all/5.png "强缓存过期")
 
-##### cache-control 的值
+#### cache-control 的值
 
 - max-age
 - no-cache
@@ -744,37 +746,37 @@ Restful API 设计：/api/list/2
 - private
 - public
 
-##### 关于 Expires
+#### 关于 Expires
 
 - 同在 Response Headers 中
 - 同为控制缓存过期
 - 已被 Cache-Control 代替
 
-#### 协商缓存（对比缓存）
+### 协商缓存（对比缓存）
 
 - 服务器端缓存策略
 - 服务器判断客户端资源，是否和服务端资源一样
 - 一致则返回 304，否则返回 200 和最新的资源
 
-![协商缓存](./images/6.png "协商缓存")
-![协商缓存](./images/7.png "协商缓存")
+![协商缓存](/all/6.png "协商缓存")
+![协商缓存](/all/7.png "协商缓存")
 **资源标识**
 
 - 在 Response Headers 中，有两种
 - Last-Modified 资源的最后修改时间
 - Etag 资源的唯一标识（一个字符串，类似人类的指纹）
 
-##### Last-Modified 和 Etag
+#### Last-Modified 和 Etag
 
 - 会优先使用 Etag
 - Last-Modified 只能精确到秒级
 - 如果资源被复生成，而内容不变，则 Etag 更精确
 
-![缓存综述](./images/8.png "缓存综述")
+![缓存综述](/all/8.png "缓存综述")
 
-## 运行环境
+# 运行环境
 
-### window.onload 和 DOMContentLoaded
+## window.onload 和 DOMContentLoaded
 
 ```js
 window.addEventListener("load", function() {
@@ -785,19 +787,19 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 ```
 
-### 性能优化
+## 性能优化
 
 - 多使用内存、缓存或其他方法
 - 减少 CPU 计算量，减少网络加载耗时
 - 适用于所有编程的性能优化 - 空间换时间
 
-#### 让加载更快
+### 让加载更快
 
 - 减少资源体积：压缩代码
 - 减少访问次数：合并代码，SSR 服务器端渲染，缓存
 - 使用更快的网络：CDN
 
-#### 让渲染更快
+### 让渲染更快
 
 - CSS 放在 head，JS 放在 body 最下面
 - 尽早开始执行 JS，用 DOMContentLoaded 触发
@@ -806,7 +808,7 @@ document.addEventListener("DOMContentLoaded", function() {
 - 频繁 DOM 操作，合并到一起插入 DOM 结构
 - 节流 throttle 防抖 debounce
 
-### 防抖（debounce）
+## 防抖（debounce）
 
 ```js
 function debounce(fn, delay = 500) {
@@ -824,7 +826,7 @@ function debounce(fn, delay = 500) {
 }
 ```
 
-### 节流（throttle）
+## 节流（throttle）
 
 ```js
 function throttle(fn, delay) {
@@ -839,9 +841,9 @@ function throttle(fn, delay) {
 }
 ```
 
-## 安全
+# 安全
 
-### XSS 跨站请求攻击
+## XSS 跨站请求攻击
 
 - 一个博客网站，我发表一篇博客，其中嵌入`<script>`脚本
 - 脚本内容：获取 cookie，发送到我的服务器（服务器配合跨域）
@@ -853,7 +855,7 @@ function throttle(fn, delay) {
 - `<script>`变为`&lt;script&gt;`，直接显示，而不会作为脚本执行
 - 前端要替换，后端也要替换，都做总不会有错
 
-### XSRF 跨站请求份造
+## XSRF 跨站请求伪造
 
 **预防**
 
