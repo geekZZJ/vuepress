@@ -861,3 +861,20 @@ function throttle(fn, delay) {
 
 - 使用 post 接口
 - 增加验证，例如密码、短信验证码、指纹等
+
+# 真题
+
+## 数组 slice 和 splice 区别
+
+- slice 为纯函数（不改变原数组，返回一个数组），splice 不是纯函数
+- splice 可用于在数组中添加元素
+
+## [10, 20, 30].map(parseInt)
+
+拆解该题
+
+```js
+[10, 20, 30].map((item, index) => {
+  return parseInt(item, index);
+});
+```

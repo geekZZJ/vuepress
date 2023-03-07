@@ -101,3 +101,48 @@ div1.addEventListener(
   }, 500)
 );
 ```
+
+## 深度比较
+
+```js
+// 判断是否为数组或对象
+function isObject(obj) {
+  return typeof obj === "object" && obj !== null;
+}
+
+// 深度比较
+function isEqual(obj1, obj2) {
+  if (!isObject(obj1) || !isObject(obj2)) {
+    return obj1 === obj2;
+  }
+  if (obj1 === obj2) return true;
+  // 两个都是对象或数组，且不相等
+  // 先比较key的个数
+  const obj1Keys = Object.keys(obj1);
+  const obj2Keys = Object.keys(obj2);
+  if (obj1Keys.length !== obj2Keys.length) return false;
+  // 以obj1为基准，和obj2一次递归比较
+  for (const key in obj1) {
+    const res = isEqual(obj1[key], obj2[key]);
+    if (!res) return false;
+  }
+  return true;
+}
+
+// 用法
+const obj1 = {
+  a: 100,
+  b: {
+    x: 100,
+    y: 200,
+  },
+};
+const obj2 = {
+  a: 100,
+  b: {
+    x: 100,
+    y: 200,
+  },
+};
+console.log(isEqual(obj1, obj2)); // true
+```
