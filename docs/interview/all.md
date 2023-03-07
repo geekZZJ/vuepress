@@ -771,3 +771,70 @@ Restful API 设计：/api/list/2
 - 如果资源被复生成，而内容不变，则 Etag 更精确
 
 ![缓存综述](./images/8.png "缓存综述")
+
+## 运行环境
+
+### window.onload 和 DOMContentLoaded
+
+```js
+window.addEventListener("load", function() {
+  // 页面的全部资源加载完才会执行，包括图片、视频等
+});
+document.addEventListener("DOMContentLoaded", function() {
+  // DOM 渲染完即可执行，此时图片、视频还可能没有加载完
+});
+```
+
+### 性能优化
+
+- 多使用内存、缓存或其他方法
+- 减少 CPU 计算量，减少网络加载耗时
+- 适用于所有编程的性能优化 - 空间换时间
+
+#### 让加载更快
+
+- 减少资源体积：压缩代码
+- 减少访问次数：合并代码，SSR 服务器端渲染，缓存
+- 使用更快的网络：CDN
+
+#### 让渲染更快
+
+- CSS 放在 head，JS 放在 body 最下面
+- 尽早开始执行 JS，用 DOMContentLoaded 触发
+- 懒加载（图片懒加载，上滑加载更多）
+- 对 DOM 查询进行缓存
+- 频繁 DOM 操作，合并到一起插入 DOM 结构
+- 节流 throttle 防抖 debounce
+
+### 防抖（debounce）
+
+```js
+function debounce(fn, delay = 500) {
+  // timer在闭包中
+  let timer = null;
+  return function() {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => {
+      fn.apply(this, arguments);
+      timer = null;
+    }, delay);
+  };
+}
+```
+
+### 节流（throttle）
+
+```js
+function throttle(fn, delay) {
+  let timer = null;
+  return function() {
+    if (timer) return;
+    timer = setTimeout(() => {
+      fn.apply(this, arguments);
+      timer = null;
+    }, delay);
+  };
+}
+```

@@ -50,3 +50,54 @@ function forEach(obj, fn) {
   }
 }
 ```
+
+## 防抖（debounce）函数
+
+```js
+function debounce(fn, delay = 500) {
+  // timer在闭包中
+  let timer = null;
+  return function() {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => {
+      fn.apply(this, arguments);
+      timer = null;
+    }, delay);
+  };
+}
+
+// 使用
+const input1 = document.getElementById("input1");
+input1.addEventListener(
+  "keyup",
+  debounce(() => {
+    console.log(input1.value);
+  }, 1000)
+);
+```
+
+## 节流（throttle）函数
+
+```js
+function throttle(fn, delay) {
+  let timer = null;
+  return function() {
+    if (timer) return;
+    timer = setTimeout(() => {
+      fn.apply(this, arguments);
+      timer = null;
+    }, delay);
+  };
+}
+
+// 使用
+const div1 = document.getElementById("div1");
+div1.addEventListener(
+  "drag",
+  throttle((e) => {
+    console.log(e.offsetX, e.offsetY);
+  }, 500)
+);
+```
