@@ -878,3 +878,62 @@ function throttle(fn, delay) {
   return parseInt(item, index);
 });
 ```
+
+## 函数声明和函数表达式的区别
+
+- 函数声明会在代码执行前预加载，而函数表达式不会
+
+## new Object() 和 Object.create() 区别
+
+- {}等同于 new Object()，原型 Object.prototype
+- Object.create(null)没有原型
+- Object.create({})可指定原型
+
+## 作用域和自由变量场景题
+
+```js
+let i;
+for (i = 0; i <= 3; i++) {
+  setTimeout(function() {
+    console.log(i);
+  }, 1000);
+}
+```
+
+1 秒钟后打印 4 个 4
+
+```js
+let a = 100;
+function test() {
+  alert(a);
+  a = 10;
+  alert(a);
+}
+test();
+alert(a); // 此时a被 a=10 覆盖
+
+// 输出100 10 10
+```
+
+## 手写字符串 trim 方法，保证兼容性
+
+```js
+String.prototype.trim = function() {
+  return this.replace(/^\s+/, "").replace(/\s+$/, "");
+};
+```
+
+## 手写 Math.max 方法
+
+```js
+function max() {
+  const nums = [...arguments];
+  let max = 0;
+  nums.forEach((n) => {
+    if (n > max) {
+      max = n;
+    }
+  });
+  return max;
+}
+```
