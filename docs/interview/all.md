@@ -1019,3 +1019,25 @@ function unique(arr) {
 
 console.log(unique([1, 3, 4, 5, 5, 6, 6, 3]));
 ```
+
+## 介绍 RFA（requestAnimationFrame）
+
+- 要想动画流畅，更新频率要 60 帧/s，即 16.67ms 更新一次视图
+- setTimeout 要手动控制频率，而 RAF 浏览器会自动控制
+- 后台标签或隐藏 iframe 中，RAF 会暂停，而 setTimeout 依然执行
+
+```js
+const div1 = document.getElementsByClassName("div1")[0];
+let curWidth = 100;
+const maxWidth = 640;
+// 3s 把宽度从 100px 变为 640px，即增加 540px
+// 60帧/s，3s 180 帧，每次变化 3px
+function animate() {
+  curWidth = curWidth + 3;
+  div1.style.width = curWidth + "px";
+  if (curWidth < maxWidth) {
+    window.requestAnimationFrame(animate);
+  }
+}
+animate();
+```
