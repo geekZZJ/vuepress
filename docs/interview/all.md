@@ -937,3 +937,57 @@ function max() {
   return max;
 }
 ```
+
+## 如何捕获 JS 中异常
+
+- 方法一
+
+```js
+try {
+} catch (e) {
+} finally {
+}
+```
+
+- 方法二
+
+```js
+window.onerror = function() {};
+// 对跨域的 js，如 CDN 的，不会有详细的报错信息
+// 对于压缩的 js，还要配合 sourceMap 反查到未压缩代码的行、列
+```
+
+## 什么是 JSON
+
+- json 是一种数据格式，本质是一段字符串
+- json 格式和 JS 对象结构一致，对 JS 语言更友好
+- window.JSON 是一个全局对象：JSON.stringify、JSON.parse
+
+## 获取当前页面 url 参数
+
+- 传统方式，查找 location.search
+
+```js
+function query(name) {
+  const search = location.search.substring(1);
+  const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, "i");
+  const res = search.match(reg);
+  if (res === null) {
+    return null;
+  }
+  return res[2];
+}
+
+// query("b");
+```
+
+- 新 API，URLSearchParams
+
+```js
+function query(name) {
+  const search = location.search;
+  const p = new URLSearchParams(search);
+  return p.get(name);
+}
+// query("b");
+```
