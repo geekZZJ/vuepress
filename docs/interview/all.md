@@ -969,7 +969,9 @@ window.onerror = function() {};
 
 ```js
 function query(name) {
+  // 去掉?，仅保留a=1&b=2
   const search = location.search.substring(1);
+  // 正则匹配
   const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, "i");
   const res = search.match(reg);
   if (res === null) {
@@ -990,4 +992,30 @@ function query(name) {
   return p.get(name);
 }
 // query("b");
+```
+
+## 手写数组 flat
+
+```js
+function flat(arr) {
+  // 验证arr中是否还有深层数组
+  const isDeep = arr.some((item) => Array.isArray(item));
+  if (!isDeep) {
+    return arr;
+  }
+  // 类似于[].concat([1,2,3,4])
+  const res = Array.prototype.concat.apply([], arr);
+  return flat(res);
+}
+```
+
+## 数组去重
+
+```js
+function unique(arr) {
+  const set = new Set(arr);
+  return [...set];
+}
+
+console.log(unique([1, 3, 4, 5, 5, 6, 6, 3]));
 ```
