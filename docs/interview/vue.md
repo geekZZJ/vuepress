@@ -68,3 +68,33 @@ beforeDestroy() {
   event.$off("onAddTitle");
 },
 ```
+
+### 生命周期
+
+#### 单个组件
+
+- beforeCreate
+- created
+- beforeMount
+- mounted
+- beforeUpdate
+- updated
+- beforeDestroy
+- destroyed
+
+![生命周期](/vue/lifecycle.png "生命周期")
+
+> mounted 和 created 的区别
+> created：在模板渲染成 html 前调用，即通常初始化某些属性值，然后再渲染成视图
+> mounted：在模板渲染成 html 后调用，通常是初始化页面完成后，再对 html 的 dom 节点进行一些需要的操作
+
+#### 父子组件
+
+1. 加载渲染过程
+   父组件 created -> 子组件 created -> 子组件 mounted -> 父组件 mounted
+
+2. 子组件更新过程
+   父组件 beforeUpdate -> 子组件 beforeUpdate -> 子组件 updated -> 父组件 updated
+
+3. 销毁过程
+   父组件 beforeDestroy -> 子组件 beforeDestroy -> 子组件 destroyed -> 父组件 destroyed
