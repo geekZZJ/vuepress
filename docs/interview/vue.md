@@ -43,3 +43,28 @@ inc2(num, event) {
   // 2. 事件被挂载到当前元素
 }
 ```
+
+### 兄弟组件通信
+
+- 通过`props`和`emit`，子组件向外`emit`事件，修改父组件中的值，兄弟组件通过`props`接收父组件的值
+- 通过创建 event.js 实现，如下：
+
+```js
+// event.js
+import Vue from "vue";
+export default new Vue();
+
+// A.vue
+handleAdd() {
+  event.$emit("onAddTitle", this.content);
+},
+
+// B.vue
+mounted() {
+  event.$on("onAddTitle", this.addTitleHandler);
+},
+beforeDestroy() {
+  // 及时销毁，否则可能造成内存泄漏
+  event.$off("onAddTitle");
+},
+```
