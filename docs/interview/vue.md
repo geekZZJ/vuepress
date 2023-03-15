@@ -98,3 +98,20 @@ beforeDestroy() {
 
 3. 销毁过程
    父组件 beforeDestroy -> 子组件 beforeDestroy -> 子组件 destroyed -> 父组件 destroyed
+
+### 自定义 v-model
+
+```js
+<p>{{ test }}</p>
+<input type="text" :value="test" @input="test = $event.target.value" />
+```
+
+- input 元素的 value = this.name
+- 绑定 input 事件 this.name = \$event.target.value
+- data 更新触发 re-render
+
+### \$nextTick
+
+- Vue 是异步渲染
+- data 改变之后，DOM 不会立刻渲染
+- `$nextTick` 会在 DOM 渲染之后被触发，以获取最新 DOM 节点
