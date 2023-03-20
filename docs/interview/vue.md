@@ -115,3 +115,56 @@ beforeDestroy() {
 - Vue 是异步渲染
 - data 改变之后，DOM 不会立刻渲染
 - `$nextTick` 会在 DOM 渲染之后被触发，以获取最新 DOM 节点
+
+### slot
+
+#### 作用域插槽
+
+父组件可访问插槽中的数据
+
+```js
+// 父组件
+<ScopedSlotDemo :url="website.url">
+  <template v-slot="slotProps"> {{ slotProps.testData.title }} </template>
+</ScopedSlotDemo>
+
+export default {
+  data() {
+    return {
+      website: {
+        url: "test.com",
+        title: "测试title",
+        subTitle: "程序员",
+      },
+    };
+  },
+};
+
+
+-------------------------------
+// 子组件
+<template>
+  <a :href="url">
+    <slot :testData="website">
+      {{ website.subTitle }}
+    </slot>
+  </a>
+</template>
+
+export default {
+  props: ["url"],
+  data() {
+    return {
+      website: {
+        url: "111.com",
+        title: "zzj",
+        subTitle: "年少轻狂",
+      },
+    };
+  },
+};
+```
+
+#### 具名插槽
+
+![具名插槽](/vue/1.png "具名插槽")
