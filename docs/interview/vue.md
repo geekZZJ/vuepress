@@ -168,3 +168,41 @@ export default {
 #### 具名插槽
 
 ![具名插槽](/vue/1.png "具名插槽")
+
+### 动态组件
+
+```js
+<component :is="CustomVModelName"></component>
+
+export default {
+  data() {
+    return {
+      CustomVModelName: "CustomVModel",
+    };
+  },
+};
+```
+
+### keep-alive
+
+- 缓存组件
+- 频繁切换，不需要重复渲染
+- vue 常见性能优化
+
+```js
+<keep-alive>
+  <KeepAliveStageA v-if="state === 'A'" />
+  <KeepAliveStageB v-if="state === 'B'" />
+  <KeepAliveStageC v-if="state === 'C'" />
+</keep-alive>
+```
+
+### mixin
+
+多个组件有相同的逻辑，抽离出来
+
+**缺点**
+
+- 变量和方法 来源不明确，不利于阅读
+- 多 mixin 可能会造成命名冲突
+- mixin 和组件可能出现多对多的关系，复杂度较高
