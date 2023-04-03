@@ -206,3 +206,12 @@ export default {
 - 变量和方法 来源不明确，不利于阅读
 - 多 mixin 可能会造成命名冲突
 - mixin 和组件可能出现多对多的关系，复杂度较高
+
+### Vuex
+
+![Vuex](/vue/vuex.png "Vuex")
+
+### Vue-router
+
+- 路由模式：hash、H5 history
+- 路由配置：动态路由、懒加载
