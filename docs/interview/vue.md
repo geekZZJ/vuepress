@@ -215,3 +215,25 @@ export default {
 
 - 路由模式：hash、H5 history
 - 路由配置：动态路由、懒加载
+
+## Vue 原理
+
+### 组件化基础
+
+#### 数据驱动视图
+
+- Vue:MVVM
+  ![MVVM](/vue/MVVM.png "MVVM")
+- React:setState
+
+### Vue 响应式
+
+- 组件 data 的数据一旦变化，立刻触发视图的更新
+- 实现数据驱动视图的第一步
+- 核心 API - Object.defineProperty
+  ![defineProperty](/vue/defineProperty.png "defineProperty")
+
+#### defineProperty 缺点
+
+- 深度监听，需要递归到底，一次性计算量大
+- 无法监听新增属性/删除属性(Vue.set Vue.delete)
