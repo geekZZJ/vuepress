@@ -238,3 +238,11 @@ export default {
 - 深度监听，需要递归到底，一次性计算量大
 - 无法监听新增属性/删除属性(Vue.set Vue.delete)
 - 无法原生监听数组，需要特殊处理
+
+### 虚拟 DOM
+
+- 用 JS 模拟 DOM 结构(vnode)
+- 新、旧 vnode 对比，得出最小的更新范围，最后更新 DOM
+- 数据驱动视图的模式下，有效控制 DOM 操作
+
+**学习 snabbdom**
