@@ -176,7 +176,7 @@ console.log(isEqual(0.1 + 0.2, 0.3)); // true
 - 转成字符串，对字符串做加法运算
 
 ```js
-// 字符串数字相加
+// 字符串数字相加(位数相同)
 const addStrings = (num1, num2) => {
   let i = num1.length - 1;
   let j = num2.length - 1;
