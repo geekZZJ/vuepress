@@ -16,7 +16,7 @@
 
 ## 盒模型宽度计算
 
-offsetWidth = （内容宽度 ＋ 内边距 ＋ 边框），无外边距
+offsetWidth = （内容宽度 ＋ 内边距 ＋ 边框），无外边距  
 offsetHeight = （内容高度 ＋ 内边距 ＋ 边框），无外边距
 
 ## margin 纵向重叠问题
@@ -475,7 +475,7 @@ const nums = [1, 2, 3];
 //   console.log(res);
 // });
 
-// 没隔一秒钟打印 1 4 9
+// 每隔一秒钟打印 1 4 9
 (async function() {
   for (const i of nums) {
     const res = await muti(i);
