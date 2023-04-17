@@ -288,3 +288,24 @@ export default {
 - \$nextTick
 - 汇总 data 的修改，一次性更新视图
 - 减少 DOM 操作次数，提高性能
+
+### 前端路由原理
+
+#### hash 的特点
+
+- hash 变化会触发网页跳转，即浏览器的前进、后退
+- hash 变化不会刷新页面，SPA 必需的特点
+- hash 永远不会提交到 server 端
+
+#### hash 变化包括(window.onhashchange 可监听到)
+
+- JS 修改 url
+- 手动修改 url 的 hash
+- 浏览器前进、后退
+
+#### H5 history
+
+- 用 url 规范的路由，但跳转时不刷新页面
+- history.pushState
+- window.onpopstate
+- H5 history 需要后端支持，访问所有路由均返回 index.html
