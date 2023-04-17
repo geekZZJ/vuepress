@@ -254,3 +254,37 @@ export default {
 - tag 和 key，两者都相同，则认为是相同节点，不再深度比较
 
 ![tag不同](/vue/diff1.png "tag不同")
+
+**snabbdom 中的重要方法**
+
+- patchVnode
+- addVnodes ｜ removeVnodes
+- updateChildren（key 的重要性）
+
+### 模版编译
+
+- 模板编译为 render 函数，执行 render 函数返回 vnode
+- 基于 vnode 再执行 patch 和 diff
+- 使用 webpack vue-loader，会在开发环境下编译模板
+
+### vue 渲染和更新
+
+#### 初次渲染过程
+
+- 解析模板为 render 函数（或在开发环境已完成，vue-loader）
+- 触发响应式，监听 data 属性 getter setter
+- 执行 render 函数，生成 vnode，patch(elem, vnode)
+
+#### 更新过程
+
+- 修改 data，触发 setter（此前在 getter 中已被监听）
+- 重新执行 render 函数，生成 newVnode
+- patch(vnode, newVnode)
+
+![vue渲染更新过程](/vue/2.png "vue渲染更新过程")
+
+### 异步渲染
+
+- \$nextTick
+- 汇总 data 的修改，一次性更新视图
+- 减少 DOM 操作次数，提高性能
