@@ -4,7 +4,7 @@
 
 ### computed 和 watch
 
-- computed 有缓存，data 不变则不会重新计算
+- computed 有缓存，data 不变则不会重新计算，可以提高性能
 - watch 监听引用类型，拿不到 oldVal；监听引用类型可以
 - watch 深度监听
 
@@ -216,7 +216,7 @@ export default {
 - 路由模式：hash、H5 history
 - 路由配置：动态路由、懒加载
 
-## Vue 原理
+## Vue2 原理
 
 ### 组件化基础
 
@@ -289,26 +289,28 @@ export default {
 - 汇总 data 的修改，一次性更新视图
 - 减少 DOM 操作次数，提高性能
 
-### 前端路由原理
+## 前端路由原理
 
-#### hash 的特点
+### hash 的特点
 
 - hash 变化会触发网页跳转，即浏览器的前进、后退
 - hash 变化不会刷新页面，SPA 必需的特点
 - hash 永远不会提交到 server 端
 
-#### hash 变化包括(window.onhashchange 可监听到)
+### hash 变化包括(window.onhashchange 可监听到)
 
 - JS 修改 url
 - 手动修改 url 的 hash
 - 浏览器前进、后退
 
-#### H5 history
+### H5 history
 
 - 用 url 规范的路由，但跳转时不刷新页面
 - history.pushState
 - window.onpopstate
 - H5 history 需要后端支持，访问所有路由均返回 index.html
+
+## 面试真题
 
 ### v-for 中使用 key
 
@@ -321,3 +323,76 @@ export default {
 - 父子组件 props 和\$emit
 - 自定义事件 event.$on event.$off event.\$emit
 - vuex
+
+### 为什么组件 data 必须是一个函数
+
+vue 组件是一个 class，使用的时候是对这个类的实例化，目的是为了防止多个组件实例对象之间共用一个 data，产生数据污染。采用函数的形式，initData 时会将其作为工厂函数都会返回全新 data 对象
+
+这里我们模仿组件构造函数，定义 data 属性，采用对象的形式
+
+```js
+function Component() {}
+Component.prototype.data = {
+  count: 0,
+};
+```
+
+创建两个组件实例
+
+```js
+const componentA = new Component();
+const componentB = new Component();
+```
+
+修改 componentA 组件 data 属性的值，componentB 中的值也发生了改变
+
+```js
+console.log(componentB.data.count); // 0
+componentA.data.count = 1;
+console.log(componentB.data.count); // 1
+```
+
+产生这样的原因这是两者共用了同一个内存地址，componentA 修改的内容，同样对 componentB 产生了影响  
+如果我们采用函数的形式，则不会出现这种情况（函数返回的对象内存地址并不相同）
+
+```js
+function Component() {
+  this.data = this.data();
+}
+Component.prototype.data = function() {
+  return {
+    count: 0,
+  };
+};
+```
+
+修改 componentA 组件 data 属性的值，componentB 中的值不受影响
+
+```js
+console.log(componentB.data.count); // 0
+componentA.data.count = 1;
+console.log(componentB.data.count); // 0
+```
+
+vue 组件可能会有很多个实例，采用函数返回一个全新 data 形式，使每个实例对象的数据不会受到其他实例对象数据的污染
+
+### ajax 请求放在哪个生命周期
+
+- created，该阶段可以访问 data，但不能操作 DOM
+
+### 将组件所有 props 传递给子组件
+
+- \$props
+- `<User v-bind="$props">`
+
+### 何时使用 beforeDestroy
+
+- 解除自定义事件 event.\$off
+- 清除定时器
+- 解绑自定义的 DOM 事件，如 window.scroll 等
+
+### Vuex 中 action 和 mutation 区别
+
+- action 中处理异步，mutation 不可以
+- mutation 中做原子操作
+- action 可以整合多个 mutation
