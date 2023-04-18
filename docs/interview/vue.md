@@ -4,7 +4,7 @@
 
 ### computed 和 watch
 
-- computed 有缓存，data 不变则不会重新计算
+- computed 有缓存，data 不变则不会重新计算，可以提高性能
 - watch 监听引用类型，拿不到 oldVal；监听引用类型可以
 - watch 深度监听
 
@@ -311,3 +311,62 @@ export default {
 - H5 history 需要后端支持，访问所有路由均返回 index.html
 
 ## 面试真题
+### 为什么组件data必须是一个函数
+vue组件是一个class，使用的时候是对这个类的实例化，目的是为了防止多个组件实例对象之间共用一个data，产生数据污染。采用函数的形式，initData时会将其作为工厂函数都会返回全新data对象
+
+这里我们模仿组件构造函数，定义data属性，采用对象的形式
+```js
+function Component(){
+ 
+}
+Component.prototype.data = {
+	count : 0
+}
+```
+创建两个组件实例
+```js
+const componentA = new Component()
+const componentB = new Component()
+```
+修改componentA组件data属性的值，componentB中的值也发生了改变
+```js
+console.log(componentB.data.count)  // 0
+componentA.data.count = 1
+console.log(componentB.data.count)  // 1
+```
+产生这样的原因这是两者共用了同一个内存地址，componentA修改的内容，同样对componentB产生了影响  
+如果我们采用函数的形式，则不会出现这种情况（函数返回的对象内存地址并不相同）
+```js
+function Component(){
+	this.data = this.data()
+}
+Component.prototype.data = function (){
+  return {
+    count : 0
+  }
+}
+```
+修改componentA组件data属性的值，componentB中的值不受影响
+```js
+console.log(componentB.data.count)  // 0
+componentA.data.count = 1
+console.log(componentB.data.count)  // 0
+```
+vue组件可能会有很多个实例，采用函数返回一个全新data形式，使每个实例对象的数据不会受到其他实例对象数据的污染
+
+### ajax请求放在哪个生命周期
+- created，该阶段可以访问data，但不能操作DOM
+
+### 将组件所有props传递给子组件
+- $props
+- `<User v-bind="$props">`
+
+### 何时使用beforeDestroy
+- 解除自定义事件event.$off
+- 清除定时器
+- 解绑自定义的DOM事件，如window.scroll等
+
+### Vuex中action和mutation区别
+- action中处理异步，mutation不可以
+- mutation中做原子操作
+- action可以整合多个mutation
