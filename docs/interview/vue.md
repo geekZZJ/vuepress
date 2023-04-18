@@ -407,3 +407,30 @@ vue 组件可能会有很多个实例，采用函数返回一个全新 data 形�
 - 合理使用 keep-alive
 - data 层级不要太深
 - 使用 vue-loader 在开发环境做模板编译（预编译）
+
+## Vue3
+
+### Vue3 比 Vue2 的优势
+
+- 性能更好
+- 体积更小
+- 更好的 ts 支持
+- 更好的代码组织
+- 更好的逻辑抽离
+- 更多新功能
+
+### Vue3 生命周期
+
+- Options API 生命周期
+- Composition API 生命周期
+
+#### Options API 生命周期
+
+- beforeDestroy 改为 beforeUnmount
+- destroyed 改为 unmounted
+- 其他沿用 Vue2 的生命周期
+
+#### Composition API 生命周期
+
+- setup 相当于 beforeCreate 和 created
+- onBeforeMount、onMounted、onBeforeUpdate、onUpdated、onBeforeUnmount、onUnmounted
