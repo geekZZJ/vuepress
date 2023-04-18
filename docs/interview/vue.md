@@ -309,3 +309,15 @@ export default {
 - history.pushState
 - window.onpopstate
 - H5 history 需要后端支持，访问所有路由均返回 index.html
+
+### v-for 中使用 key
+
+- 必须用 key，且不能是 index 和 random
+- diff 算法中通过 tag 和 key 来判断，是否是 sameNode
+- 减少渲染次数，提升渲染性能
+
+### 组件间通信
+
+- 父子组件 props 和\$emit
+- 自定义事件 event.$on event.$off event.\$emit
+- vuex
