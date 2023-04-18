@@ -396,3 +396,14 @@ vue 组件可能会有很多个实例，采用函数返回一个全新 data 形�
 - action 中处理异步，mutation 不可以
 - mutation 中做原子操作
 - action 可以整合多个 mutation
+
+### Vue 常见性能优化方式
+
+- 合理使用 v-show 和 v-if
+- 合理使用 computed
+- v-for 时加 key，以及避免和 v-if 同时使用
+- 自定义事件、DOM 事件及时销毁
+- 合理使用异步组件
+- 合理使用 keep-alive
+- data 层级不要太深
+- 使用 vue-loader 在开发环境做模板编译（预编译）
