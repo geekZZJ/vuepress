@@ -434,3 +434,6 @@ vue 组件可能会有很多个实例，采用函数返回一个全新 data 形�
 
 - setup 相当于 beforeCreate 和 created
 - onBeforeMount、onMounted、onBeforeUpdate、onUpdated、onBeforeUnmount、onUnmounted
+
+
+### 如何理解Composition API
