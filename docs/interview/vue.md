@@ -435,5 +435,82 @@ vue 组件可能会有很多个实例，采用函数返回一个全新 data 形�
 - setup 相当于 beforeCreate 和 created
 - onBeforeMount、onMounted、onBeforeUpdate、onUpdated、onBeforeUnmount、onUnmounted
 
+### 如何理解 ref toRef 和 toRefs
 
-### 如何理解Composition API
+#### ref
+
+- 生成值类型的响应式数据
+- 可用于模板和 reactive
+- 通过.valuie 修改值
+
+#### toRef
+
+- 针对一个响应式对象（reactive 封装）的属性
+- 创建一个 ref，具有响应式
+- 两者保持引用关系
+
+```js
+setup() {
+  const state = reactive({
+    age: 20,
+    name: "test",
+  });
+  const ageRef = toRef(state, "age");
+  setTimeout(() => {
+    state.age = 25;
+  }, 1500);
+  setTimeout(() => {
+    ageRef.value = 30;
+  }, 3000);
+  return {
+    ageRef,
+    state,
+  };
+},
+```
+
+#### toRefs
+
+- 将响应式对象（reactive 封装）转换为普通对象
+- 对象的每个属性都是对应的 ref
+- 两者保持引用关系
+
+```js
+setup() {
+  // 直接解构state会失去响应式
+  const state = reactive({
+    age: 20,
+    name: "test",
+  });
+  // 将响应式对象变成普通对象
+  // 对象的每个属性都是ref对象
+  const stateAsRefs = toRefs(state);
+
+  setTimeout(() => {
+    state.age = 25;
+  }, 1500);
+
+  return {
+    ...stateAsRefs,
+  };
+},
+```
+
+#### ref toRef toRefs 最佳使用方式
+
+- 用 reactive 做对象的响应式，用 ref 做值类型响应式
+- setup 中返回 toRets(state)，或者 toRef(state,'XXX')
+- ref 的变量命名都用 xxxRef
+- 合成函数返回响应式对象时 ，使用 toRets
+
+### 为何需要 ref
+
+- 返回值类型，会丟失响应式
+- 如在 setup、computed、合成函数，都有可能返回值类型
+- vue 如不定义 ref，用户将自造 ref，反而混乱
+
+### 为何需要.value
+
+- ref 是一个对象（不丢失响应式），value 存储值
+- 通过 .value 厲性的 get 和 set 实现响应式
+- 用于模板、reactive 时，不需要 .value，其他情况都需要
