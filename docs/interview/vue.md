@@ -444,3 +444,14 @@ Vue 组件可能会有很多个实例，采用函数返回一个全新 data 形�
 - 注意：不创造响应式，而是延续响应式
 
 ### Vue3升级了哪些重要功能
+- createApp
+- emits属性
+- 生命周期
+- 多事件
+- Fragment
+- 移除.sync
+- 异步组件的写法
+- 移除filter
+- Teleport
+- Suspense
+- Composition API
