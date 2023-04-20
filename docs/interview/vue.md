@@ -527,6 +527,26 @@ setup() {
 - emits 属性
 - 生命周期
 - 多事件
+
+```js
+<button @click="handleMulEvent1($event), handleMulEvent2()">多事件</button>
+
+setup(props, { emit }) {
+  const handleMulEvent1 = (e) => {
+    console.log("111111", e);
+  };
+
+  const handleMulEvent2 = () => {
+    console.log("222222");
+  };
+
+  return {
+    handleMulEvent1,
+    handleMulEvent2,
+  };
+},
+```
+
 - Fragment
 - 移除.sync
 - 异步组件的写法
@@ -534,3 +554,36 @@ setup() {
 - Teleport
 - Suspense
 - Composition API
+
+### Composition API 实现逻辑复用
+
+- 抽离逻辑代码到一个函数
+- 函数命名约定为 useXxxx 格式（React Hooks 也是）
+- 在 setup 中引用 useXxx 函数
+
+```js
+import { onMounted, onUnmounted, ref } from "vue";
+function useMousePosition() {
+  const x = ref(0);
+  const y = ref(0);
+  function update(e) {
+    x.value = e.pageX;
+    y.value = e.pageY;
+  }
+
+  onMounted(() => {
+    window.addEventListener("mousemove", update);
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener("mousemove", update);
+  });
+  return { x, y };
+}
+
+export default useMousePosition;
+```
+
+### Vue3 如何实现响应式
+
+#### Proxy 实现响应式
