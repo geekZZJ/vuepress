@@ -187,7 +187,7 @@ export default {
 
 - 缓存组件
 - 频繁切换，不需要重复渲染
-- vue 常见性能优化
+- Vue 常见性能优化
 
 ```js
 <keep-alive>
@@ -267,7 +267,7 @@ export default {
 - 基于 vnode 再执行 patch 和 diff
 - 使用 webpack vue-loader，会在开发环境下编译模板
 
-### vue 渲染和更新
+### Vue 渲染和更新
 
 #### 初次渲染过程
 
@@ -322,11 +322,11 @@ export default {
 
 - 父子组件 props 和\$emit
 - 自定义事件 event.$on event.$off event.\$emit
-- vuex
+- Vuex
 
 ### 为什么组件 data 必须是一个函数
 
-vue 组件是一个 class，使用的时候是对这个类的实例化，目的是为了防止多个组件实例对象之间共用一个 data，产生数据污染。采用函数的形式，initData 时会将其作为工厂函数都会返回全新 data 对象
+Vue 组件是一个 class，使用的时候是对这个类的实例化，目的是为了防止多个组件实例对象之间共用一个 data，产生数据污染。采用函数的形式，initData 时会将其作为工厂函数都会返回全新 data 对象
 
 这里我们模仿组件构造函数，定义 data 属性，采用对象的形式
 
@@ -374,7 +374,7 @@ componentA.data.count = 1;
 console.log(componentB.data.count); // 0
 ```
 
-vue 组件可能会有很多个实例，采用函数返回一个全新 data 形式，使每个实例对象的数据不会受到其他实例对象数据的污染
+Vue 组件可能会有很多个实例，采用函数返回一个全新 data 形式，使每个实例对象的数据不会受到其他实例对象数据的污染
 
 ### ajax 请求放在哪个生命周期
 
@@ -437,3 +437,10 @@ vue 组件可能会有很多个实例，采用函数返回一个全新 data 形�
 
 
 ### 如何理解Composition API
+
+### 为何需要toRef和toRefs
+- 初衷：不丢失响应式的情况下，把对象数据分解/扩散
+- 前提：针对的是响应式对象（reactive封装的）非普通对象
+- 注意：不创造响应式，而是延续响应式
+
+### Vue3升级了哪些重要功能
