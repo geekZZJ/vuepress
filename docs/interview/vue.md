@@ -586,4 +586,35 @@ export default useMousePosition;
 
 ### Vue3 如何实现响应式
 
-#### Proxy 实现响应式
+#### Proxy 基本使用
+
+```js
+const data = {
+  name: "zzj",
+  age: 12,
+};
+
+const proxyData = new Proxy(data, {
+  get(target, key, receiver) {
+    const result = Reflect.get(target, key, receiver);
+    console.log("get", key);
+    console.log("result", result);
+    // 返回结果
+    return result;
+  },
+  set(target, key, val, receiver) {
+    const result = Reflect.set(target, key, val, receiver);
+    console.log("set", key, val);
+    console.log("result", result);
+    // 是否设置成功
+    return result;
+  },
+  deleteProperty(target, key) {
+    const result = Reflect.deleteProperty(target, key);
+    console.log("delete", key);
+    console.log("result", result);
+    // 是否删除成功
+    return result;
+  },
+});
+```
