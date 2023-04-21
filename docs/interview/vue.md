@@ -82,7 +82,7 @@ beforeDestroy() {
 - beforeDestroy
 - destroyed
 
-![生命周期](/vue/lifecycle.png "生命周期")
+![生命周期](/vue/lifecycle.png '生命周期')
 
 > mounted 和 created 的区别
 > created：在模板渲染成 html 前调用，即通常初始化某些属性值，然后再渲染成视图
@@ -167,7 +167,7 @@ export default {
 
 #### 具名插槽
 
-![具名插槽](/vue/1.png "具名插槽")
+![具名插槽](/vue/1.png '具名插槽')
 
 ### 动态组件
 
@@ -209,7 +209,7 @@ export default {
 
 ### Vuex
 
-![Vuex](/vue/vuex.png "Vuex")
+![Vuex](/vue/vuex.png 'Vuex')
 
 ### Vue-router
 
@@ -223,7 +223,7 @@ export default {
 #### 数据驱动视图
 
 - Vue:MVVM
-  ![MVVM](/vue/MVVM.png "MVVM")
+  ![MVVM](/vue/MVVM.png 'MVVM')
 - React:setState
 
 ### Vue 响应式
@@ -231,7 +231,7 @@ export default {
 - 组件 data 的数据一旦变化，立刻触发视图的更新
 - 实现数据驱动视图的第一步
 - 核心 API - Object.defineProperty
-  ![defineProperty](/vue/defineProperty.png "defineProperty")
+  ![defineProperty](/vue/defineProperty.png 'defineProperty')
 
 #### defineProperty 缺点
 
@@ -253,7 +253,7 @@ export default {
 - tag 不相同，则直接删掉重建，不再深度比较
 - tag 和 key，两者都相同，则认为是相同节点，不再深度比较
 
-![tag不同](/vue/diff1.png "tag不同")
+![tag不同](/vue/diff1.png 'tag不同')
 
 **snabbdom 中的重要方法**
 
@@ -281,7 +281,7 @@ export default {
 - 重新执行 render 函数，生成 newVnode
 - patch(vnode, newVnode)
 
-![vue渲染更新过程](/vue/2.png "vue渲染更新过程")
+![vue渲染更新过程](/vue/2.png 'vue渲染更新过程')
 
 ### 异步渲染
 
@@ -334,22 +334,22 @@ Vue 组件是一个 class，使用的时候是对这个类的实例化，目的�
 function Component() {}
 Component.prototype.data = {
   count: 0,
-};
+}
 ```
 
 创建两个组件实例
 
 ```js
-const componentA = new Component();
-const componentB = new Component();
+const componentA = new Component()
+const componentB = new Component()
 ```
 
 修改 componentA 组件 data 属性的值，componentB 中的值也发生了改变
 
 ```js
-console.log(componentB.data.count); // 0
-componentA.data.count = 1;
-console.log(componentB.data.count); // 1
+console.log(componentB.data.count) // 0
+componentA.data.count = 1
+console.log(componentB.data.count) // 1
 ```
 
 产生这样的原因这是两者共用了同一个内存地址，componentA 修改的内容，同样对 componentB 产生了影响  
@@ -357,21 +357,21 @@ console.log(componentB.data.count); // 1
 
 ```js
 function Component() {
-  this.data = this.data();
+  this.data = this.data()
 }
 Component.prototype.data = function() {
   return {
     count: 0,
-  };
-};
+  }
+}
 ```
 
 修改 componentA 组件 data 属性的值，componentB 中的值不受影响
 
 ```js
-console.log(componentB.data.count); // 0
-componentA.data.count = 1;
-console.log(componentB.data.count); // 0
+console.log(componentB.data.count) // 0
+componentA.data.count = 1
+console.log(componentB.data.count) // 0
 ```
 
 Vue 组件可能会有很多个实例，采用函数返回一个全新 data 形式，使每个实例对象的数据不会受到其他实例对象数据的污染
@@ -534,3 +534,36 @@ setup() {
 - Teleport
 - Suspense
 - Composition API
+
+### Proxy 基本使用
+
+```js
+const data = {
+  name: 'zzj',
+  age: 12,
+}
+
+const proxyData = new Proxy(data, {
+  get(target, key, receiver) {
+    const result = Reflect.get(target, key, receiver)
+    console.log('get', key)
+    console.log('result', result)
+    // 返回结果
+    return result
+  },
+  set(target, key, val, receiver) {
+    const result = Reflect.set(target, key, val, receiver)
+    console.log('set', key, val)
+    console.log('result', result)
+    // 是否设置成功
+    return result
+  },
+  deleteProperty(target, key) {
+    const result = Reflect.deleteProperty(target, key)
+    console.log('delete', key)
+    console.log('result', result)
+    // 是否删除成功
+    return result
+  },
+})
+```
