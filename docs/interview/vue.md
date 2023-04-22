@@ -681,3 +681,230 @@ function reactive(target = {}) {
 - 深度监听，性能更好（使用到时再进行递归）
 - 可监听 新增/删除 属性
 - 可监听数组变化
+
+### watch 和 watchEffect 的区别
+
+- 两者都可监听 data 属性变化
+- watch 需要明确监听哪个属性
+- watchEffect 会根据其中的属性，自动监听其变化
+- watchEffect 初始化时一定会执行一次
+
+### setup 中如何获取组件实例
+
+- 在 setup 和其他 Composition API 中没有 this
+- 可通过 getCurrentInstance 获取当前实例
+
+### Vue3 为何比 Vue2 快
+
+- Proxy 响应式
+- PatchFlag
+- hoistStatic
+- cacheHandler
+- SSR 优化
+- tree-shaking
+
+#### PatchFlag
+
+- 编泽模板时，动态节点做标记
+- 标记 ，分为不同的类型，如 TEXT PROPS
+- diff 算法时，可以区分静态节点，以及不同类型的动态节点
+
+[PatchFlag 体验](https://template-explorer.vuejs.org/ "PatchFlag体验")
+![diff算法优化](/vue/PatchFlag.png "diff算法优化")
+
+```html
+<div>
+  <span>Hello World1</span>
+  <span>Hello World1</span>
+  <span>Hello World1</span>
+  <span>{{msg}}</span>
+</div>
+```
+
+模版编译后
+
+```js
+import {
+  createElementVNode as _createElementVNode,
+  toDisplayString as _toDisplayString,
+  openBlock as _openBlock,
+  createElementBlock as _createElementBlock,
+} from "vue";
+
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (
+    _openBlock(),
+    _createElementBlock("div", null, [
+      // 静态节点
+      _createElementVNode("span", null, "Hello World1"),
+      _createElementVNode("span", null, "Hello World1"),
+      _createElementVNode("span", null, "Hello World1"),
+      // 动态节点，并做标记 1
+      _createElementVNode(
+        "span",
+        null,
+        _toDisplayString(_ctx.msg),
+        1 /* TEXT */
+      ),
+    ])
+  );
+}
+```
+
+#### hoistStatic
+
+- 将静态节点的定义，提升到父作用域，缓存起来
+- 多个相邻的静态节点 ，会被合并起来
+- 典型的拿空间换时间的优化策略
+
+```html
+<div>
+  <span>Hello World1</span>
+  <span>Hello World1</span>
+  <span>Hello World1</span>
+  <span>{{msg}}</span>
+</div>
+```
+
+开启 hoistStatic，模版编译后
+
+```js
+import {
+  createElementVNode as _createElementVNode,
+  toDisplayString as _toDisplayString,
+  openBlock as _openBlock,
+  createElementBlock as _createElementBlock,
+} from "vue";
+
+// 静态节点的定义，提升到父作用域，缓存起来
+const _hoisted_1 = /*#__PURE__*/ _createElementVNode(
+  "span",
+  null,
+  "Hello World1",
+  -1 /* HOISTED */
+);
+const _hoisted_2 = /*#__PURE__*/ _createElementVNode(
+  "span",
+  null,
+  "Hello World1",
+  -1 /* HOISTED */
+);
+const _hoisted_3 = /*#__PURE__*/ _createElementVNode(
+  "span",
+  null,
+  "Hello World1",
+  -1 /* HOISTED */
+);
+
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (
+    _openBlock(),
+    _createElementBlock("div", null, [
+      _hoisted_1,
+      _hoisted_2,
+      _hoisted_3,
+      _createElementVNode(
+        "span",
+        null,
+        _toDisplayString(_ctx.msg),
+        1 /* TEXT */
+      ),
+    ])
+  );
+}
+```
+
+#### cacheHandler
+
+缓存事件
+
+```html
+<div>
+  <span @click="handleClick">Hello World1</span>
+  <span>{{msg}}</span>
+</div>
+```
+
+开启 cacheHandler，模版编译后
+
+```js
+import {
+  createElementVNode as _createElementVNode,
+  toDisplayString as _toDisplayString,
+  openBlock as _openBlock,
+  createElementBlock as _createElementBlock,
+} from "vue";
+
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (
+    _openBlock(),
+    _createElementBlock("div", null, [
+      _createElementVNode(
+        "span",
+        {
+          onClick:
+            // 开启cacheHandler效果，有缓存取缓存
+            _cache[0] ||
+            (_cache[0] = (...args) =>
+              _ctx.handleClick && _ctx.handleClick(...args)),
+        },
+        "Hello World1"
+      ),
+      _createElementVNode(
+        "span",
+        null,
+        _toDisplayString(_ctx.msg),
+        1 /* TEXT */
+      ),
+    ])
+  );
+}
+```
+
+#### SSR 优化
+
+- 静态节点直接输出 ，绕过了 vdom
+- 动态节点，还是需要动态渲染
+
+```html
+<div>
+  <span>Hello World1</span>
+  <span>Hello World1</span>
+  <span>Hello World1</span>
+  <span>{{msg}}</span>
+</div>
+```
+
+开启 SSR 优化，模版编译后
+
+```js
+import { mergeProps as _mergeProps } from "vue";
+import {
+  ssrRenderAttrs as _ssrRenderAttrs,
+  ssrInterpolate as _ssrInterpolate,
+} from "vue/server-renderer";
+
+export function ssrRender(
+  _ctx,
+  _push,
+  _parent,
+  _attrs,
+  $props,
+  $setup,
+  $data,
+  $options
+) {
+  const _cssVars = { style: { color: _ctx.color } };
+  _push(
+    `<div${_ssrRenderAttrs(
+      _mergeProps(_attrs, _cssVars)
+    )}><span>Hello World1</span><span>Hello World1</span><span>Hello World1</span><span>${_ssrInterpolate(
+      _ctx.msg
+    )}</span></div>`
+  );
+}
+```
+
+#### tree shaking
+
+- 编译时，根据不同的情况，引入不同的 API
