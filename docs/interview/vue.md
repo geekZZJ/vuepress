@@ -233,6 +233,55 @@ export default {
 - 核心 API - Object.defineProperty
   ![defineProperty](/vue/defineProperty.png "defineProperty")
 
+实现代码：
+
+```js
+function updateView() {
+  console.log("视图更新");
+}
+
+// 重新定义数组原型
+const oldArrayProperty = Array.prototype;
+// 创建新对象，原型指向oldArrayProperty
+const arrProto = Object.create(oldArrayProperty);
+["push", "pop", "shift", "unshift", "splice"].forEach((methodName) => {
+  arrProto[methodname] = function() {
+    updateView();
+    oldArrayProperty[methodName].call(this, ...arguments);
+  };
+});
+
+function defineReactive(target, key, value) {
+  // 深度监听
+  observer(value);
+  Object.defineProperty(target, key, {
+    get() {
+      return value;
+    },
+    set(newVal) {
+      if (newVal !== value) {
+        // 设置新值需要深度监听
+        observer(newVal);
+        value = newVal;
+        updateView();
+      }
+    },
+  });
+}
+
+function observer(target) {
+  if (typeof target !== "object" || target === null) {
+    return target;
+  }
+  if (Array.isArray(target)) {
+    target.__proto__ = arrProto;
+  }
+  for (let key in target) {
+    defineReactive(target, key, target[key]);
+  }
+}
+```
+
 #### defineProperty 缺点
 
 - 深度监听，需要递归到底，一次性计算量大
