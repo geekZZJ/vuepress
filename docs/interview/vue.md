@@ -596,13 +596,18 @@ const data = {
 
 const proxyData = new Proxy(data, {
   get(target, key, receiver) {
+    // 原型的属性不处理
+    const ownKeys = Reflect.ownKeys(target);
+    // 只处理本身的属性
+    if (ownKeys.includes(key)) {
+      console.log("get", key);
+    }
     const result = Reflect.get(target, key, receiver);
-    console.log("get", key);
-    console.log("result", result);
     // 返回结果
     return result;
   },
   set(target, key, val, receiver) {
+    if (val === target[key]) return true;
     const result = Reflect.set(target, key, val, receiver);
     console.log("set", key, val);
     console.log("result", result);
@@ -618,3 +623,61 @@ const proxyData = new Proxy(data, {
   },
 });
 ```
+
+#### Reflect 作用
+
+- 和 Proxy 能力一一对应
+- 规范化、标准化、函数式
+- 替代掉 Object 上的工具函数
+
+#### Proxy 实现响应式
+
+```js
+function reactive(target = {}) {
+  if (typeof target !== "object" || target === null) {
+    // 不是对象或数组，直接返回
+    return target;
+  }
+
+  const proxyConf = {
+    get(target, key, receiver) {
+      // 原型的属性不处理
+      const ownKeys = Reflect.ownKeys(target);
+      // 只处理本身的属性
+      if (ownKeys.includes(key)) {
+        console.log("get", key);
+      }
+      const result = Reflect.get(target, key, receiver);
+      // 深度监听
+      return reactive(result);
+    },
+    set(target, key, val, receiver) {
+      // 重复的数据不处理
+      if (val === target[key]) return true;
+      const ownKeys = Reflect.ownKeys(target);
+      if (ownKeys.includes(key)) {
+        console.log("已有的key");
+      } else {
+        console.log("新增的key");
+      }
+      const result = Reflect.set(target, key, val, receiver);
+      console.log("set", key, val);
+      // 是否设置成功
+      return result;
+    },
+    deleteProperty(target, key) {
+      const result = Reflect.deleteProperty(target, key);
+      console.log("delete", key);
+      // 是否删除成功
+      return result;
+    },
+  };
+
+  const observed = new Proxy(target, proxyConf);
+  return observed;
+}
+```
+
+- 深度监听，性能更好（使用到时再进行递归）
+- 可监听 新增/删除 属性
+- 可监听数组变化
