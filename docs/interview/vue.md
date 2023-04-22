@@ -908,3 +908,15 @@ export function ssrRender(
 #### tree shaking
 
 - 编译时，根据不同的情况，引入不同的 API
+
+### Vite 为何启动快
+
+- 开发环境使用 ES6 Module，无需打包——非常快
+- 生产环境使用 rollup，并不会快很多
+
+### Composition API 和 React Hooks 对比
+
+- 前者 setup 只会被调用一次，而后者函数会被多次调用
+- 前者无需 useMemo useCallback，因为 setup 只调用一次
+- 前者无需顾虑调用顺序，而后者需要保证 hooks 的顺序一致
+- 前者 reactive + ref 比后者 useState 要难理解
