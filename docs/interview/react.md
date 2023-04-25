@@ -3,13 +3,13 @@
 ## 事件
 
 ```js
-<div onClick={this.handleClick}>点击</div>;
+;<div onClick={this.handleClick}>点击</div>
 
 handleClick = (event) => {
-  console.log("event", event);
-  console.log(event.nativeEvent.target); // 触发事件的div元素
-  console.log(event.nativeEvent.currentTarget); // react17后绑定到root组件上
-};
+  console.log('event', event)
+  console.log(event.nativeEvent.target) // 触发事件的div元素
+  console.log(event.nativeEvent.currentTarget) // react17后绑定到root组件上
+}
 ```
 
 ## 表单
@@ -28,38 +28,38 @@ handleClick = (event) => {
 // 传入对象会被合并，执行结果只+1
 this.setState({
   count: this.state.count + 1,
-});
+})
 this.setState({
   count: this.state.count + 1,
-});
+})
 this.setState({
   count: this.state.count + 1,
-});
+})
 
 // 传入函数不会被合并，执行结果+3
 this.setState((prevState) => {
   // prevState为上次的值
   return {
     count: prevState.count + 1,
-  };
-});
+  }
+})
 this.setState((prevState) => {
   return {
     count: prevState.count + 1,
-  };
-});
+  }
+})
 this.setState((prevState) => {
   return {
     count: prevState.count + 1,
-  };
-});
+  }
+})
 ```
 
 ## 生命周期
 
 ### 单组件生命周期
 
-![常用生命周期](/react/lifecycle.png "常用生命周期")
+![常用生命周期](/react/lifecycle.png '常用生命周期')
 
 ### 父子组件生命周期
 
@@ -138,14 +138,14 @@ alertName = () => {
 ### context
 
 ```js
-const ThemeContext = React.createContext("light");
+const ThemeContext = React.createContext('light')
 
 // class组件使用方式
 class ThemeButton extends React.Component {
-  static contextType = ThemeContext;
+  static contextType = ThemeContext
   render() {
-    const theme = this.context;
-    return <div>button theme is {theme}</div>;
+    const theme = this.context
+    return <div>button theme is {theme}</div>
   }
 }
 
@@ -155,7 +155,7 @@ function ThemeLink() {
     <ThemeContext.Consumer>
       {(value) => <p>link theme is {value}</p>}
     </ThemeContext.Consumer>
-  );
+  )
 }
 
 function ToolBar() {
@@ -164,15 +164,15 @@ function ToolBar() {
       <ThemeButton></ThemeButton>
       <ThemeLink></ThemeLink>
     </div>
-  );
+  )
 }
 
 class ContextDemo extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      theme: "light",
-    };
+      theme: 'light',
+    }
   }
   render() {
     return (
@@ -181,13 +181,19 @@ class ContextDemo extends React.Component {
         <hr />
         <button onClick={this.changeTheme}>change theme</button>
       </ThemeContext.Provider>
-    );
+    )
   }
 
   changeTheme = () => {
     this.setState({
-      theme: this.state.theme === "light" ? "dark" : "light",
-    });
-  };
+      theme: this.state.theme === 'light' ? 'dark' : 'light',
+    })
+  }
 }
 ```
+
+### 异步组件
+
+- import
+- lazy
+- Suspense
