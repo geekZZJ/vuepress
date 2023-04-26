@@ -210,8 +210,33 @@ class ContextDemo extends React.Component {
 - reducer -> newState
 - subscribe 触发通知
 
-## React Redux
+### React Redux
 
 - Provider
 - connect
 - mapStateToProps 和 mapDispatchToProps
+
+### action
+
+- 同步 action
+
+```js
+export const addTodo = (text) => ({
+  type: 'ADD_TODO',
+  id: nextTodoId++,
+  text,
+})
+```
+
+- 异步 action（返回一个函数）
+
+```js
+export const addTodoAsync = (text) => {
+  return (dispatch) => {
+    fetch(url).then((res) => {
+      // 执行异步action
+      dispatch(addTodo(res.text))
+    })
+  }
+}
+```
