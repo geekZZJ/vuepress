@@ -240,3 +240,7 @@ export const addTodoAsync = (text) => {
   }
 }
 ```
+
+1. redux-thunk
+2. redux-promise
+3. redux-saga
