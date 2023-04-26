@@ -197,3 +197,21 @@ class ContextDemo extends React.Component {
 - import
 - lazy
 - Suspense
+
+## Redux
+
+- store state
+- action
+- reducer
+
+### 单向数据流概述
+
+- dispatch(action)
+- reducer -> newState
+- subscribe 触发通知
+
+## React Redux
+
+- Provider
+- connect
+- mapStateToProps 和 mapDispatchToProps
