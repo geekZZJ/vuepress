@@ -318,3 +318,50 @@ memo，函数组件中的 PureComponent
 - 彻底拥抱“不可变值”
 - 基于共享数据（不是深拷贝），速度快
 - 有一定学习和迁移成本，按需使用
+
+## Redux
+
+- store state
+- action
+- reducer
+
+### 单向数据流概述
+
+- dispatch(action)
+- reducer -> newState
+- subscribe 触发通知
+
+### React Redux
+
+- Provider
+- connect
+- mapStateToProps 和 mapDispatchToProps
+
+### action
+
+- 同步 action
+
+```js
+export const addTodo = (text) => ({
+  type: "ADD_TODO",
+  id: nextTodoId++,
+  text,
+});
+```
+
+- 异步 action（返回一个函数）
+
+```js
+export const addTodoAsync = (text) => {
+  return (dispatch) => {
+    fetch(url).then((res) => {
+      // 执行异步action
+      dispatch(addTodo(res.text));
+    });
+  };
+};
+```
+
+1. redux-thunk
+2. redux-promise
+3. redux-saga
