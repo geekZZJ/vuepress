@@ -331,6 +331,8 @@ memo，函数组件中的 PureComponent
 - reducer -> newState
 - subscribe 触发通知
 
+![redux单向数据流](/react/redux.png "redux单向数据流")
+
 ### React Redux
 
 - Provider
@@ -365,3 +367,54 @@ export const addTodoAsync = (text) => {
 1. redux-thunk
 2. redux-promise
 3. redux-saga
+
+### Redux 中间件
+
+![redux中间件](/react/middleware.png "redux中间件")
+
+## React 原理
+
+- 函数式编程
+- vdom 和 diff
+- JSX 本质
+- 合成事件
+- setState batchUpdate
+- 组件渲染过程
+
+### 函数式编程
+
+- 纯函数
+- 不可变值
+
+### vdom 和 diff
+
+- h 函数
+- vnode 数据结构
+- patch 函数
+- 只比较同一层级，不跨级比较
+- tag 不相同，则直接删掉重建 ，不再深度比较
+- tag 和 key ，两者都相同，则认为是相同节点，不再深度比较
+
+### 合成事件
+
+- 所有事件挂载到 root 上
+- event 不是原生的，是 SyntheticEvent 合成事件对象
+- 和 Vue 事件不同，和 DOM 事件也不同
+
+![合成事件](/react/synthesis.png "合成事件")
+
+> 为何要合成事件机制
+
+- 更好的兼容性和跨平台
+- 挂载到 document，减少内存消耗，避免频繁解绑
+- 方便事件的统一管理（如事务机制）
+
+### setState 和 batchUpdate
+
+![batchUpdate](/react/batchUpdate.png "batchUpdate")
+
+> 哪些能命中 batchUpdate 机制
+
+- 生命周期（和它调用的函数）
+- React 中注册的事件（和它调用的函数）
+- React 可以“管理”的入口
