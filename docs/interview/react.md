@@ -3,13 +3,13 @@
 ## 事件
 
 ```js
-;<div onClick={this.handleClick}>点击</div>
+<div onClick={this.handleClick}>点击</div>;
 
 handleClick = (event) => {
-  console.log('event', event)
-  console.log(event.nativeEvent.target) // 触发事件的div元素
-  console.log(event.nativeEvent.currentTarget) // react17后绑定到root组件上
-}
+  console.log("event", event);
+  console.log(event.nativeEvent.target); // 触发事件的div元素
+  console.log(event.nativeEvent.currentTarget); // react17后绑定到root组件上
+};
 ```
 
 ## 表单
@@ -28,38 +28,38 @@ handleClick = (event) => {
 // 传入对象会被合并，执行结果只+1
 this.setState({
   count: this.state.count + 1,
-})
+});
 this.setState({
   count: this.state.count + 1,
-})
+});
 this.setState({
   count: this.state.count + 1,
-})
+});
 
 // 传入函数不会被合并，执行结果+3
 this.setState((prevState) => {
   // prevState为上次的值
   return {
     count: prevState.count + 1,
-  }
-})
+  };
+});
 this.setState((prevState) => {
   return {
     count: prevState.count + 1,
-  }
-})
+  };
+});
 this.setState((prevState) => {
   return {
     count: prevState.count + 1,
-  }
-})
+  };
+});
 ```
 
 ## 生命周期
 
 ### 单组件生命周期
 
-![常用生命周期](/react/lifecycle.png '常用生命周期')
+![常用生命周期](/react/lifecycle.png "常用生命周期")
 
 ### 父子组件生命周期
 
@@ -138,14 +138,14 @@ alertName = () => {
 ### context
 
 ```js
-const ThemeContext = React.createContext('light')
+const ThemeContext = React.createContext("light");
 
 // class组件使用方式
 class ThemeButton extends React.Component {
-  static contextType = ThemeContext
+  static contextType = ThemeContext;
   render() {
-    const theme = this.context
-    return <div>button theme is {theme}</div>
+    const theme = this.context;
+    return <div>button theme is {theme}</div>;
   }
 }
 
@@ -155,7 +155,7 @@ function ThemeLink() {
     <ThemeContext.Consumer>
       {(value) => <p>link theme is {value}</p>}
     </ThemeContext.Consumer>
-  )
+  );
 }
 
 function ToolBar() {
@@ -164,15 +164,15 @@ function ToolBar() {
       <ThemeButton></ThemeButton>
       <ThemeLink></ThemeLink>
     </div>
-  )
+  );
 }
 
 class ContextDemo extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      theme: 'light',
-    }
+      theme: "light",
+    };
   }
   render() {
     return (
@@ -181,14 +181,14 @@ class ContextDemo extends React.Component {
         <hr />
         <button onClick={this.changeTheme}>change theme</button>
       </ThemeContext.Provider>
-    )
+    );
   }
 
   changeTheme = () => {
     this.setState({
-      theme: this.state.theme === 'light' ? 'dark' : 'light',
-    })
-  }
+      theme: this.state.theme === "light" ? "dark" : "light",
+    });
+  };
 }
 ```
 
@@ -217,30 +217,30 @@ render() {
 const withMouse = (Component) => {
   class withMouseComponent extends React.Component {
     constructor(props) {
-      super(props)
+      super(props);
       this.state = {
         x: 0,
         y: 0,
-      }
+      };
     }
     // 公共组件
     handleMouseMove = (event) => {
       this.setState({
         x: event.clientX,
         y: event.clientY,
-      })
-    }
+      });
+    };
     render() {
       return (
-        <div style={{ height: '500px' }} onMouseMove={this.handleMouseMove}>
+        <div style={{ height: "500px" }} onMouseMove={this.handleMouseMove}>
           {/* 1. 透传所有 props 2. 增加 mouse 属性 */}
           <Component {...this.props} mouse={this.state}></Component>
         </div>
-      )
+      );
     }
   }
-  return withMouseComponent
-}
+  return withMouseComponent;
+};
 ```
 
 redux connect 是高阶组件
@@ -248,27 +248,27 @@ redux connect 是高阶组件
 ### Render Props
 
 ```js
-import React from 'react'
+import React from "react";
 
 class Mouse extends React.Component {
   constructor(props) {
-    super(props)
-    this.state = { x: 0, y: 0 }
+    super(props);
+    this.state = { x: 0, y: 0 };
   }
 
   handleMouseMove = (event) => {
     this.setState({
       x: event.clientX,
       y: event.clientY,
-    })
-  }
+    });
+  };
 
   render() {
     return (
-      <div style={{ height: '500px' }} onMouseMove={this.handleMouseMove}>
+      <div style={{ height: "500px" }} onMouseMove={this.handleMouseMove}>
         {this.props.render(this.state)}
       </div>
-    )
+    );
   }
 }
 
@@ -281,10 +281,10 @@ const App = () => {
         </h1>
       )}
     ></Mouse>
-  )
-}
+  );
+};
 
-export default App
+export default App;
 ```
 
 ## 性能优化
@@ -295,7 +295,7 @@ export default App
 
 ### shouldComponentUpdate
 
-![SCU基本用法](/react/scu.png 'SCU基本用法')
+![SCU基本用法](/react/scu.png "SCU基本用法")
 
 **React 默认：父组件有更新，子组件也无条件更新**
 
@@ -331,7 +331,7 @@ memo，函数组件中的 PureComponent
 - reducer -> newState
 - subscribe 触发通知
 
-![redux单向数据流](/react/redux.png 'redux单向数据流')
+![redux单向数据流](/react/redux.png "redux单向数据流")
 
 ### React Redux
 
@@ -345,10 +345,10 @@ memo，函数组件中的 PureComponent
 
 ```js
 export const addTodo = (text) => ({
-  type: 'ADD_TODO',
+  type: "ADD_TODO",
   id: nextTodoId++,
   text,
-})
+});
 ```
 
 - 异步 action（返回一个函数）
@@ -358,10 +358,10 @@ export const addTodoAsync = (text) => {
   return (dispatch) => {
     fetch(url).then((res) => {
       // 执行异步action
-      dispatch(addTodo(res.text))
-    })
-  }
-}
+      dispatch(addTodo(res.text));
+    });
+  };
+};
 ```
 
 1. redux-thunk
@@ -370,7 +370,7 @@ export const addTodoAsync = (text) => {
 
 ### Redux 中间件
 
-![redux中间件](/react/middleware.png 'redux中间件')
+![redux中间件](/react/middleware.png "redux中间件")
 
 ## React 原理
 
@@ -397,7 +397,8 @@ export const addTodoAsync = (text) => {
 
 ### JSX 本质
 
-本质即 createElement 函数
+- 本质即 createElement 函数
+- 执行返回 vnode
 
 ### 合成事件
 
@@ -405,7 +406,7 @@ export const addTodoAsync = (text) => {
 - event 不是原生的，是 SyntheticEvent 合成事件对象
 - 和 Vue 事件不同，和 DOM 事件也不同
 
-![合成事件](/react/synthesis.png '合成事件')
+![合成事件](/react/synthesis.png "合成事件")
 
 > 为何要合成事件机制
 
@@ -415,7 +416,7 @@ export const addTodoAsync = (text) => {
 
 ### setState 和 batchUpdate
 
-![batchUpdate](/react/batchUpdate.png 'batchUpdate')
+![batchUpdate](/react/batchUpdate.png "batchUpdate")
 
 > 哪些能命中 batchUpdate 机制
 
@@ -428,3 +429,81 @@ export const addTodoAsync = (text) => {
 - 将 reconciliation 阶段进行任务拆分（commit 无法拆分）
 - DOM 需要渲染时暂停，空闲时恢复
 - window.requestIdleCallback
+
+## 面试真题
+
+### 组件间通信
+
+- 父子组件 props
+- 自定义事件（new CustomEvent）
+
+```js
+class EventBus {
+  constructor() {
+    this.bus = document.createElement("fakeElement");
+  }
+
+  addEventListener(event, callback) {
+    this.bus.addEventListener(event, callback);
+  }
+
+  removeEventListener(event, callback) {
+    this.bus.removeEventListener(event, callback);
+  }
+
+  dispatchEvent(event, detail = {}) {
+    this.bus.dispatchEvent(new CustomEvent(event, { detail }));
+  }
+}
+
+export default new EventBus();
+```
+
+- Redux 和 Context
+
+### React 发送 ajax 应该在哪个生命周期
+
+- componentDidMount
+
+### 渲染列表为何使用 key
+
+- 必须用 key，且不能是 index 和 random
+- diff 算法中通过 tag 和 key 来判断，是否是 sameNode
+- 减少渲染次数，提升渲染性能
+
+### 函数组件和 class 组件区别
+
+- 纯函数，输入 props，输出 JSX
+- 没有实例，没有生命周期，没有 state
+- 不能扩展其他方法
+
+### 受控组件
+
+- 表单的值，受 state 控制
+- 需要自行监听 onChange，更新 state
+
+### 多个组件有公共逻辑，如何抽离
+
+- 高阶组件
+- Render Props
+
+### react-router 如何配置懒加载
+
+![react-router 配置懒加载](/react/lazyload.png "react-router 配置懒加载")
+
+### React 性能优化
+
+- 渲染列表时加 key
+- 自定义事件、DOM 事件及时销毁
+- 合理使用异步组件
+- 减少函数 bind this 的次数
+- 合理使用 SCU PureComponent 和 memo
+- 合理使用 immutable.js
+
+### React 和 Vue 区别
+
+- 都支持组件化
+- 都是数据驱动视图
+- 都使用 vdom 操作 DOM
+- React 使用 JSX 拥抱 JS，Vue 使用模板拥抱 html
+- React 函数式编程，Vue 声明式编程
