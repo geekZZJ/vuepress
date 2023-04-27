@@ -1,4 +1,5 @@
 module.exports = {
+  head: [['link', { rel: 'icon', href: 'logo.png' }]],
   port: '8099',
   title: 'zzj的小站',
   description: '我的小站',
@@ -25,6 +26,7 @@ module.exports = {
             'utilFun',
             'vue',
             'react',
+            'webpack',
           ],
         },
       ],
