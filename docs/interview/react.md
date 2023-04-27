@@ -3,13 +3,13 @@
 ## 事件
 
 ```js
-<div onClick={this.handleClick}>点击</div>;
+;<div onClick={this.handleClick}>点击</div>
 
 handleClick = (event) => {
-  console.log("event", event);
-  console.log(event.nativeEvent.target); // 触发事件的div元素
-  console.log(event.nativeEvent.currentTarget); // react17后绑定到root组件上
-};
+  console.log('event', event)
+  console.log(event.nativeEvent.target) // 触发事件的div元素
+  console.log(event.nativeEvent.currentTarget) // react17后绑定到root组件上
+}
 ```
 
 ## 表单
@@ -28,38 +28,38 @@ handleClick = (event) => {
 // 传入对象会被合并，执行结果只+1
 this.setState({
   count: this.state.count + 1,
-});
+})
 this.setState({
   count: this.state.count + 1,
-});
+})
 this.setState({
   count: this.state.count + 1,
-});
+})
 
 // 传入函数不会被合并，执行结果+3
 this.setState((prevState) => {
   // prevState为上次的值
   return {
     count: prevState.count + 1,
-  };
-});
+  }
+})
 this.setState((prevState) => {
   return {
     count: prevState.count + 1,
-  };
-});
+  }
+})
 this.setState((prevState) => {
   return {
     count: prevState.count + 1,
-  };
-});
+  }
+})
 ```
 
 ## 生命周期
 
 ### 单组件生命周期
 
-![常用生命周期](/react/lifecycle.png "常用生命周期")
+![常用生命周期](/react/lifecycle.png '常用生命周期')
 
 ### 父子组件生命周期
 
@@ -138,14 +138,14 @@ alertName = () => {
 ### context
 
 ```js
-const ThemeContext = React.createContext("light");
+const ThemeContext = React.createContext('light')
 
 // class组件使用方式
 class ThemeButton extends React.Component {
-  static contextType = ThemeContext;
+  static contextType = ThemeContext
   render() {
-    const theme = this.context;
-    return <div>button theme is {theme}</div>;
+    const theme = this.context
+    return <div>button theme is {theme}</div>
   }
 }
 
@@ -155,7 +155,7 @@ function ThemeLink() {
     <ThemeContext.Consumer>
       {(value) => <p>link theme is {value}</p>}
     </ThemeContext.Consumer>
-  );
+  )
 }
 
 function ToolBar() {
@@ -164,15 +164,15 @@ function ToolBar() {
       <ThemeButton></ThemeButton>
       <ThemeLink></ThemeLink>
     </div>
-  );
+  )
 }
 
 class ContextDemo extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      theme: "light",
-    };
+      theme: 'light',
+    }
   }
   render() {
     return (
@@ -181,14 +181,14 @@ class ContextDemo extends React.Component {
         <hr />
         <button onClick={this.changeTheme}>change theme</button>
       </ThemeContext.Provider>
-    );
+    )
   }
 
   changeTheme = () => {
     this.setState({
-      theme: this.state.theme === "light" ? "dark" : "light",
-    });
-  };
+      theme: this.state.theme === 'light' ? 'dark' : 'light',
+    })
+  }
 }
 ```
 
@@ -217,30 +217,30 @@ render() {
 const withMouse = (Component) => {
   class withMouseComponent extends React.Component {
     constructor(props) {
-      super(props);
+      super(props)
       this.state = {
         x: 0,
         y: 0,
-      };
+      }
     }
     // 公共组件
     handleMouseMove = (event) => {
       this.setState({
         x: event.clientX,
         y: event.clientY,
-      });
-    };
+      })
+    }
     render() {
       return (
-        <div style={{ height: "500px" }} onMouseMove={this.handleMouseMove}>
+        <div style={{ height: '500px' }} onMouseMove={this.handleMouseMove}>
           {/* 1. 透传所有 props 2. 增加 mouse 属性 */}
           <Component {...this.props} mouse={this.state}></Component>
         </div>
-      );
+      )
     }
   }
-  return withMouseComponent;
-};
+  return withMouseComponent
+}
 ```
 
 redux connect 是高阶组件
@@ -248,27 +248,27 @@ redux connect 是高阶组件
 ### Render Props
 
 ```js
-import React from "react";
+import React from 'react'
 
 class Mouse extends React.Component {
   constructor(props) {
-    super(props);
-    this.state = { x: 0, y: 0 };
+    super(props)
+    this.state = { x: 0, y: 0 }
   }
 
   handleMouseMove = (event) => {
     this.setState({
       x: event.clientX,
       y: event.clientY,
-    });
-  };
+    })
+  }
 
   render() {
     return (
-      <div style={{ height: "500px" }} onMouseMove={this.handleMouseMove}>
+      <div style={{ height: '500px' }} onMouseMove={this.handleMouseMove}>
         {this.props.render(this.state)}
       </div>
-    );
+    )
   }
 }
 
@@ -281,10 +281,10 @@ const App = () => {
         </h1>
       )}
     ></Mouse>
-  );
-};
+  )
+}
 
-export default App;
+export default App
 ```
 
 ## 性能优化
@@ -295,7 +295,7 @@ export default App;
 
 ### shouldComponentUpdate
 
-![SCU基本用法](/react/scu.png "SCU基本用法")
+![SCU基本用法](/react/scu.png 'SCU基本用法')
 
 **React 默认：父组件有更新，子组件也无条件更新**
 
@@ -331,7 +331,7 @@ memo，函数组件中的 PureComponent
 - reducer -> newState
 - subscribe 触发通知
 
-![redux单向数据流](/react/redux.png "redux单向数据流")
+![redux单向数据流](/react/redux.png 'redux单向数据流')
 
 ### React Redux
 
@@ -345,10 +345,10 @@ memo，函数组件中的 PureComponent
 
 ```js
 export const addTodo = (text) => ({
-  type: "ADD_TODO",
+  type: 'ADD_TODO',
   id: nextTodoId++,
   text,
-});
+})
 ```
 
 - 异步 action（返回一个函数）
@@ -358,10 +358,10 @@ export const addTodoAsync = (text) => {
   return (dispatch) => {
     fetch(url).then((res) => {
       // 执行异步action
-      dispatch(addTodo(res.text));
-    });
-  };
-};
+      dispatch(addTodo(res.text))
+    })
+  }
+}
 ```
 
 1. redux-thunk
@@ -370,7 +370,7 @@ export const addTodoAsync = (text) => {
 
 ### Redux 中间件
 
-![redux中间件](/react/middleware.png "redux中间件")
+![redux中间件](/react/middleware.png 'redux中间件')
 
 ## React 原理
 
@@ -395,13 +395,17 @@ export const addTodoAsync = (text) => {
 - tag 不相同，则直接删掉重建 ，不再深度比较
 - tag 和 key ，两者都相同，则认为是相同节点，不再深度比较
 
+### JSX 本质
+
+本质即 createElement 函数
+
 ### 合成事件
 
 - 所有事件挂载到 root 上
 - event 不是原生的，是 SyntheticEvent 合成事件对象
 - 和 Vue 事件不同，和 DOM 事件也不同
 
-![合成事件](/react/synthesis.png "合成事件")
+![合成事件](/react/synthesis.png '合成事件')
 
 > 为何要合成事件机制
 
@@ -411,10 +415,16 @@ export const addTodoAsync = (text) => {
 
 ### setState 和 batchUpdate
 
-![batchUpdate](/react/batchUpdate.png "batchUpdate")
+![batchUpdate](/react/batchUpdate.png 'batchUpdate')
 
 > 哪些能命中 batchUpdate 机制
 
 - 生命周期（和它调用的函数）
 - React 中注册的事件（和它调用的函数）
 - React 可以“管理”的入口
+
+### React fiber
+
+- 将 reconciliation 阶段进行任务拆分（commit 无法拆分）
+- DOM 需要渲染时暂停，空闲时恢复
+- window.requestIdleCallback
