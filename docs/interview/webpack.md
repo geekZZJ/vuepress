@@ -4,7 +4,7 @@
 
 - 拆分配置和 merge  
   拆分 webpack.common.js、webpack.dev.js、webpack.prod.js
-  ![拆分配置和 merge](/webpack/merge.png '拆分配置和 merge')
+  ![拆分配置和 merge](/webpack/merge.png "拆分配置和 merge")
 - 启动本地服务
 
 ```js
@@ -78,3 +78,32 @@ rules: [
 - 模块化
 
 ## 高级配置
+
+### 配置多入口
+
+```js
+entry: {
+  index: path.join(srcPath, "index.js"),
+  other: path.join(srcPath, "other.js"),
+},
+
+output: {
+  filename: "[name].[contenthash:8].js", // name 即多入口时 entry 的 key
+},
+
+plugins: [
+  // 多入口 - 生成 index.html
+  new HtmlWebpackPlugin({
+    template: path.join(srcPath, "index.html"),
+    filename: "index.html",
+    // chunks 表示该页面要引用哪些 chunk （即上面的 index 和 other），默认全部引用
+    chunks: ["index"], // 只引用 index.js
+  }),
+  // 多入口 - 生成 other.html
+  new HtmlWebpackPlugin({
+    template: path.join(srcPath, "other.html"),
+    filename: "other.html",
+    chunks: ["other"], // 只引用 other.js
+  }),
+],
+```
