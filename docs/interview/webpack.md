@@ -223,6 +223,35 @@ module: {
 },
 ```
 
+## 性能优化
+
+### 优化构建速度
+
+- 优化 babel-loader
+
+```js
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      // 开启缓存，缓存目录为 node_modules/.cache/babel-loader
+      use: ["babel-loader?cacheDirectory"],
+      // 排除范围，include 和 exclude 两者选一个即可
+      include: srcPath,
+      exclude: /node_modules/,
+    },
+  ],
+},
+```
+
+- IgnorePlugin
+- noParse
+- happyPack
+- ParallelUglifyPlugin
+- 自动刷新
+- 热更新
+- DllPlugin
+
 ## 面试真题
 
 ### module chunk bundle 的区别
