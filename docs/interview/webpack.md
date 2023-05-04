@@ -107,3 +107,119 @@ plugins: [
   }),
 ],
 ```
+
+### 抽离 CSS 文件
+
+```js
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserJSPlugin = require("terser-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+
+module: {
+  rules: [
+    // 抽离 css
+    {
+      test: /\.css$/,
+      use: [
+        MiniCssExtractPlugin.loader, // 注意，这里不再用 style-loader
+        "css-loader",
+        "postcss-loader",
+      ],
+    },
+    // 抽离 less
+    {
+      test: /\.less$/,
+      use: [
+        MiniCssExtractPlugin.loader, // 注意，这里不再用 style-loader
+        "css-loader",
+        "less-loader",
+        "postcss-loader",
+      ],
+    },
+  ],
+},
+
+plugins: [
+  // 抽离 css 文件
+  new MiniCssExtractPlugin({
+    filename: "css/main.[contenthash:8].css",
+  }),
+],
+
+optimization: {
+  // 压缩 css
+  minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+},
+```
+
+### 抽离公共代码
+
+```js
+optimization: {
+  // 分割代码块
+  splitChunks: {
+    chunks: "all",
+    /**
+     * initial 入口chunk，对于异步导入的文件不处理
+     * async 异步chunk，只对异步导入的文件处理
+     * all 全部chunk
+     */
+    // 缓存分组
+    cacheGroups: {
+      // 第三方模块
+      vendor: {
+        name: "vendor", // chunk 名称
+        priority: 1, // 权限更高，优先抽离，重要！！！
+        test: /node_modules/,
+        minSize: 0, // 大小限制
+        minChunks: 1, // 最少复用过几次
+      },
+
+      // 公共的模块
+      common: {
+        name: "common", // chunk 名称
+        priority: 0, // 优先级
+        minSize: 0, // 公共模块的大小限制
+        minChunks: 2, // 公共模块最少复用过几次
+      },
+    },
+  },
+},
+```
+
+### 异步加载
+
+使用`import`
+
+### 处理 JSX
+
+1. `npm install --save-dev @babel/preset-react`
+2. 在`babel.config.json`文件中增加以下配置
+
+```json
+{
+  "presets": ["@babel/preset-react"]
+}
+```
+
+### 处理 Vue
+
+1. 安装`vue-loader`
+
+```bash
+npm i vue-loader
+```
+
+2. 配置 vue 文件解析
+
+```js
+module: {
+  rules: [
+    {
+      test: /\.vue$/,
+      use: ["vue-loader"],
+      include: srcPath,
+    },
+  ],
+},
+```
