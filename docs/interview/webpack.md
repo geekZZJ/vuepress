@@ -112,7 +112,6 @@ plugins: [
 
 ```js
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const TerserJSPlugin = require("terser-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 module: {
@@ -148,7 +147,7 @@ plugins: [
 
 optimization: {
   // 压缩 css
-  minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+  minimizer: [new OptimizeCSSAssetsPlugin({})],
 },
 ```
 
@@ -223,3 +222,13 @@ module: {
   ],
 },
 ```
+
+## 面试真题
+
+### module chunk bundle 的区别
+
+- module - 各个源码文件，webpack 中一切皆模块
+- chunk - 多模块合并成的
+- bundle - 最终的输出文件
+
+![module chunk bundle 的区别](/webpack/module.png "module chunk bundle 的区别")
