@@ -245,6 +245,17 @@ module: {
 ```
 
 - IgnorePlugin
+
+```js
+plugins: [
+  // 忽略 moment 下的 /locale 目录
+  new webpack.IgnorePlugin({
+    resourceRegExp: /^\.\/locale$/,
+    contextRegExp: /moment$/,
+  }),
+],
+```
+
 - noParse
 - happyPack
 - ParallelUglifyPlugin
