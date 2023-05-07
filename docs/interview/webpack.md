@@ -321,10 +321,39 @@ optimization: {
 > 项目较小，打包很快，开启多进程会降低速度（进程开销）  
 > 按需使用
 
-#### 自动刷新
+#### 热更新
 
-- 热更新
-- DllPlugin
+- 自动刷新：整个网页全部刷新，速度较慢
+- 自动刷新：整个网页全部刷新，状态会丢失
+- 热更新：新代码生效，网页不刷新，状态不丢失
+
+```js
+devServer: {
+  // 开启热更新
+  hot: true,
+},
+```
+
+如需改动样式文件，热更新即可生效。  
+如需改动 js 文件，则需要进行如下改写：
+
+```js
+// 开启热更新之后的代码逻辑
+if (module.hot) {
+  // math.js中代码发生变化页面不会整体刷新
+  module.hot.accept("./math.js", () => {
+    // 热更新的回调函数
+    const sumRes = sum(10, 20);
+    console.log("热更新", sumRes);
+  });
+}
+```
+
+#### DllPlugin
+
+- webpack 已内置 DllPlugin 支持
+- DllPlugin - 打包出 dll 文件
+- DllReferencePlugin - 使用 dll 文件
 
 ## 面试真题
 
