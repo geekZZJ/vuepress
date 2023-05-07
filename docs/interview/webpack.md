@@ -355,6 +355,59 @@ if (module.hot) {
 - DllPlugin - 打包出 dll 文件
 - DllReferencePlugin - 使用 dll 文件
 
+### 减少代码体积
+
+#### 小图片 base64 编码
+
+```js
+module: {
+  rules: [
+    // 图片 - 考虑 base64 编码的情况
+    {
+      test: /\.(png|jpg|jpeg|gif)$/,
+      use: {
+        loader: "url-loader",
+        options: {
+          // 小于 5kb 的图片用 base64 格式产出
+          // 否则，依然延用 file-loader 的形式，产出 url 格式
+          limit: 5 * 1024,
+          // 打包到 img 目录下
+          outputPath: "/img/",
+          // 设置图片的 cdn 地址（也可以统一在外面的 output 中设置，那将作用于所有静态资源）
+          // publicPath: 'http://cdn.abc.com'
+        },
+      },
+    },
+  ],
+},
+```
+
+#### bundle 加 hash
+
+```js
+output: {
+  filename: "[name].[contenthash:8].js", // name 即多入口时 entry 的 key
+},
+```
+
+#### 提取公共代码
+
+#### IgnorePlugin
+
+#### 使用 CDN 加速
+
+所有的静态文件都会加上 CDN 的前缀，打包后需要将静态文件放到 CDN 上
+
+```js
+output: {
+  publicPath: "http://cdn.abc.com", // 修改所有静态文件 url 的前缀（如 cdn 域名）
+},
+```
+
+#### 使用 production
+
+#### Scope Hosting
+
 ## 面试真题
 
 ### module chunk bundle 的区别
