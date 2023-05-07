@@ -227,7 +227,7 @@ module: {
 
 ### 优化构建速度
 
-- 优化 babel-loader
+#### 优化 babel-loader
 
 ```js
 module: {
@@ -244,7 +244,7 @@ module: {
 },
 ```
 
-- IgnorePlugin
+#### IgnorePlugin（避免引入无用模块）
 
 ```js
 plugins: [
@@ -256,10 +256,73 @@ plugins: [
 ],
 ```
 
-- noParse
-- happyPack
-- ParallelUglifyPlugin
-- 自动刷新
+#### noParse（避免重复打包）
+
+```js
+module: {
+  // min.js 一般已经模块化，无需我们再次处理
+  noParse: [/react\.min\.js/],
+},
+```
+
+> IgnorePlugin 对比 noParse  
+> IgnorePlugin 直接不引入，代码中没有。noParse 引入，但不打包
+
+#### happyPack
+
+- JS 单线程，开启多进程打包
+- 提高构建速度
+
+```js
+const HappyPack = require("happypack");
+
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      // 把对 .js 文件的处理转交给 id 为 babel 的 HappyPack 实例
+      use: ["happypack/loader?id=babel"],
+      // 排除范围，include 和 exclude 两者选一个即可
+      include: srcPath,
+      // exclude: /node_modules/,
+    },
+  ],
+},
+
+plugins: [
+  // happy开启多进程打包
+  new HappyPack({
+    // 用唯一的标识符 id 来代表当前的 HappyPack 是用来处理一类特定的文件
+    id: "babel",
+    // 如何处理 .js 文件，用法和 Loader 配置中一样
+    loaders: ["babel-loader?cacheDirectory"],
+  }),
+],
+```
+
+#### TerserJSPlugin 开启进程压缩
+
+```js
+const TerserJSPlugin = require("terser-webpack-plugin");
+
+optimization: {
+  // 压缩 js
+  minimizer: [
+    new TerserJSPlugin({
+      // 开启多进程压缩
+      parallel: true,
+    }),
+  ],
+}
+```
+
+> 关于开启多进程  
+> 项目较大，打包较慢，开启多进程能提高速度  
+> 项目较小，打包很快，开启多进程会降低速度（进程开销）  
+> 按需使用
+
+#### 自动刷新
+
 - 热更新
 - DllPlugin
 
