@@ -406,7 +406,29 @@ output: {
 
 #### 使用 production
 
+- 自动开启代码压缩
+- Vue React 等会自动删掉调试代码（如开发环境的 warning）
+- 启动 Tree-Shaking（ES6 Module 才能让 tree-shaking 生效）
+
 #### Scope Hosting
+
+未开启时，一个 js 文件会生成一个函数，开启后会将多个 js 文件相关代码合并到一个函数中
+
+- 代码体积更小
+- 创建函数作用域更少
+- 代码可读性更好
+
+```js
+resolve: {
+  // 针对 npm 中的第三方模块优先采用 jsnext:main 中指向的 ES6 模块化语法的文件
+  mainFields: ["jsnext:main", "browser", "main"],
+},
+
+plugins: [
+  // 开启 scope hosting
+  new webpack.optimize.ModuleConcatenationPlugin(),
+];
+```
 
 ## 面试真题
 
@@ -417,3 +439,9 @@ output: {
 - bundle - 最终的输出文件
 
 ![module chunk bundle 的区别](/webpack/module.png "module chunk bundle 的区别")
+
+### ES6 Module 和 Commonjs 区别
+
+- ES6 Module 静态引入，编译时引入
+- Commonjs 动态引入，执行时引入
+- 只有 ES6 Module 才能静态分析，实现 Tree-Shaking
