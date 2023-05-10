@@ -84,7 +84,7 @@ beforeDestroy() {
 
 ![生命周期](/vue/lifecycle.png "生命周期")
 
-> mounted 和 created 的区别
+> mounted 和 created 的区别  
 > created：在模板渲染成 html 前调用，即通常初始化某些属性值，然后再渲染成视图
 > mounted：在模板渲染成 html 后调用，通常是初始化页面完成后，再对 html 的 dom 节点进行一些需要的操作
 
