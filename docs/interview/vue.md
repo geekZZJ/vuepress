@@ -5,7 +5,7 @@
 ### computed 和 watch
 
 - computed 有缓存，data 不变则不会重新计算，可以提高性能
-- watch 监听引用类型，拿不到 oldVal；监听引用类型可以
+- watch 监听引用类型，拿不到 oldVal；监听值类型可以
 - watch 深度监听
 
 ```js
