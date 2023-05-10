@@ -335,7 +335,7 @@ Function.prototype.bind1 = function() {
 ## 异步和同步
 
 - 基于 JS 是单线程语言
-- 异步不会阳塞代码执行
+- 异步不会阻塞代码执行
 - 同步会阻塞代码执行
 
 ## event loop（ 事件循环/事件轮询）
@@ -888,6 +888,17 @@ function throttle(fn, delay) {
 - {}等同于 new Object()，原型 Object.prototype
 - Object.create(null)没有原型
 - Object.create({})可指定原型
+
+## 实现`new`
+
+```js
+function _new(fn, ...arg) {
+  const obj = Object.create(fn.prototype);
+  const result = fn.apply(obj, arg);
+  // 未返回对象则返回this
+  return result instanceof Object ? result : obj;
+}
+```
 
 ## 作用域和自由变量场景题
 
