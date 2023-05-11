@@ -430,6 +430,42 @@ plugins: [
 ];
 ```
 
+## babel
+
+### babel 基本使用
+
+1. 安装依赖`@babel/cli`、`@babel/core`、`@babel/preset-env`(preset-env 为常见 babel 的集合)
+2. 新增`.babelrc`文件，增加以下配置
+
+```js
+{
+  "presets": [["@babel/preset-env"]],
+  "plugins": []
+}
+```
+
+### babel-polyfill
+
+- core-js 和 regenerator
+- babel-polyfill 是以上两者的集合
+- babel7.4 后已被弃用
+
+配置按需引入
+
+```js
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "usage",
+        "corejs": 3
+      }
+    ]
+  ],
+}
+```
+
 ## 面试真题
 
 ### module chunk bundle 的区别
