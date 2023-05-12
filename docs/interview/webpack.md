@@ -501,3 +501,34 @@ plugins: [
 - ES6 Module 静态引入，编译时引入
 - Commonjs 动态引入，执行时引入
 - 只有 ES6 Module 才能静态分析，实现 Tree-Shaking
+
+### 前端为何要进行打包和构建
+
+- 体积更小（Tree-Shaking、压缩、合并），加载更快
+- 编译高级语言或语法（TS、ES6+、模块化、scss）
+- 兼容性和错误检查(Polyfill、postcss、eslint)
+- 统一、高效的开发环境
+- 统一的构建流程和产出标准
+- 集成公司构建规范（提测、上线等）
+
+### loader 和 plugin 的区别
+
+- loader 模块转换器，如 less -> css
+- plugin 扩展插件，如 HtmlWebpackPlugin
+
+### babel 和 webpack 的区别
+
+- babel - JS 新语法编译工具，不关心模块化
+- webpack - 打包构建工具，是多个 loader plugin 的集合
+
+### babel-polyfill 和 babel-runtime 的区别
+
+- babel-polyfill 会污染全局
+- babel-runtime 不会污染全局
+- 产出第三方 lib 要用 babel-runtime
+
+### 为何 Proxy 不能被 Polyfill
+
+- 如 Class 可以用 function 模拟
+- 如 Promise 可以用 callback 来模拟
+- 但 Proxy 的功能用 Object.defineProperty 无法模拟
