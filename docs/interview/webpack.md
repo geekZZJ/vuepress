@@ -466,6 +466,26 @@ plugins: [
 }
 ```
 
+### babel-runtime
+
+- 防止污染全局环境
+- 安装`@babel/plugin-transform-runtime`、`@babel/runtime`，在`.babelrc`文件中做以下配置：
+
+```js
+"plugins": [
+  [
+    "@babel/plugin-transform-runtime",
+    {
+      "absoluteRuntime": false,
+      "corejs": 3,
+      "helpers": true,
+      "regenerator": true,
+      "useESModules": false
+    }
+  ]
+]
+```
+
 ## 面试真题
 
 ### module chunk bundle 的区别
