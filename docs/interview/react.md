@@ -566,6 +566,127 @@ function App() {
 }
 ```
 
+### useReducer
+
+```js
+import React, { useReducer } from "react";
+const initialState = { count: 0 };
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "increment":
+      return { count: state.count + 1 };
+    case "decrement":
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+
+function App() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <div>
+      count: {state.count}
+      <button onClick={() => dispatch({ type: "increment" })}>increment</button>
+      <button onClick={() => dispatch({ type: "decrement" })}>decrement</button>
+    </div>
+  );
+}
+```
+
+- useReducer 是 useState 的代替方案，用于 state 复杂变化
+- useReducer 是单个组件状态管理，组件通讯还需要 props
+- redux 是全局的状态管理，多组件共享数据
+
+### useMemo
+
+```js
+// 类似 class PureComponent，对 props 进行浅层比较
+const Child = memo(({ userInfo }) => {
+  console.log("Child render...", userInfo);
+  return (
+    <div>
+      <p>
+        This is Child {userInfo.name} {userInfo.age}
+      </p>
+    </div>
+  );
+});
+
+// 父组件
+function App() {
+  console.log("Parent render...");
+  const [count, setCount] = useState(0);
+  const [name, setName] = useState("测试用户");
+
+  // 用 useMemo 缓存数据，name 变化时子组件才会更新
+  const userInfo = useMemo(() => {
+    return { name, age: 21 };
+  }, [name]);
+
+  return (
+    <div>
+      <p>
+        count is {count}
+        <button onClick={() => setCount(count + 1)}>click</button>
+      </p>
+      <Child userInfo={userInfo}></Child>
+    </div>
+  );
+}
+```
+
+- React 默认会更新所有子组件
+- class 组件使用 SCU 和 PureComponent 做优化
+- Hooks 中使用 useMemo，但优化的原理是相同的
+
+### useCallback
+
+向子组件传入函数，useMemo 失效，所以需要使用 useCallback
+
+```js
+const Child = memo(({ userInfo, onChange }) => {
+  console.log("Child render...", userInfo);
+  return (
+    <div>
+      <p>
+        This is Child {userInfo.name} {userInfo.age}
+      </p>
+      <input onChange={onChange}></input>
+    </div>
+  );
+});
+
+// 父组件
+function App() {
+  console.log("Parent render...");
+  const [count, setCount] = useState(0);
+  const [name, setName] = useState("测试用户");
+
+  // 用 useMemo 缓存数据
+  const userInfo = useMemo(() => {
+    return { name, age: 21 };
+  }, [name]);
+
+  // 用 useCallback 缓存函数
+  const onChange = useCallback((e) => {
+    console.log(e.target.value);
+  }, []);
+
+  return (
+    <div>
+      <p>
+        count is {count}
+        <button onClick={() => setCount(count + 1)}>click</button>
+      </p>
+      <Child userInfo={userInfo} onChange={onChange}></Child>
+    </div>
+  );
+}
+```
+
 ## 面试真题
 
 ### 组件间通信
