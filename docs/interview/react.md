@@ -430,6 +430,142 @@ export const addTodoAsync = (text) => {
 - DOM 需要渲染时暂停，空闲时恢复
 - window.requestIdleCallback
 
+## React Hooks
+
+### 函数组件的特点
+
+- 没有组件实例
+- 没有生命周期
+- 没有 state 和 setState，只能接收 props
+
+### setState
+
+- `useState(0)`传入初始值，返回数组`[state, setState]`
+- 通过`state`获取值、
+- 通过`setState(1)`修改值
+
+### useEffect 模拟组件生命周期
+
+- 模拟 DidMount 和 DidUpdate
+
+```js
+// DidMount 和 DidUpdate下面均会打印
+useEffect(() => {
+  console.log("在此发送一个 ajax 请求");
+});
+```
+
+- 模拟 DidMount
+
+```js
+useEffect(() => {
+  console.log("加载完了");
+}, []); // 第二个参数是 [] （不依赖于任何 state）
+```
+
+- 模拟 DidUpdate
+
+```js
+useEffect(() => {
+  console.log("更新了");
+}, [count]); // 第二个参数就是依赖的 state
+```
+
+- 模拟 WillUnMount
+
+```js
+useEffect(() => {
+  let timerId = window.setInterval(() => {
+    console.log(Date.now());
+  }, 1000);
+
+  // 返回一个函数，模拟 WillUnMount
+  return () => {
+    window.clearInterval(timerId);
+  };
+}, []);
+```
+
+- 不完全等同于 WillUnMount
+
+```js
+// DidMount 和 DidUpdate
+useEffect(() => {
+  console.log(`开始监听 ${friendId} 在线状态`);
+
+  // 此处并不完全等同于 WillUnMount
+  // props 发生变化，即更新，也会执行结束监听
+  // 返回的函数，会在下一次 effect 执行之前，被执行
+  return () => {
+    console.log(`结束监听 ${friendId} 在线状态`);
+  };
+});
+```
+
+### useRef
+
+获取 DOM 节点
+
+```js
+function UseRef() {
+  const btnRef = useRef(null);
+
+  useEffect(() => {
+    // DOM 节点
+    console.log(btnRef.current);
+  }, []);
+
+  return (
+    <div>
+      <button ref={btnRef}>click</button>
+    </div>
+  );
+}
+```
+
+### useContext
+
+```js
+import React, { useContext } from "react";
+
+// 主题颜色
+const themes = {
+  light: {
+    foreground: "#000",
+    background: "#eee",
+  },
+  dark: {
+    foreground: "#fff",
+    background: "#222",
+  },
+};
+
+// 创建 Context
+const ThemeContext = React.createContext(themes.light);
+
+function ThemeButton() {
+  const theme = useContext(ThemeContext);
+
+  return (
+    <button style={{ background: theme.background, color: theme.foreground }}>
+      hello world
+    </button>
+  );
+}
+
+function Toolbar() {
+  return <ThemeButton></ThemeButton>;
+}
+
+function App() {
+  return (
+    <ThemeContext.Provider value={themes.dark}>
+      <Toolbar></Toolbar>
+    </ThemeContext.Provider>
+  );
+}
+```
+
 ## 面试真题
 
 ### 组件间通信
@@ -507,3 +643,9 @@ export default new EventBus();
 - 都使用 vdom 操作 DOM
 - React 使用 JSX 拥抱 JS，Vue 使用模板拥抱 html
 - React 函数式编程，Vue 声明式编程
+
+### class 组件的问题
+
+- 大型组件很难拆分和重构，很难测试（即 class 不易拆分）
+- 相同业务逻辑，分散到各个方法中，逻辑混乱
+- 复用逻辑变的复杂，如 Mixins、HOC、Render Prop
