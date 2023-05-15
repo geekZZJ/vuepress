@@ -718,6 +718,62 @@ export default useAxios;
 - 只能用于顶层代码，不能在循环、判断中使用 Hooks
 - eslint 插件 eslint-plugin-react-hooks 可以帮到你
 
+### React Hooks 注意事项
+
+- useState 初始化值，只有第一次有效
+
+```js
+// 子组件
+function Child({ userInfo }) {
+  // render: 初始化 state
+  // re-render: userInfo.name变化后，name不会重新设置新的值，只能用 setName 修改
+  const [name, setName] = useState(userInfo.name);
+
+  return (
+    <div>
+      <p>Child, props name: {userInfo.name}</p>
+      <p>Child, state name: {name}</p>
+    </div>
+  );
+}
+```
+
+- useEffect 内部不能修改 state
+
+```js
+function UseEffectChangeState() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log("useEffect...", count);
+    const timer = setInterval(() => {
+      console.log("setInterval...", count); // 一直为0
+      setCount(count + 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // 依赖为 [] 时： re-render 不会重新执行 effect 函数
+  // 删除 [] 后：re-render 会重新执行 effect 函数
+  return <div>count: {count}</div>;
+}
+```
+
+- useEffect 可能出现死循环
+
+```js
+// useEffect 依赖值最好不为对象或者数组，引用类型地址一直变化
+useEffect(() => {
+  const timer = setInterval(() => {
+    console.log("setInterval...", count); // 一直为0
+    setCount(count + 1);
+  }, 1000);
+
+  return () => clearTimeout(timer);
+}, {});
+```
+
 ## 面试真题
 
 ### 组件间通信
