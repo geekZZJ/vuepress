@@ -857,3 +857,15 @@ export default new EventBus();
 - 大型组件很难拆分和重构，很难测试（即 class 不易拆分）
 - 相同业务逻辑，分散到各个方法中，逻辑混乱
 - 复用逻辑变的复杂，如 Mixins、HOC、Render Prop
+
+### 为什么要使用 Hooks
+
+- 完善函数组件的能力，函数更适合 React 组件
+- 组件逻辑复用，Hooks 表现更好
+- class 复杂组件正在变得费解，不易拆解，不易测试，逻辑混乱
+
+### React Hooks 性能优化
+
+- useMemo 缓存数据
+- useCallback 缓存函数
+- 相当于 class 组件的 SCU 和 PureComponent
