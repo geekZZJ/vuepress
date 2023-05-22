@@ -519,6 +519,7 @@ history.forward();
 # 事件相关
 
 阻止事件冒泡-event.stopPropagation()
+
 阻止事件默认行为-event.preventDefault()
 
 ## 事件代理
@@ -672,6 +673,7 @@ response.setHeader("Access-Control-Allow-Credentials", "true");
 - localStorage 数据会永久存储，除非代码或手动删除
 - sessionStorage 数据只存在于当前会话，浏览器关闭则清空
 - 一般用 localStorage 会更多一些
+- sessionStorage 不在不同的浏览器窗口中共享，即使是同一个页面；localStorage 在所有同源窗口中都是共享的；cookie 也是在所有同源窗口中都是共享的
 
 # HTTP
 
@@ -815,9 +817,7 @@ function debounce(fn, delay = 500) {
   // timer在闭包中
   let timer = null;
   return function() {
-    if (timer) {
-      clearTimeout(timer);
-    }
+    if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       fn.apply(this, arguments);
       timer = null;
