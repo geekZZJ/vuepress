@@ -153,7 +153,7 @@ footer 为需要清除浮动的元素
 ```css
 .clearfix:after {
   content: "";
-  display: table;
+  display: block;
   clear: both;
 }
 ```
