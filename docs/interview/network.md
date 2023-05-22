@@ -181,6 +181,45 @@ A 侧的 TCP 链路状态在未发送任何数据的情况下与等待的时间�
 - GET 请求参数会被完整保留在浏览器历史记录里，而 POST 中的参数不会被保留
 - 对参数的数据类型，GET 只接受 ASCII 字符，而 POST 没有限制
 
+## 什么时候有 OPTIONS 请求
+
+### 预检请求头 request header 的关键字段
+
+服务器基于从预检请求头部获得的信息来判断，是否接受接下来的实际请求
+
+- Access-Control-Request-Method：告诉服务器实际请求所使用的 HTTP 方法
+- Access-Control-Request-Headers：告诉服务器实际请求所携带的自定义首部字段，本次实际请求首部字段中 content-type 为自定义
+
+### 预检响应头 response header 的关键字段
+
+此次 OPTIONS 请求返回了响应头的内容，但没有返回响应实体 response body 内容
+
+- Access-Control-Allow-Methods：返回了服务端允许的请求，包含 GET/HEAD/PUT/PATCH/POST/DELETE
+- Access-Control-Allow-Credentials：允许跨域携带 cookie（跨域请求要携带 cookie 必须设置为 true）
+- Access-Control-Allow-Origin：允许跨域请求的域名，这个可以在服务端配置一些信任的域名白名单
+- Access-Control-Request-Headers：客户端请求所携带的自定义首部字段 content-type
+
+### 触发 OPTIONS 原因
+
+#### OPTIONS 请求自动发起
+
+MDN 的 [CORS](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS) 一文中提到：
+
+> 规范要求，对那些可能对服务器数据产生副作用的 HTTP 请求方法（特别是 GET 以外的 HTTP 请求，或者搭配某些 MIME 类型的 POST 请求），浏览器必须首先使用 OPTIONS 方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨源请求
+
+#### 跨域请求时，OPTIONS 请求触发条件
+
+| CORS 预检请求触发条件                                                                                                            | 本次请求是否触发该条件  |
+| :------------------------------------------------------------------------------------------------------------------------------- | :---------------------- |
+| 使用了下面任一 HTTP 方法：PUT/DELETE/CONNECT/OPTIONS/TRACE/PATCH                                                                 | 否，本次为 post 请求    |
+| 人为设置了以下集合之外首部字段：Accept/Accept-Language/Content-Language/Content-Type/DPR/Downlink/Save-Data/Viewport-Width/Width | 否，未设置其他头部字段  |
+| Content-Type 的值不属于下列之一：application/x-www-form-urlencoded、multipart/form-data、text/plain                              | 是，为 application/json |
+
+### 优化 OPTIONS 请求
+
+- Access-Control-Max-Age 表示预请求可以被缓存的最长时间，单位是秒
+- 尽量避免不要触发 OPTIONS 请求
+
 ## TCP 和 UDP 的区别
 
 ### UDP
