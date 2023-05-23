@@ -85,7 +85,7 @@ beforeDestroy() {
 ![生命周期](/vue/lifecycle.png "生命周期")
 
 > mounted 和 created 的区别  
-> created：在模板渲染成 html 前调用，即通常初始化某些属性值，然后再渲染成视图
+> created：在模板渲染成 html 前调用，即通常初始化某些属性值，然后再渲染成视图  
 > mounted：在模板渲染成 html 后调用，通常是初始化页面完成后，再对 html 的 dom 节点进行一些需要的操作
 
 #### 父子组件
@@ -203,7 +203,7 @@ export default {
 
 **缺点**
 
-- 变量和方法 来源不明确，不利于阅读
+- 变量和方法来源不明确，不利于阅读
 - 多 mixin 可能会造成命名冲突
 - mixin 和组件可能出现多对多的关系，复杂度较高
 
@@ -211,10 +211,42 @@ export default {
 
 ![Vuex](/vue/vuex.png "Vuex")
 
+```js
+// 定义store
+const store = createStore({
+  state: {
+    count: 0,
+  },
+  mutations: {
+    increment(state) {
+      state.count++;
+    },
+  },
+  actions: {
+    increment(context) {
+      context.commit("increment");
+    },
+  },
+});
+
+// 触发action
+store.dispatch("increment");
+```
+
 ### Vue-router
 
 - 路由模式：hash、H5 history
 - 路由配置：动态路由、懒加载
+
+```js
+// 路由懒加载
+// 将 import UserDetails from './views/UserDetails.vue' 替换成
+const UserDetails = () => import("./views/UserDetails.vue");
+
+const router = createRouter({
+  routes: [{ path: "/users/:id", component: UserDetails }],
+});
+```
 
 ## Vue2 原理
 
@@ -516,6 +548,7 @@ setup() {
     state,
   };
 },
+// 1500ms后state.age和ageRef变为25，3000ms后state.age和ageRef变为30
 ```
 
 #### toRefs
@@ -561,7 +594,7 @@ setup() {
 ### 为何需要.value
 
 - ref 是一个对象（不丢失响应式），value 存储值
-- 通过 .value 厲性的 get 和 set 实现响应式
+- 通过 .value 属性的 get 和 set 实现响应式
 - 用于模板、reactive 时，不需要 .value，其他情况都需要
 
 ### 为何需要 toRef 和 toRefs
@@ -598,8 +631,17 @@ setup(props, { emit }) {
 
 - Fragment
 - 移除.sync
-- 异步组件的写法
 - 移除 filter
+- 异步组件的写法
+
+```js
+import { defineAsyncComponent } from "vue";
+
+const AsyncComp = defineAsyncComponent(() =>
+  import("./components/MyComponent.vue")
+);
+```
+
 - Teleport
 - Suspense
 - Composition API
@@ -742,6 +784,15 @@ function reactive(target = {}) {
 
 - 在 setup 和其他 Composition API 中没有 this
 - 可通过 getCurrentInstance 获取当前实例
+
+### Vue3 组件间通信
+
+- props/emit
+- expose/ref
+- v-model
+- provide/inject
+- pinia
+- mitt
 
 ### Vue3 为何比 Vue2 快
 

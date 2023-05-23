@@ -300,7 +300,7 @@ plugins: [
 ],
 ```
 
-#### TerserJSPlugin 开启进程压缩
+#### TerserJSPlugin 开启多进程压缩
 
 ```js
 const TerserJSPlugin = require("terser-webpack-plugin");
