@@ -818,3 +818,7 @@ Promise.reject(1)
     console.log(`err${err}`)
   })
 ```
+
+### 实现 Promise
+
+> https://juejin.cn/post/6856213486633304078
