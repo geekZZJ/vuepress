@@ -69,6 +69,15 @@ class Promise1 {
 
   // then 方法 有两个参数onFulfilled onRejected
   then(onFulfilled, onRejected) {
+    onResolved =
+      typeof onResolved === 'function' ? onResolved : (value) => value
+    onRejected =
+      typeof onRejected === 'function'
+        ? onRejected
+        : (reason) => {
+            throw reason
+          }
+
     return new Promise1((resolve, reject) => {
       // 状态为fulfilled，执行onFulfilled，传入成功的值
       if (this.state === 'fulfilled') {
