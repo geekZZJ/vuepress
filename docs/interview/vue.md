@@ -370,6 +370,309 @@ function observer(target) {
 - 汇总 data 的修改，一次性更新视图
 - 减少 DOM 操作次数，提高性能
 
+## Vue 插件
+
+### elementUI 中 this.\$message 原理
+
+使用方式：
+
+```js
+this.$message("这是一条消息提示");
+this.$message({ message: "这是一条成功提示", type: "success" });
+```
+
+#### 在`main.js`中引入
+
+```js
+// 引入自定义组件库
+import CustomComp from "../custom-comp";
+// 使用element-ui的样式作为自定义组件库的样式
+import "element-ui/lib/theme-chalk/index.css";
+// 使用组件库
+Vue.use(CustomComp);
+```
+
+安装`Vue`插件。如果插件是一个对象，必须提供`install`方法。如果插件是一个函数，它会被作为`install`方法。`install`方法调用时，会将`Vue`作为参数传入。该方法需要在调用`new Vue()`之前被调用。
+
+建立下图目录结构：  
+![自定义组件库目录](/vue/3.png "自定义组件库目录")
+
+1. `custom-comp/index`导出所有组件
+2. `package/message/index.js`导出当前`Message`组件
+3. `package/message/src/main.vue`单独抽离出一个组件，将组件的展示逻辑和交互封装集中处理
+4. `package/message/src/main.js`承接 vue 实例和组件展示
+
+#### `custom-comp/index`实现
+
+`Vue.use`需接收一个含有`install`方法的对象，所以该文件需要导出一个含有`install`方法的对象。将`$message`方法放到`Vue.prototype`上，本次只看`Message`部分即可
+
+```js
+// 引入Message方法
+import Message from "./packages/message";
+// 定义 install 函数
+const install = function(Vue, opts = {}) {
+  // 将方法放到Vue原型上
+  Vue.prototype.$message = Message;
+};
+
+export default {
+  install,
+  Message,
+};
+```
+
+#### `custom-comp/packages/message/index.js`
+
+导出该组件
+
+```js
+import Message from "./src/main.js";
+export default Message;
+```
+
+#### `custom-comp/packages/message/src/main.vue`
+
+删减`element-ui`的`Message`之后展示部分的组件内容，代码删除了容错和边界值判断的代码，仅仅展示了基本功能
+
+```vue
+<template>
+  <transition name="el-message-fade" @after-leave="handleAfterLeave">
+    <div class="el-message" :style="positionStyle" v-show="visible">
+      <slot>
+        <p class="el-message__content">
+          {{ message }}
+        </p>
+      </slot>
+    </div>
+  </transition>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      visible: false,
+      message: "",
+      duration: 3000,
+      // type: "info",
+      onClose: null,
+      closed: false,
+      verticalOffset: 20,
+      timer: null,
+    };
+  },
+  computed: {
+    positionStyle() {
+      // 控制当前组件的显示位置
+      return {
+        top: `${this.verticalOffset}px`,
+      };
+    },
+  },
+  watch: {
+    // 监听closed的变化，设置为true时，将组件销毁
+    closed(newVal) {
+      if (newVal) {
+        this.visible = false;
+      }
+    },
+  },
+  mounted() {
+    this.startTimer();
+  },
+  methods: {
+    // transition组件的钩子，触发after-leave时执行
+    handleAfterLeave() {
+      // 销毁组件
+      this.$destroy(true);
+      // 将组件的DOM移除
+      this.$el.parentNode.removeChild(this.$el);
+    },
+
+    close() {
+      this.closed = true;
+      if (typeof this.onClose === "function") {
+        console.log("close");
+        this.onClose(this);
+      }
+    },
+
+    startTimer() {
+      if (this.duration > 0) {
+        this.timer = setTimeout(() => {
+          if (!this.closed) {
+            this.close();
+          }
+        }, this.duration);
+      }
+    },
+  },
+};
+</script>
+```
+
+使用了`Vue`官方封装的`transition`组件，不仅提供了良好的过渡效果，还提供了合适的钩子便于开发者控制，组件中使用`after-leave`钩子，当组件离开时进行组件的销毁和`DOM`的移除，`visible`用于控制组件的展示与隐藏，计算属性`positionStyle`用于设置组件的展示位置，`message`为组件展示的内容数据
+
+> script 部分可参考注释进行理解，需要注意两个地方  
+> 首先需要注意生命周期钩子`mount`时做的事情，为何如此做？因为不存在`el`选项，实例不会立即进入编译阶段，需要显示调`$mount`手动开启编译  
+> 还需要注意的时`close`函数中做了两件事，设置`closed`的值触发对应的`watch`，关闭组件，若是存在`onClose`方法则调用，注意这个`onClose`函数的定义是在控制部分定（package/message/src/main.js），稍后会说明
+
+#### `custom-comp/packages/message/src/main.js`
+
+至此已经清楚`Vue`中是通过`this.$message`触发组件的展示，而展示部分的组件内容也已完成，现在就需要通过控制部分将两者连接，达到期望的功能。与`Vue`关联比较简单，仅仅是定义一个方法并将其导出即可
+
+```js
+const Message = function(options) {
+  // 逻辑编写....
+};
+
+export default Message;
+```
+
+这个时候通过`this.$message`即可调用，接下来便是将`Message`函数与组件关联，并控制展示部分
+
+> Message 核心需要做哪些事情
+>
+> 1. 编译组件，使用渲染并插入到`body`中
+> 2. 控制组件内的`visible`变量，触发组件的展示
+> 3. 控制组件内的`verticalOffset`变量，决定组件展示时的位置
+
+```js
+import Vue from "vue";
+import Main from "./main.vue";
+
+// 使用基础 Vue 构造器，创建一个“子类”。参数是一个包含组件选项的对象
+const MessageConstructor = Vue.extend(Main);
+
+// options为外部传入数据，this.$message("这是一条消息提示");
+const Message = function(options) {
+  // 组件实例, 此时options与组件的data关联
+  instance = new MessageConstructor({
+    data: options,
+  });
+};
+```
+
+整个`Message`方法其余部分就是在做容错和健壮处理，整体简洁版代码如下：
+
+```js
+// 使用基础 Vue 构造器，创建一个“子类”。参数是一个包含组件选项的对象
+const MessageConstructor = Vue.extend(Main);
+
+// 当前组件
+let instance;
+// 将所有的message组件收集，用于位置的判断和销毁等
+let instances = [];
+// 每个message实例都有一个唯一标识
+let seed = 1;
+
+// options为外部传入数据，this.$message("这是一条消息提示");
+const Message = function(options) {
+  options = options || {};
+  if (typeof options === "string") {
+    options = {
+      message: options,
+    };
+  }
+
+  // 关闭时的回调函数, 参数为被关闭的 message 实例
+  const userOnClose = options.onClose;
+  const id = "message_" + seed++;
+
+  // 增加 onClose 方法，组件销毁时，在组件内部调用
+  options.onClose = function() {
+    Message.close(id, userOnClose);
+  };
+
+  // 组件实例, 此时options与组件的data关联
+  instance = new MessageConstructor({
+    data: options,
+  });
+
+  // 设置ID
+  instance.id = id;
+  // 因为不存在el选项，实例不会立即进入编译阶段，需要显式调用$mount手动开启编译
+  instance.$mount();
+  // 将Message组件插入到body中
+  document.body.appendChild(instance.$el);
+  // 设置组件距离顶部的距离，每个message组件会有16px的间距
+  let verticalOffset = options.offset || 20;
+  instances.forEach((item) => {
+    verticalOffset += item.$el.offsetHeight + 16;
+  });
+  instance.verticalOffset = verticalOffset;
+  // 控制展示
+  instance.visible = true;
+  // 控制层级
+  instance.$el.style.zIndex = 99;
+  instances.push(instance);
+  return instance;
+};
+```
+
+展示组件内部会调用`this.onClose(this)`，组件内部设置`this.visible=false`关闭弹框，并且移除其对应的`DOM`结构，但是页面展示多个组件时需要修改其余组件的位置
+
+`onClose`函数是在`Message`函数中定义
+
+```js
+// 关闭时的回调函数, 参数为被关闭的 message 实例
+const userOnClose = options.onClose;
+const id = "message_" + seed++;
+
+// 增加 onClose 方法，组件销毁时，在组件内部调用
+options.onClose = function() {
+  Message.close(id, userOnClose);
+};
+```
+
+`onClose`函数最终调用的是`Message`上的静态方法`close`
+
+函数`Message.close`内部主要做了几件事情
+
+- 在页面显示的组件数组中找到需要关闭的组件，将其移除
+- 重新计算剩余组件的位置
+
+```js
+Message.close = function(id, userOnClose) {
+  const len = instances.length;
+  let index = -1;
+  let removedHeight;
+  for (let i = 0; i < len; i++) {
+    if (id === instances[i].id) {
+      removedHeight = instances[i].$el.offsetHeight;
+      index = i;
+      if (typeof userOnClose === "function") {
+        userOnClose(instances[i]);
+      }
+      instances.splice(i, 1);
+      break;
+    }
+  }
+  if (len <= 1 || index === -1 || index > instances.length - 1) return;
+  for (let i = index; i < len - 1; i++) {
+    let dom = instances[i].$el;
+    dom.style["top"] =
+      parseInt(dom.style["top"], 10) - removedHeight - 16 + "px";
+  }
+};
+```
+
+#### `this.$message.error('错误')`的实现
+
+`Message`组件支持`this.$message.error('错了哦，这是一条错误消息');`调用使用，到目前为止我们还不支持，代码比较简单直接上代码
+
+```js
+// 为每个 type 定义了各自的方法，如 Message.success(options)，可以直接调用
+["success", "warning", "info", "error"].forEach((type) => {
+  Message[type] = (options) => {
+    return Message({
+      type,
+      message: options,
+    });
+  };
+});
+```
+
 ## 前端路由原理
 
 ### hash 的特点
