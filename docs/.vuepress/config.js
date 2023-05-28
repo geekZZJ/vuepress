@@ -28,6 +28,7 @@ module.exports = {
             "react",
             "webpack",
             "project",
+            "git",
           ],
         },
       ],
