@@ -93,6 +93,7 @@ typings/
 .nuxt
 dist
 deploy
+test
 
 # Gatsby files
 .cache/
