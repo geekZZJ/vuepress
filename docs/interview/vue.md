@@ -673,6 +673,269 @@ Message.close = function(id, userOnClose) {
 });
 ```
 
+### Vuex 实现原理
+
+#### 剖析 Vuex 本质
+
+1. 安装`Vuex`，再通过`import Vuex from 'vuex'`引入
+2. 先`const store = new Vuex.Store({...})`再把`store`作为参数的一个属性值，`new Vue({store})`
+3. 通过`Vue.use(Vuex)`使得每个组件都可以拥有`store`实例
+
+新建`myVuex.js`，基本结构为
+
+```js
+class Store {}
+
+const install = function(Vue) {};
+
+const Vuex = {
+  Store,
+  install,
+};
+
+export default Vuex;
+```
+
+#### 完善`install`方法
+
+**通过 Vue.use(Vuex) 使得每个组件都可以拥有 store 实例**
+
+来看`main.js`
+
+```js
+import Vue from "vue";
+import App from "./App";
+import store from "./store";
+
+Vue.config.productionTip = false;
+
+new Vue({
+  el: "#app",
+  store,
+  components: { App },
+  template: "<App/>",
+});
+```
+
+我们可以发现这里只是将`store`，也就是`store/index.js`导出的`store`实例，作为`Vue`参数的一部分
+
+但是这里就是有一个问题咯，这里的`Vue`是根组件。也就是说目前只有根组件有这个`store`值，而其他组件是还没有的，所以我们需要让其他组件也拥有这个`store`。因此，`install`方法我们可以这样完善
+
+```js
+const install = function(Vue) {
+  Vue.mixin({
+    beforeCreate() {
+      if (this.$options && this.$options.store) {
+        // 如果是根组件
+        this.$store = this.$options.store;
+      } else {
+        // 如果是子组件
+        this.$store = this.$parent && this.$parent.$store;
+      }
+    },
+  });
+};
+```
+
+解释下代码：
+
+- `mixin`的作用是将`mixin`的内容混合到`Vue`的初始参数`options`中
+- 为什么是`beforeCreate`而不是`created`呢？因为如果是在`created`操作的话，`$options`已经初始化好了
+- 如果判断当前组件是根组件的话，就将我们传入的`store`挂在到根组件实例上，属性名为`$store`
+- 如果判断当前组件是子组件的话，就将我们根组件的`$store`也复制给子组件。注意是引用的复制，因此每个组件都拥有了同一个`$store`挂载在它身上
+
+> 这里有个问题，为什么判断当前组件是子组件，就可以直接从父组件拿到`$store`呢
+> 父 beforeCreate -> 父 created -> 父 beforeMount -> 子 beforeCreate -> 子 created -> 子 beforeMount -> 子 mounted -> 父 mounted
+
+#### 实现`Vuex`的`state`
+
+`store/index.js`中使用方式
+
+```js
+const store = new Vuex.Store({
+  state: {
+    count: 2,
+  },
+  getters: {},
+  mutations: {},
+  actions: {},
+});
+```
+
+可以直接在`Class Store`里，获取这个对象
+
+```js
+class Store {
+  constructor(options) {
+    this.state = options.state || {};
+  }
+}
+```
+
+我们忽略了一点，`state`里的值也是响应式的
+
+那要怎么实现响应式呢？我们知道，我们`new Vue()`的时候，传入的`data`是响应式的，那我们是不是可以`new`一个`Vue`，然后把`state`当作`data`传入呢？没有错，就是这样
+
+```js
+class Store {
+  constructor(options) {
+    this.vm = new Vue({
+      data: {
+        state: options.state,
+      },
+    });
+  }
+}
+```
+
+现在是实现响应式了，但是我们怎么获得`state`呢？好像只能通过`this.$store.vm.state`了。但是跟我们平时用的时候不一样，所以是需要转化下的。我们可以给`Store`类添加一个`state`属性。这个属性自动触发`get`接口
+
+```js
+class Store {
+  constructor(options) {
+    this.vm = new Vue({
+      data: {
+        state: options.state,
+      },
+    });
+  }
+  get state() {
+    return this.vm.state;
+  }
+}
+```
+
+#### 实现`getter`
+
+```js
+class Store {
+  constructor(options) {
+    this.vm = new Vue({
+      data: {
+        state: options.state,
+      },
+    });
+
+    // 新增代码
+    const getters = options.getters || {};
+    this.getters = {};
+    Object.keys(getters).forEach((getterName) => {
+      Object.defineProperty(this.getters, getterName, {
+        get: () => {
+          return getters[getterName](this.state);
+        },
+      });
+    });
+  }
+
+  get state() {
+    return this.vm.state;
+  }
+}
+```
+
+#### 实现`mutation`
+
+```js
+class Store {
+  constructor(options) {
+    // ...
+
+    // 新增代码
+    const mutations = options.mutations || {};
+    this.mutations = {};
+    Object.keys(mutations).forEach((mutationName) => {
+      this.mutations[mutationName] = (arg) => {
+        mutations[mutationName](this.state, arg);
+      };
+    });
+  }
+
+  get state() {
+    return this.vm.state;
+  }
+}
+```
+
+`mutations`跟`getters`一样，还是用`mutations`对象将用户传入的`mutations`存储起来
+
+回忆一下，我们是怎么触发`mutations`的
+
+```js
+this.$store.commit("increment", 1);
+```
+
+可以看出`store`对象有`commit`这个方法。而`commit`方法触发了`mutations`对象中的某个对应的方法，因此我们可以给`Store`类添加`commit`方法
+
+```js
+class Store {
+  constructor(options) {
+    // ...
+  }
+
+  // 新增代码
+  commit(method, arg) {
+    this.mutations[method](arg);
+  }
+  get state() {
+    return this.vm.state;
+  }
+}
+```
+
+#### 实现`actions`
+
+```js
+class Store {
+  constructor(options) {
+    // ...
+
+    // 新增代码
+    const actions = options.actions;
+    this.actions = {};
+    Object.keys(actions).forEach((actionName) => {
+      this.actions[actionName] = (arg) => {
+        actions[actionName](this, arg);
+      };
+    });
+  }
+
+  get state() {
+    return this.vm.state;
+  }
+
+  commit(method, arg) {
+    this.mutations[method](arg);
+  }
+
+  // 新增代码
+  dispatch(method, arg) {
+    this.actions[method](arg);
+  }
+}
+```
+
+不过有一点需要解释下，就是这里为什么是传`this`进去。这个`this`代表的就是`store`实例本身。`action`使用
+
+```js
+actions: {
+  increment({ commit }, payload) {
+    commit("increment", payload);
+  }
+}
+```
+
+测试居然出错了，错误说的是执行到`commit(method, arg)`发现这里的`this`为`undefined`
+
+要解决这个问题，我们必须换成箭头函数，`commit`实现中`this`指向不对
+
+```js
+// 修改代码
+commit = (method, arg) => {
+  this.mutations[method](arg);
+};
+```
+
 ## 前端路由原理
 
 ### hash 的特点
