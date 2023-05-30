@@ -990,7 +990,7 @@ Promise.race = function(promises) {
     promises.forEach((p) => {
       Promise.resolve(p).then(
         (value) => {
-          // 只要有一个成功，返回的promise的状态九尾resolved
+          // 只要有一个成功，返回的promise的状态就为resolved
           resolve(value)
         },
         (reason) => {
@@ -1002,3 +1002,128 @@ Promise.race = function(promises) {
   })
 }
 ```
+
+## 模块化
+
+### 模块化的好处
+
+- 避免命名冲突（减少命名空间污染）
+- 更好的分离，按需加载
+- 更高复用性
+- 高可维护性
+
+### CommonJS
+
+暴露模块：`module.exports = value`或`exports.xxx = value`
+
+引入模块：`require(xxx)`，如果是第三方模块，`xxx`为模块名；如果是自定义模块，`xxx`为模块文件路径
+
+代表：node.js
+
+### AMD
+
+`CommonJS`规范加载模块是同步的，也就是说，只有加载完成，才能执行后面的操作。`AMD`规范则是非同步加载模块，允许指定回调函数。由于`Node.js`主要用于服务器编程，模块文件一般都已经存在于本地硬盘，所以加载起来比较快，不用考虑非同步加载的方式，所以`CommonJS`规范比较适用。但是，如果是浏览器环境，要从服务器端加载模块，这时就必须采用非同步模式，因此浏览器端一般采用`AMD`规范。此外`AMD`规范比`CommonJS`规范在浏览器端实现要来着早。
+
+#### 基本语法
+
+- 定义暴露模块
+
+```js
+// 定义没有依赖的模块
+define(function() {
+  return 模块
+})
+
+// 定义有依赖的模块
+define(['module1', 'module2'], function(m1, m2) {
+  return 模块
+})
+```
+
+- 引入使用模块
+
+```js
+require(['module1', 'module2'], function(m1, m2) {
+  // 使用 m1 / m2
+})
+```
+
+### CMD
+
+`CMD`规范专门用于浏览器端，模块的加载是异步的，模块使用时才会加载执行。`CMD`规范整合了`CommonJS`和`AMD`规范的特点。在`Sea.js`中，所有`JS`模块都遵循`CMD`模块定义规范
+
+#### 基本语法
+
+- 定义暴露模块
+
+```js
+// 定义没有依赖的模块
+define(function(require, exports, module) {
+  exports.xxx = value
+  module.exports = value
+})
+
+// 定义有依赖的模块
+define(function(require, exports, module) {
+  // 引入依赖模块(同步)
+  var module2 = require('./module2')
+  // 引入依赖模块(异步)
+  require.async('./module3', function(m3) {})
+  // 暴露模块
+  exports.xxx = value
+})
+```
+
+- 引入使用模块
+
+```js
+define(function(require) {
+  var m1 = require('./module1')
+  var m4 = require('./module4')
+  m1.show()
+  m4.show()
+})
+```
+
+### ES6 模块化
+
+`ES6`模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。`CommonJS`和`AMD`模块，都只能在运行时确定这些东西。比如，`CommonJS`模块就是对象，输入时必须查找对象属性
+
+#### 基本语法
+
+`export`命令用于规定模块的对外接口，`import`命令用于输入其他模块提供的功能
+
+```js
+/** 定义模块 math.js **/
+const basicNum = 0
+const add = function(a, b) {
+  return a + b
+}
+export { basicNum, add }
+
+/** 引用模块 **/
+import { basicNum, add } from './math'
+function test(ele) {
+  ele.textContent = add(99 + basicNum)
+}
+```
+
+如上例所示，使用`import`命令的时候，用户需要知道所要加载的变量名或函数名，否则无法加载。为了给用户提供方便，让他们不用阅读文档就能加载模块，就要用到`export default`命令，为模块指定默认输出
+
+```js
+// 定义
+export default function() {
+  console.log('foo')
+}
+
+// 引入
+import customName from './export-default'
+customName()
+```
+
+### 区别
+
+- `CommonJS`规范主要用于服务端编程，加载模块是同步的，这并不适合在浏览器环境，因为同步意味着阻塞加载，浏览器资源是异步加载的，因此有了`AMD`、`CMD`解决方案
+- `AMD`规范在浏览器环境中异步加载模块，而且可以并行加载多个模块。不过，`AMD`规范开发成本高，代码的阅读和书写比较困难，模块定义方式的语义不顺畅
+- `CMD`规范与`AMD`规范很相似，都用于浏览器编程，依赖就近，延迟执行，可以很容易在`Node.js`中运行。不过，依赖`SPM`打包，模块的加载逻辑偏重
+- `ES6`在语言标准的层面上，实现了模块功能，而且实现得相当简单，完全可以取代`CommonJS`和`AMD`规范，成为浏览器和服务器通用的模块解决方案
