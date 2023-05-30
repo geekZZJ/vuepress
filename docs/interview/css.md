@@ -10,14 +10,14 @@ CSS3 中的盒模型有以下两种：标准盒模型、IE 盒模型
   可以通过`box-sizing`来改变元素的盒模型：
 - `box-sizing: content-box`：标准盒模型（默认值）
 - `box-sizing: border-box`：IE 盒模型
-  ![标准盒模型](/css/1.png "标准盒模型")
-  ![IE 盒模型](/css/2.png "IE 盒模型")
+  ![标准盒模型](/css/1.png '标准盒模型')
+  ![IE 盒模型](/css/2.png 'IE 盒模型')
 
 ## 选择器优先级
 
 选择器：类型选择器、通配选择器、类选择器、ID 选择器、标签属性选择器、伪类选择器、伪元素选择器、后代选择器、子代选择器、相邻兄弟选择器、通用兄弟选择器  
 样式的优先级一般为`!important > style > id > class`  
-详细解析：[深入理解 CSS 选择器优先级](https://juejin.cn/post/6844903709772611592 "深入理解 CSS 选择器优先级")
+详细解析：[深入理解 CSS 选择器优先级](https://juejin.cn/post/6844903709772611592 '深入理解 CSS 选择器优先级')
 
 ## 图片底部 3 像素问题
 
@@ -30,7 +30,7 @@ CSS3 中的盒模型有以下两种：标准盒模型、IE 盒模型
 ## border 画三角形
 
 原理：`border`是斜切的，当`width`设为 0 时，将`border-bottom`设置宽度，`border-left`和`border-right`设置宽度，并且颜色设为透明时，将出现三角形  
-![border 画三角形](/css/3.png "border 画三角形") ![border 画三角形](/css/4.png "border 画三角形")
+![border 画三角形](/css/3.png 'border 画三角形') ![border 画三角形](/css/4.png 'border 画三角形')
 
 ```css
 .c3 {
@@ -60,7 +60,7 @@ CSS3 中的盒模型有以下两种：标准盒模型、IE 盒模型
 - 查询某些属性或调用某些计算方法：`offsetWidth`、`offsetHeight`等，除此之外，当我们调用`getComputedStyle`方法，或者`IE`里的 `currentStyle`时，也会触发重排，原理是一样的，都为求一个“即时性”和“准确性”
 
 **何时发生回流重绘**  
-![引起重绘属性](/css/5.png "引起重绘属性")
+![引起重绘属性](/css/5.png '引起重绘属性')
 
 > 重绘不一定会重排，但是重排一定发生重绘，重绘和重排都会耗费浏览器的性能，尽量避免
 
@@ -70,7 +70,7 @@ CSS3 中的盒模型有以下两种：标准盒模型、IE 盒模型
 - **批量修改 DOM**，比如读取某元素`offsetWidth`属性存到一个临时变量，再去使用，而不是频繁使用这个计算属性；又比如利用`document.createDocumentFragment()`来添加要被添加的节点，处理完之后再插入到实际`DOM`中
 - 使用`absolute`或`fixed`使元素脱离文档流，这在制作复杂的动画时对性能的影响比较明显
 - 开启`GPU`加速，利用 CSS 属性`transform`、`will-change`等，比如改变元素位置，我们使用`translate`会比使用绝对定位改变其`left`、`top`等来的高效，因为它不会触发重排或重绘，`transform`使浏览器为元素创建⼀个`GPU`图层，这使得动画元素在一个独立的层中进行渲染。当元素的内容没有发生改变，就没有必要进行重绘  
-  详细解析：[你真的了解回流和重绘吗](https://juejin.cn/post/6844903779700047885 "你真的了解回流和重绘吗")
+  详细解析：[你真的了解回流和重绘吗](https://juejin.cn/post/6844903779700047885 '你真的了解回流和重绘吗')
 
 ## 对 BFC 的理解
 
@@ -102,20 +102,20 @@ BFC 的应用
 - 自适应多栏布局
 - 防止外边距折叠
 - 清除浮动  
-  详细解析：[可能是最好的 BFC 解析了](https://juejin.cn/post/6960866014384881671 "你可能是最好的 BFC 解析了")
+  详细解析：[可能是最好的 BFC 解析了](https://juejin.cn/post/6960866014384881671 '你可能是最好的 BFC 解析了')
 
 ## margin 负值问题
 
-![margin 负值](/css/6.png "margin 负值")
+![margin 负值](/css/6.png 'margin 负值')
 
 ## 水平居中
 
-![水平居中](/css/7.png "水平居中")
+![水平居中](/css/7.png '水平居中')
 
 ## 垂直居中
 
-![垂直居中](/css/8.png "垂直居中")
-详细解析：[面试官：你能实现多少种水平垂直居中的布局（定宽高和不定宽高）](https://juejin.cn/post/6844903982960214029 "面试官：你能实现多少种水平垂直居中的布局（定宽高和不定宽高）")
+![垂直居中](/css/8.png '垂直居中')
+详细解析：[面试官：你能实现多少种水平垂直居中的布局（定宽高和不定宽高）](https://juejin.cn/post/6844903982960214029 '面试官：你能实现多少种水平垂直居中的布局（定宽高和不定宽高）')
 
 ## 实现两栏布局（左侧固定+右侧自适应）
 
@@ -213,7 +213,7 @@ BFC 的应用
 - 两侧内容固定，中间内容随着宽度自适应
 - 一般用于 PC 网页
 
-![三栏布局](/css/9.png "三栏布局")
+![三栏布局](/css/9.png '三栏布局')
 
 **圣杯布局**：
 
@@ -355,7 +355,7 @@ polygon( [<fill-rule>,]? [<shape-arg> <shape-arg>]# )
   position: absolute;
 }
 .svg-circle {
-  clip-path: url("#svgCircle");
+  clip-path: url('#svgCircle');
 }
 ```
 
@@ -439,7 +439,7 @@ html {
 
 ## flex 布局
 
-这一块内容看 [Flex 布局教程](https://www.ruanyifeng.com/blog/2015/07/flex-grammar.html "Flex 布局教程") 就够了  
+这一块内容看 [Flex 布局教程](https://www.ruanyifeng.com/blog/2015/07/flex-grammar.html 'Flex 布局教程') 就够了  
 `flex: 1` ，它具体包含了以下的意思：
 
 - `flex-grow: 1`：该属性默认为`0`，如果存在剩余空间，元素也不放大。设置为`1`代表会放大
@@ -451,3 +451,8 @@ html {
 - 父元素的`line-height`写了具体数值，比如 30px，则子元素`line-height`继承该值。
 - 父元素的`line-height`写了比例，比如 1.5 或 2，则子元素`line-height`也是继承该比例。
 - 父元素的`line-height`写了百分比，比如 200%，则子元素`line-height`继承的是父元素 font-size \* 200% 计算出来的值
+
+## svg 修改大小和颜色
+
+- 修改大小：在`<svg>`标签中修改`width`、`height`属性（默认单位是 px）
+- 修改颜色：在`<path>`标签中修改`fill`属性
