@@ -342,6 +342,294 @@ function observer(target) {
 - addVnodes ｜ removeVnodes
 - updateChildren（key 的重要性）
 
+### diff 算法详解
+
+#### 前言
+
+1. 当数据发生变化时，vue 是怎么更新节点的
+
+我们先根据真实`DOM`生成一颗`virtual DOM`，当`virtual DOM`某个节点的数据改变后会生成一个新的`Vnode`，然后`Vnode`和`oldVnode`作对比，发现有不一样的地方就直接修改在真实的`DOM`上，然后使`oldVnode`的值为`Vnode`
+
+`diff`的过程就是调用名为`patch`的函数，比较新旧节点，一边比较一边给真实的`DOM`打补丁
+
+2. virtual DOM 和真实 DOM 的区别
+
+`virtual DOM`是将真实的`DOM`的数据抽取出来，以对象的形式模拟树形结构。比如`DOM`是这样的：
+
+```html
+<div class="container" style="width:100px;">
+  <p>123</p>
+</div>
+```
+
+对应的`virtual DOM`
+
+```js
+const vnode = {
+  tag: "div",
+  props: {
+    class: "container",
+    style: {
+      width: "100px",
+    },
+  },
+  children: [{ tag: "p", text: "123" }],
+};
+```
+
+**`VNode`和`oldVNode`都是对象**
+
+3. diff 的比较方式
+
+在采取`diff`算法比较新旧节点的时候，比较只会在同层级进行, 不会跨层级比较
+
+#### diff 流程图
+
+![diff流程图](/vue/diff.png "diff流程图")
+
+#### 具体分析
+
+##### patch
+
+```js
+function patch(oldVnode, vnode) {
+  // some code
+  if (sameVnode(oldVnode, vnode)) {
+    patchVnode(oldVnode, vnode);
+  } else {
+    // 当前oldVnode对应的真实元素节点
+    const oEl = oldVnode.el;
+    // 父元素
+    let parentEle = api.parentNode(oEl);
+    // 根据Vnode生成新元素
+    createEle(vnode);
+    if (parentEle !== null) {
+      // 将新元素添加进父元素
+      api.insertBefore(parentEle, vnode.el, api.nextSibling(oEl));
+      // 移除以前的旧元素节点
+      api.removeChild(parentEle, oldVnode.el);
+      oldVnode = null;
+    }
+  }
+  // some code
+  return vnode;
+}
+```
+
+`patch`函数接收两个参数`oldVnode`和`Vnode`分别代表新的节点和之前的旧节点
+
+- 判断两节点是否值得比较，值得比较则执行`patchVnode`
+- 不值得比较则用`Vnode`替换`oldVnode`
+
+```js
+function sameVnode(a, b) {
+  return (
+    a.key === b.key && // key值
+    a.tag === b.tag && // 标签名
+    a.isComment === b.isComment && // 是否为注释节点
+    // 是否都定义了data，data包含一些具体信息，例如onclick , style
+    isDef(a.data) === isDef(b.data) &&
+    sameInputType(a, b) // 当标签是<input>的时候，type必须相同
+  );
+}
+```
+
+如果两个节点都是一样的，那么就深入检查他们的子节点。如果两个节点不一样那就说明`Vnode`完全被改变了，就可以直接替换`oldVnode`
+
+##### patchVnode
+
+当我们确定两个节点值得比较之后我们会对两个节点指定`patchVnode`方法
+
+```js
+function patchVnode(oldVnode, vnode) {
+  const el = (vnode.el = oldVnode.el);
+  let i,
+    oldCh = oldVnode.children,
+    ch = vnode.children;
+  if (oldVnode === vnode) return;
+  if (
+    oldVnode.text !== null &&
+    vnode.text !== null &&
+    oldVnode.text !== vnode.text
+  ) {
+    api.setTextContent(el, vnode.text);
+  } else {
+    updateEle(el, vnode, oldVnode);
+    if (oldCh && ch && oldCh !== ch) {
+      updateChildren(el, oldCh, ch);
+    } else if (ch) {
+      createEle(vnode); //create el's children dom
+    } else if (oldCh) {
+      api.removeChildren(el);
+    }
+  }
+}
+```
+
+这个函数做了以下事情：
+
+- 找到对应的真实`dom`，称为`el`
+- 判断`Vnode`和`oldVnode`是否指向同一个对象，如果是，那么直接`return`
+- 如果他们都有文本节点并且不相等，那么将`el`的文本节点设置为`Vnode`的文本节点
+- 如果`oldVnode`有子节点而`Vnode`没有，则删除`el`的子节点
+- 如果`oldVnode`没有子节点而`Vnode`有，则将`Vnode`的子节点真实化之后添加到`el`
+- 如果两者都有子节点，则执行`updateChildren`函数比较子节点，这一步很重要
+
+##### updateChildren
+
+代码量很大，不方便一行一行的讲解，所以下面结合一些示例图来描述一下
+
+```js
+function updateChildren(parentElm, oldCh, newCh) {
+  let oldStartIdx = 0,
+    newStartIdx = 0;
+  let oldEndIdx = oldCh.length - 1;
+  let oldStartVnode = oldCh[0];
+  let oldEndVnode = oldCh[oldEndIdx];
+  let newEndIdx = newCh.length - 1;
+  let newStartVnode = newCh[0];
+  let newEndVnode = newCh[newEndIdx];
+  let oldKeyToIdx;
+  let idxInOld;
+  let elmToMove;
+  let before;
+  while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+    if (oldStartVnode == null) {
+      // 对于vnode.key的比较，会把oldVnode = null
+      oldStartVnode = oldCh[++oldStartIdx];
+    } else if (oldEndVnode == null) {
+      oldEndVnode = oldCh[--oldEndIdx];
+    } else if (newStartVnode == null) {
+      newStartVnode = newCh[++newStartIdx];
+    } else if (newEndVnode == null) {
+      newEndVnode = newCh[--newEndIdx];
+    } else if (sameVnode(oldStartVnode, newStartVnode)) {
+      patchVnode(oldStartVnode, newStartVnode);
+      oldStartVnode = oldCh[++oldStartIdx];
+      newStartVnode = newCh[++newStartIdx];
+    } else if (sameVnode(oldEndVnode, newEndVnode)) {
+      patchVnode(oldEndVnode, newEndVnode);
+      oldEndVnode = oldCh[--oldEndIdx];
+      newEndVnode = newCh[--newEndIdx];
+    } else if (sameVnode(oldStartVnode, newEndVnode)) {
+      patchVnode(oldStartVnode, newEndVnode);
+      api.insertBefore(
+        parentElm,
+        oldStartVnode.el,
+        api.nextSibling(oldEndVnode.el)
+      );
+      oldStartVnode = oldCh[++oldStartIdx];
+      newEndVnode = newCh[--newEndIdx];
+    } else if (sameVnode(oldEndVnode, newStartVnode)) {
+      patchVnode(oldEndVnode, newStartVnode);
+      api.insertBefore(parentElm, oldEndVnode.el, oldStartVnode.el);
+      oldEndVnode = oldCh[--oldEndIdx];
+      newStartVnode = newCh[++newStartIdx];
+    } else {
+      // 使用key时的比较
+      if (oldKeyToIdx === undefined) {
+        // 有key生成index表
+        oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx);
+      }
+      idxInOld = oldKeyToIdx[newStartVnode.key];
+      if (!idxInOld) {
+        api.insertBefore(
+          parentElm,
+          createEle(newStartVnode).el,
+          oldStartVnode.el
+        );
+        newStartVnode = newCh[++newStartIdx];
+      } else {
+        elmToMove = oldCh[idxInOld];
+        if (elmToMove.sel !== newStartVnode.sel) {
+          api.insertBefore(
+            parentElm,
+            createEle(newStartVnode).el,
+            oldStartVnode.el
+          );
+        } else {
+          patchVnode(elmToMove, newStartVnode);
+          oldCh[idxInOld] = null;
+          api.insertBefore(parentElm, elmToMove.el, oldStartVnode.el);
+        }
+        newStartVnode = newCh[++newStartIdx];
+      }
+    }
+  }
+  if (oldStartIdx > oldEndIdx) {
+    before = newCh[newEndIdx + 1] == null ? null : newCh[newEndIdx + 1].el;
+    addVnodes(parentElm, before, newCh, newStartIdx, newEndIdx);
+  } else if (newStartIdx > newEndIdx) {
+    removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
+  }
+}
+```
+
+- 将`Vnode`的子节点`Vch`和`oldVnode`的子节点`oldCh`提取出来
+- `oldCh`和`vCh`各有两个头尾的变量`StartIdx`和`EndIdx`，它们的 2 个变量相互比较，一共有 4 种比较方式。如果 4 种比较都没匹配，如果设置了`key`，就会用`key`进行比较，在比较的过程中，变量会往中间靠，一旦`StartIdx>EndIdx`表明`oldCh`和`vCh`至少有一个已经遍历完了，就会结束比较
+
+##### 图解 updateChildren
+
+粉红色的部分为`oldCh`和黄色部分为`vCh`
+![updateChildren](/vue/4.png "updateChildren")
+
+我们将它们取出来并分别用`s`和`e`指针指向它们的头`child`和尾`child`
+![updateChildren](/vue/5.png "updateChildren")
+
+现在分别对`oldS`、`oldE`、`S`、`E`两两做`sameVnode`比较，有四种比较方式，当其中两个能匹配上那么真实`dom`中的相应节点会移到`Vnode`相应的位置
+
+- 如果是`oldS`和`E`匹配上了，那么真实`dom`中的第一个节点会移到最后
+- 如果是`oldE`和`S`匹配上了，那么真实`dom`中的最后一个节点会移到最前，匹配上的两个指针向中间移动
+- 如果四种匹配没有一对是成功的，分为两种情况：
+  - 如果新旧子节点都存在`key`，那么会根据`oldChild`的`key`生成一张`hash`表，用`S`的`key`与`hash`表做匹配，匹配成功就判断`S`和匹配节点是否为`sameNode`，如果是，就在真实`dom`中将成功的节点移到最前面，否则，将`S`生成对应的节点插入到`dom`中对应的`oldS`位置，`S`指针向中间移动，被匹配`old`中的节点置为`null`
+  - 如果没有`key`，则直接将`S`生成新的节点插入真实`DOM`（ps：这下可以解释为什么`v-for`的时候需要设置`key`了，如果没有`key`那么就只会做四种匹配，就算指针中间有可复用的节点都不能被复用了）
+
+##### 例子
+
+![updateChildren](/vue/6.png "updateChildren")
+
+- 第一步
+
+```js
+oldS = a, oldE = d；
+S = a, E = b;
+```
+
+`oldS`和`S`匹配，则将`dom`中的`a`节点放到第一个，已经是第一个了就不管了，此时`dom`的位置为：`a b d`
+
+- 第二步
+
+```js
+oldS = b, oldE = d；
+S = c, E = b;
+```
+
+`oldS`和`E`匹配，就将原本的`b`节点移动到最后，因为`E`是最后一个节点，他们位置要一致，这就是上面说的：当其中两个能匹配上那么真实`dom`中的相应节点会移到`Vnode`相应的位置，此时`dom`的位置为：`a d b`
+
+- 第三步
+
+```js
+oldS = d, oldE = d；
+S = c, E = d;
+```
+
+`oldE`和`E`匹配，位置不变此时`dom`的位置为：`a d b`
+
+- 第四步
+
+```js
+oldS++;
+oldE--;
+oldS > oldE;
+```
+
+遍历结束，说明`oldCh`先遍历完。就将剩余的`vCh`节点根据自己的的`index`插入到真实`dom`中去，此时`dom`位置为：`a c d b`
+
+这个匹配过程的结束有两个条件：
+
+- `oldS > oldE`表示`oldCh`先遍历完，那么就将多余的`vCh`根据`index`添加到`dom`中去
+- `S > E`表示`vCh`先遍历完，那么就在真实`dom`中将区间为`[oldS, oldE]`的多余节点删掉
+
 ### 模版编译
 
 - 模板编译为 render 函数，执行 render 函数返回 vnode
