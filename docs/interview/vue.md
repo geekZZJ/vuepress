@@ -630,6 +630,8 @@ oldS > oldE;
 - `oldS > oldE`表示`oldCh`先遍历完，那么就将多余的`vCh`根据`index`添加到`dom`中去
 - `S > E`表示`vCh`先遍历完，那么就在真实`dom`中将区间为`[oldS, oldE]`的多余节点删掉
 
+#### vue diff 算法由 O(n^3) 优化到 O(n)
+
 ### 模版编译
 
 - 模板编译为 render 函数，执行 render 函数返回 vnode
