@@ -532,3 +532,21 @@ plugins: [
 - 如 Class 可以用 function 模拟
 - 如 Promise 可以用 callback 来模拟
 - 但 Proxy 的功能用 Object.defineProperty 无法模拟
+
+## plugin 执行顺序
+
+`webpack`整体是一个插件架构，所有的功能都以插件的方式集成在构建流程中，通过发布订阅事件来触发各个插件执行。`webpack`核心使用`tapable`来实现插件的`binding`（绑定）和`applying`（应用）
+
+### tapable 核心函数--compiler（编译器）和 compilation（编译）
+
+#### compiler
+
+`compiler`对象代表的是配置完备的`webpack`环境。`compiler`对象只在`webpack`启动时构建一次，由`webpack`组合所有的配置项构建生成
+
+- 功能核心
+
+`Compiler`继承自前面我们介绍的`Tapable`类，其混合了`Tapable`类以吸收其功能来注册和调用自身的插件。 大多数面向用户的插件，都是首先在`Compiler`上注册的
+
+- compiler 事件钩子
+
+https://webpack.js.org/api/compiler-hooks/
