@@ -4,7 +4,7 @@
 
 - 拆分配置和 merge  
   拆分 webpack.common.js、webpack.dev.js、webpack.prod.js
-  ![拆分配置和 merge](/webpack/merge.png "拆分配置和 merge")
+  ![拆分配置和 merge](/webpack/merge.png '拆分配置和 merge')
 - 启动本地服务
 
 ```js
@@ -341,11 +341,11 @@ devServer: {
 // 开启热更新之后的代码逻辑
 if (module.hot) {
   // math.js中代码发生变化页面不会整体刷新
-  module.hot.accept("./math.js", () => {
+  module.hot.accept('./math.js', () => {
     // 热更新的回调函数
-    const sumRes = sum(10, 20);
-    console.log("热更新", sumRes);
-  });
+    const sumRes = sum(10, 20)
+    console.log('热更新', sumRes)
+  })
 }
 ```
 
@@ -494,7 +494,7 @@ plugins: [
 - chunk - 多模块合并成的
 - bundle - 最终的输出文件
 
-![module chunk bundle 的区别](/webpack/module.png "module chunk bundle 的区别")
+![module chunk bundle 的区别](/webpack/module.png 'module chunk bundle 的区别')
 
 ### ES6 Module 和 Commonjs 区别
 
@@ -514,7 +514,7 @@ plugins: [
 ### loader 和 plugin 的区别
 
 - loader 模块转换器，如 less -> css
-- plugin 扩展插件，如 HtmlWebpackPlugin
+- plugin 扩展插件，如 HtmlWebpackPlugin，它丰富了 webpack 本身，针对是 loader 结束后，webpack 打包的整个过程，它并不直接操作文件，而是基于事件机制工作，会监听 webpack 打包过程中的某些节点，执行广泛的任务
 
 ### babel 和 webpack 的区别
 
