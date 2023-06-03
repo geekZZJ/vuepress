@@ -86,3 +86,141 @@
 - `共享内存通信`：就是映射一段能被其他进程访问的内存，由一个进程创建，但多个进程都可以访问，共享进程最快的是`IPC`方式
 - `信号量通信`：比如信号量初始值是 1，进程 1 来访问一块内存的时候，就把信号量设为 0，然后进程 2 也来访问的时候看到信号量为 0，就知道有其他进程在访问了，就不访问了
 - `socket`：其他的都是同一台主机之间的进程通信，而在不同主机的进程通信就要用到`socket`的通信方式了，比如发起`http`请求，服务器返回数据
+
+## 预加载
+
+### DNS Prefetch
+
+```html
+<link rel="dns-prefetch" href="https://fonts.googleapis.com/" />
+```
+
+### Preconnect
+
+与`<link rel="dns-prefetch">`不同，除`DNS解析`之外，`<link rel="preconnect">`还会与服务器建立 TCP 连接以及进行 TSL 握手（对 HTTPS 站点而言），这能进一步减少建立跨域请求的时间，降低延迟。
+
+```html
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+```
+
+### Preload
+
+`preload`提供了一种声明式的命令，能让浏览器提前加载指定资源（如脚本或者样式表），并在需要执行的时候再执行。这在希望加快某个资源的加载速度时很有用。在`preload`下载完资源后，资源只是被缓存起来，浏览器不会对其执行任何操作。不执行脚本，不应用样式表。使用方式如下：
+
+```html
+<link rel="preload" href="style.css" as="style" />
+<link rel="preload" href="main.js" as="script" />
+```
+
+注意：设置了`rel`属性的`link`标签必须设置`as`属性来声明资源的类型，否则浏览器可能无法正确加载资源。常见的`as`属性包括:
+
+- font：字体文件
+- image：图片文件
+- script：JavaScript 文件
+- style: CSS 样式文件
+
+#### 使用场景
+
+- 字体提前加载
+
+```html
+<link
+  rel="preload"
+  href="fonts/cicle_fina-webfont.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+```
+
+- 动态加载脚本，但不执行
+
+通常我们可能想在当前页去加载下一页的资源，但是在`preload`的情况下，我们常常使用动态创建`script`标签的形式，但是动态创建`script`标签的话，`js`代码会立即执行。在有了`preload`之后，就可以做到动态加载，延迟执行
+
+```js
+const link = document.createElement("link");
+link.href = "myscript.js";
+link.rel = "preload";
+link.as = "script";
+document.head.appendChild(link);
+```
+
+上面这段代码可以让你预先加载脚本，下面这段代码可以让脚本执行
+
+```js
+const script = document.createElement("script");
+script.src = "myscript.js";
+document.body.appendChild(script);
+```
+
+- 基于标记语言的异步加载
+
+```html
+<link
+  rel="preload"
+  as="style"
+  href="asyncstyle.css"
+  onload="this.rel='stylesheet'"
+/>
+```
+
+`preload`的`onload`事件可以在资源加载完成后修改`rel`属性，从而实现非常酷的异步资源加载
+
+### Prefetch
+
+`prefetch`(链接预取)是一种浏览器机制，其利用浏览器空闲时间来下载或预取用户在不久的将来可能访问的文档。网页向浏览器提供一组预取提示，并在浏览器完成当前页面的加载后开始**静默地拉取指定的文档并将其存储在缓存中**。当用户访问其中一个预取文档时，便可以快速的从浏览器缓存中得到。`prefetch`是一个**低优先级**的资源提示，允许浏览器在**后台空闲时**获取将来可能用得到的资源，并且将他们**存储在浏览器的缓存中**。一旦一个页面加载完毕就会开始下载其他的资源，然后当用户点击了一个带`prefetched`的连接，它将可以立刻从缓存中加载内容
+
+```html
+<link rel="dns-prefetch" href="https://example.com/" />
+```
+
+`webpack`插件`preload-webpack-plugin`可以帮助我们将该过程自动化，结合`htmlWebpackPlugin`在构建过程中插入`link`标签。[preload-webpack-plugin](https://www.npmjs.com/package/preload-webpack-plugin)
+
+- preload
+
+```js
+plugins: [
+  new HtmlWebpackPlugin(),
+  new PreloadWebpackPlugin({
+    rel: "preload",
+    as(entry) {
+      if (/\.css$/.test(entry)) return "style";
+      if (/\.woff$/.test(entry)) return "font";
+      if (/\.png$/.test(entry)) return "image";
+      return "script";
+    },
+  }),
+];
+```
+
+- prefetch
+
+```js
+plugins: [
+  new HtmlWebpackPlugin(),
+  new PreloadWebpackPlugin({
+    rel: "prefetch",
+  }),
+];
+```
+
+### 浏览器资源加载优先级规则
+
+#### 基本顺序
+
+浏览器首先会按照资源默认的优先级确定加载顺序：
+
+- html, css, font 这三种类型的资源优先级最高
+- 然后是 preload 资源（通过`<link rel="preload">`标签预加载）
+- 接着是图片、语音、视频
+- 最低的是 prefetch 预读取的资源
+
+#### 资源优先级提升
+
+浏览器会按照如下规则，对优先级进行调整：
+
+- 对于 XHR 请求资源：将同步 XHR 请求的优先级调整为最高
+- 对于图片资源：会根据图片是否在可见视图之内来改变优先级。图片资源的默认优先级为 Low 。现代浏览器为了提高用户首屏的体验，在渲染时会计算图片资源是否在首屏可见视图之内，在的话，会将这部分视口可见图片资源的优先级提升为 High
+- 对于脚本资源：浏览器会将根据脚本所处的位置和属性标签分为三类，分别设置优先级
+  - 首先，对于添加 defer / async 属性标签的脚本的优先级会全部降为 Low
+  - 然后，对于没有添加该属性的脚本，根据该脚本在文档中的位置是在浏览器展示的第一张图片之前还是之后，又可分为两类。在之前的（标记 early）它会被定为 High 优先级，在之后的（标记 late）会被设置为 Medium 优先级
