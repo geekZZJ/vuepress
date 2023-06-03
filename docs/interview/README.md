@@ -12,7 +12,13 @@
 区别：脚本中有 defer 属性时，脚本会被延迟到整个页面都解析完毕后再运行。脚本中有 async 属性时，如果脚本的网络请求回来之后，此时 HTML 还没解析完，浏览器会暂停解析，先让 JS 引擎执行代码，执行完毕后再进行解析。
 ![script](/html/1.png "script")  
 ![defer script](/html/2.png "defer script")  
-![async script](/html/3.png "async script")  
+![async script](/html/3.png "async script")
+
+注意点：
+
+- defer：HTML5 规范要求脚本按照它们出现的先后顺序执行，因此第一个延迟脚本会先于第二个延迟脚本执行，而这两个脚本会先于`DOMContentLoaded`事件执行。**在现实当中，延迟脚本并不一定会按照顺序执行，也不一定会在`DOMContentLoaded`事件触发前执行，因此最好只包含一个延迟脚本**
+- async：可能由于`1.js`下载时间比较长，由于两个`<script>`标签都是异步执行，互不干扰，因此`2.js`可能就会先于`1.js`执行。因此，确保两者之间互不依赖非常重要。指定`async`属性的目的是不让页面等待两个脚本下载和执行，从而异步加载页面其他内容。为此，建议异步脚本不要在加载期间修改`DOM`
+
 详细解析：[图解 script 标签中的 async 和 defer 属性](https://juejin.cn/post/6894629999215640583 "图解 script 标签中的 async 和 defer 属性")
 
 ## HTML5 新特性
