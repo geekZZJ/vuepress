@@ -1152,3 +1152,18 @@ customName();
 - 针对于存在大量增删操作的场景，使用`Map`更合适
 - `Map`会保留所有元素的顺序
 - `Map`在存储大量数据的场景下表现更好，尤其是在`key`为未知状态
+
+## Weak Set 与 Weak Map
+
+### Weak Set
+
+主要便于垃圾回收机制，防止内存泄漏
+
+- 我们只能向`WeakSet`添加对象（而不能是原始值）
+- `WeakSet`支持`add`，`has`和`delete`方法，但不支持`size`和`keys()`，并且不可迭代
+
+### Weak Map
+
+`Weak Map`是弱引用`Map`集合。主要便于垃圾回收机制
+
+- `WeakMap`支持`get`，`set`，`has`和`delete`方法，但不支持`values()`和`keys()`，并且不可迭代
