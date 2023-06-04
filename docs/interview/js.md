@@ -22,10 +22,10 @@
 class People {}
 class Student extends People {}
 
-const zzj = new Student()
+const zzj = new Student();
 
-console.log(zzj instanceof People) // true
-console.log(zzj instanceof Student) // true
+console.log(zzj instanceof People); // true
+console.log(zzj instanceof Student); // true
 ```
 
 其实现就是顺着**原型链**去找，如果能找到对应的`xxxx.prototype`即为`true`。比如这里的`zzj`作为实例，顺着原型链能找到`Student.prototype`及`People.prototype`，所以都为`true`
@@ -33,35 +33,35 @@ console.log(zzj instanceof Student) // true
 - Object.prototype.toString.call()：所有原始数据类型都是能判断的，还有**Error 对象、Date 对象**等
 
 ```js
-Object.prototype.toString.call(2) // "[object Number]"
-Object.prototype.toString.call('') // "[object String]"
-Object.prototype.toString.call(true) // "[object Boolean]"
-Object.prototype.toString.call(undefined) // "[object Undefined]"
-Object.prototype.toString.call(null) // "[object Null]"
-Object.prototype.toString.call(Math) // "[object Math]"
-Object.prototype.toString.call({}) // "[object Object]"
-Object.prototype.toString.call([]) // "[object Array]"
-Object.prototype.toString.call(function() {}) // "[object Function]"
+Object.prototype.toString.call(2); // "[object Number]"
+Object.prototype.toString.call(""); // "[object String]"
+Object.prototype.toString.call(true); // "[object Boolean]"
+Object.prototype.toString.call(undefined); // "[object Undefined]"
+Object.prototype.toString.call(null); // "[object Null]"
+Object.prototype.toString.call(Math); // "[object Math]"
+Object.prototype.toString.call({}); // "[object Object]"
+Object.prototype.toString.call([]); // "[object Array]"
+Object.prototype.toString.call(function() {}); // "[object Function]"
 ```
 
 > 如何判断变量是否为数组？
 
 ```js
-Array.isArray(arr) // true
-arr.__proto__ === Array.prototype // true
-arr instanceof Array // true
-Object.prototype.toString.call(arr) // "[object Array]"
+Array.isArray(arr); // true
+arr.__proto__ === Array.prototype; // true
+arr instanceof Array; // true
+Object.prototype.toString.call(arr); // "[object Array]"
 ```
 
 ## 深拷贝和浅拷贝的定义
 
 浅拷贝：
-![浅拷贝](/js/1.png '浅拷贝')
+![浅拷贝](/js/1.png "浅拷贝")
 
 > 创建一个新对象，这个对象有着原始对象属性值的一份精确拷贝。如果属性是基本类型，拷贝的就是基本类型的值，如果属性是引用类型，拷贝的就是内存地址，所以如果其中一个对象改变了这个地址，就会影响到另一个对象
 
 深拷贝：
-![深拷贝](/js/2.png '深拷贝')
+![深拷贝](/js/2.png "深拷贝")
 
 > 将一个对象从内存中完整的拷贝一份出来，从堆内存中开辟一个新的区域存放新对象，且修改新对象不会影响原对象
 
@@ -69,32 +69,32 @@ Object.prototype.toString.call(arr) // "[object Array]"
 
 ```js
 function clone(target, map = new Map()) {
-  if (typeof target === 'object' && target !== null) {
-    const cloneTarget = Array.isArray(target) ? [] : {}
+  if (typeof target === "object" && target !== null) {
+    const cloneTarget = Array.isArray(target) ? [] : {};
     if (map.get(target)) {
-      return map.get(target)
+      return map.get(target);
     }
     // 防止循环引用
-    map.set(target, cloneTarget)
+    map.set(target, cloneTarget);
     for (const key in target) {
       // 保证 key 不是原型属性
       if (target.hasOwnProperty(key)) {
-        cloneTarget[key] = clone(target[key], map)
+        cloneTarget[key] = clone(target[key], map);
       }
     }
-    return cloneTarget
+    return cloneTarget;
   } else {
-    return target
+    return target;
   }
 }
 ```
 
-详细解析：[如何写出一个惊艳面试官的深拷贝](https://juejin.cn/post/6844903929705136141 '如何写出一个惊艳面试官的深拷贝')
+详细解析：[如何写出一个惊艳面试官的深拷贝](https://juejin.cn/post/6844903929705136141 "如何写出一个惊艳面试官的深拷贝")
 
 ## IEEE 754 浮点数标准
 
-![浮点数标准](/js/3.png '浮点数标准')
-![浮点数标准](/js/4.png '浮点数标准')
+![浮点数标准](/js/3.png "浮点数标准")
+![浮点数标准](/js/4.png "浮点数标准")
 以双精度浮点格式为例，如上图，三个参数 S E M:
 
 ```
@@ -165,10 +165,10 @@ S 为 0，E 为 1021，`(-1)^S*2^(E-1023)*(1.M) => (1.00110011001100110011001100
 
 ```js
 function isEqual(a, b) {
-  return Math.abs(a - b) < Number.EPSILON
+  return Math.abs(a - b) < Number.EPSILON;
 }
 
-console.log(isEqual(0.1 + 0.2, 0.3)) // true
+console.log(isEqual(0.1 + 0.2, 0.3)); // true
 ```
 
 `Number.EPSILON`的实质是一个可以接受的最小误差范围，一般来说为`Math.pow(2, -52)`
@@ -178,34 +178,34 @@ console.log(isEqual(0.1 + 0.2, 0.3)) // true
 ```js
 // 字符串数字相加(位数相同)
 const addStrings = (num1, num2) => {
-  let i = num1.length - 1
-  let j = num2.length - 1
-  const res = []
-  let carry = 0
+  let i = num1.length - 1;
+  let j = num2.length - 1;
+  const res = [];
+  let carry = 0;
   while (i >= 0 || j >= 0) {
-    const n1 = i >= 0 ? Number(num1[i]) : 0
-    const n2 = j >= 0 ? Number(num2[j]) : 0
-    const sum = n1 + n2 + carry
-    res.unshift(sum % 10)
-    carry = Math.floor(sum / 10)
-    i--
-    j--
+    const n1 = i >= 0 ? Number(num1[i]) : 0;
+    const n2 = j >= 0 ? Number(num2[j]) : 0;
+    const sum = n1 + n2 + carry;
+    res.unshift(sum % 10);
+    carry = Math.floor(sum / 10);
+    i--;
+    j--;
   }
-  if (carry) res.unshift(carry)
-  return res.join('')
-}
+  if (carry) res.unshift(carry);
+  return res.join("");
+};
 
 const isEqual = (a, b, sum) => {
-  const [intStr1, decStr1] = a.toString().split('.')
-  const [intStr2, decStr2] = b.toString().split('.')
+  const [intStr1, decStr1] = a.toString().split(".");
+  const [intStr2, decStr2] = b.toString().split(".");
   // 整数部分相加
-  const intSum = addStrings(intStr1, intStr2)
+  const intSum = addStrings(intStr1, intStr2);
   // 小数部分相加
-  const decSum = addStrings(decStr1, decStr2)
-  return intSum + '.' + decSum === String(sum)
-}
+  const decSum = addStrings(decStr1, decStr2);
+  return intSum + "." + decSum === String(sum);
+};
 
-console.log(isEqual(0.1, 0.2, 0.3)) // true
+console.log(isEqual(0.1, 0.2, 0.3)); // true
 ```
 
 ## 数组的常用方法
@@ -222,15 +222,15 @@ console.log(isEqual(0.1, 0.2, 0.3)) // true
 - `splice(index,howmany,item1,.....,itemX)`，`index`必需，规定从何处添加/删除元素。`howmany`可选，规定应该删除多少元素，必须是数字，但可以是 0，如果未规定此参数，则删除从`index`开始到原数组结尾的所有元素。`item1, ..., itemX`可选，要添加到数组的新元素。**会改变原始数组**
 
 ```js
-const fruits = ['Banana', 'Orange', 'Apple', 'Mango']
-fruits.splice(2, 0, 'Lemon', 'Kiwi') // ["Banana", "Orange", "Lemon", "Kiwi" "Apple", "Mango"]
+const fruits = ["Banana", "Orange", "Apple", "Mango"];
+fruits.splice(2, 0, "Lemon", "Kiwi"); // ["Banana", "Orange", "Lemon", "Kiwi" "Apple", "Mango"]
 ```
 
 - `slice(start, end)`，`start`可选，规定从何处开始选取，如果是负数，那么它规定从数组尾部开始算起的位置，也就是说，-1 指最后一个元素，-2 指倒数第二个元素，以此类推。`end`可选，规定从何处结束选取，该参数是数组片断结束处的数组下标，如果没有指定该参数，那么切分的数组包含从`start`到数组结束的所有元素，如果这个参数是负数，那么它规定的是从数组尾部开始算起的元素。**不会改变原始数组**
 
 ```js
-const fruits = ['Banana', 'Orange', 'Lemon', 'Apple', 'Mango']
-const citrus = fruits.slice(1, 3)
+const fruits = ["Banana", "Orange", "Lemon", "Apple", "Mango"];
+const citrus = fruits.slice(1, 3);
 // Orange,Lemon
 ```
 
@@ -264,28 +264,28 @@ const citrus = fruits.slice(1, 3)
 ```js
 // 累加
 function accumulation(arr) {
-  return arr.reduce((t, v) => t + v, 0)
+  return arr.reduce((t, v) => t + v, 0);
 }
 
 // 累乘
 function multiplication(arr) {
-  return arr.reduce((t, v) => t * v, 1)
+  return arr.reduce((t, v) => t * v, 1);
 }
 
-accumulation([1, 2, 3, 4]) // 10
-multiplication([1, 2, 3, 4]) // 24
+accumulation([1, 2, 3, 4]); // 10
+multiplication([1, 2, 3, 4]); // 24
 ```
 
 - 权重求和
 
 ```js
 const scores = [
-  { score: 90, subject: 'chinese', weight: 0.5 },
-  { score: 95, subject: 'math', weight: 0.3 },
-  { score: 85, subject: 'english', weight: 0.2 },
-]
+  { score: 90, subject: "chinese", weight: 0.5 },
+  { score: 95, subject: "math", weight: 0.3 },
+  { score: 85, subject: "english", weight: 0.2 },
+];
 
-const result = scores.reduce((t, v) => t + v.score * v.weight, 0) // 90.5
+const result = scores.reduce((t, v) => t + v.score * v.weight, 0); // 90.5
 ```
 
 - 代替`reverse`
@@ -293,39 +293,42 @@ const result = scores.reduce((t, v) => t + v.score * v.weight, 0) // 90.5
 ```js
 // return a,b 最终返回值为b（最后的变量）
 function reverse(arr) {
-  return arr.reduceRight((t, v) => (t.push(v), t), [])
+  return arr.reduceRight((t, v) => (t.push(v), t), []);
 }
 
-const result = reverse([1, 2, 3, 4, 5]) // [5, 4, 3, 2, 1]
+const result = reverse([1, 2, 3, 4, 5]); // [5, 4, 3, 2, 1]
 ```
 
 - 代替`map`和`filter`
 
 ```js
-const arr = [0, 1, 2, 3]
+const arr = [0, 1, 2, 3];
 // 代替map：[0, 2, 4, 6]
-const b = arr.reduce((t, v) => [...t, v * 2], [])
+const b = arr.reduce((t, v) => [...t, v * 2], []);
 
 // 代替filter：[2, 3]
-const d = arr.reduce((t, v) => (v > 1 ? [...t, v] : t), [])
+const d = arr.reduce((t, v) => (v > 1 ? [...t, v] : t), []);
 
 // 代替map和filter：[4, 6]
-const f = arr.reduce((t, v) => (v * 2 > 2 ? [...t, v * 2] : t), [])
+const f = arr.reduce((t, v) => (v * 2 > 2 ? [...t, v * 2] : t), []);
 ```
 
 - 代替`some`和`every`
 
 ```js
 const scores = [
-  { score: 45, subject: 'chinese' },
-  { score: 90, subject: 'math' },
-  { score: 60, subject: 'english' },
-]
+  { score: 45, subject: "chinese" },
+  { score: 90, subject: "math" },
+  { score: 60, subject: "english" },
+];
 
 // 代替some：至少一门合格
-const isAtLeastOneQualified = scores.reduce((t, v) => t || v.score >= 60, false) // true
+const isAtLeastOneQualified = scores.reduce(
+  (t, v) => t || v.score >= 60,
+  false
+); // true
 // 代替every：全部合格
-const isAllQualified = scores.reduce((t, v) => t && v.score >= 60, true) // false
+const isAllQualified = scores.reduce((t, v) => t && v.score >= 60, true); // false
 ```
 
 - 数组过滤
@@ -333,34 +336,34 @@ const isAllQualified = scores.reduce((t, v) => t && v.score >= 60, true) // fals
 ```js
 // 将arr1中与arr2都含有的元素从arr1中过滤掉
 function difference(arr = [], oArr = []) {
-  return arr.reduce((t, v) => (!oArr.includes(v) && t.push(v), t), [])
+  return arr.reduce((t, v) => (!oArr.includes(v) && t.push(v), t), []);
 }
 
-const arr1 = [1, 2, 3, 4, 5]
-const arr2 = [2, 3, 6]
-const result = difference(arr1, arr2) // [1, 4, 5]
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [2, 3, 6];
+const result = difference(arr1, arr2); // [1, 4, 5]
 ```
 
 - 数组扁平
 
 ```js
 function flat(arr = []) {
-  return arr.reduce((t, v) => t.concat(Array.isArray(v) ? flat(v) : v), [])
+  return arr.reduce((t, v) => t.concat(Array.isArray(v) ? flat(v) : v), []);
 }
 
-const arr = [0, 1, [2, 3], [4, 5, [6, 7]], [8, [9, 10, [11, 12]]]]
-const result = flat(arr) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+const arr = [0, 1, [2, 3], [4, 5, [6, 7]], [8, [9, 10, [11, 12]]]];
+const result = flat(arr); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 ```
 
 - 数组去重
 
 ```js
 function uniq(arr) {
-  return arr.reduce((t, v) => (t.includes(v) ? t : [...t, v]), [])
+  return arr.reduce((t, v) => (t.includes(v) ? t : [...t, v]), []);
 }
 
-const arr = [2, 1, 0, 3, 2, 1, 2]
-const result = uniq(arr) // [2, 1, 0, 3]
+const arr = [2, 1, 0, 3, 2, 1, 2];
+const result = uniq(arr); // [2, 1, 0, 3]
 ```
 
 - 数组最大最小值
@@ -368,64 +371,64 @@ const result = uniq(arr) // [2, 1, 0, 3]
 ```js
 // 求最大值
 function max(arr) {
-  return arr.reduce((t, v) => (t > v ? t : v))
+  return arr.reduce((t, v) => (t > v ? t : v));
 }
 
 // 求最小值
 function min(arr) {
-  return arr.reduce((t, v) => (t < v ? t : v))
+  return arr.reduce((t, v) => (t < v ? t : v));
 }
 
-const arr = [12, 45, 21, 65, 38, 76, 108, 43]
-const result = max(arr) // 108
-const result1 = min(arr) // 12
+const arr = [12, 45, 21, 65, 38, 76, 108, 43];
+const result = max(arr); // 108
+const result1 = min(arr); // 12
 ```
 
 - 数组成员个数统计
 
 ```js
 function count(arr) {
-  return arr.reduce((t, v) => ((t[v] = (t[v] || 0) + 1), t), {})
+  return arr.reduce((t, v) => ((t[v] = (t[v] || 0) + 1), t), {});
 }
 
-const arr = [0, 1, 1, 2, 2, 2]
-const result = count(arr) // { 0: 1, 1: 2, 2: 3 }
+const arr = [0, 1, 1, 2, 2, 2];
+const result = count(arr); // { 0: 1, 1: 2, 2: 3 }
 ```
 
 - 数组成员位置记录
 
 ```js
 function position(arr, val) {
-  return arr.reduce((t, v, i) => (v === val && t.push(i), t), [])
+  return arr.reduce((t, v, i) => (v === val && t.push(i), t), []);
 }
 
-const arr = [2, 1, 5, 4, 2, 1, 6, 6, 7]
-const result = position(arr, 2) // [0, 4]
+const arr = [2, 1, 5, 4, 2, 1, 6, 6, 7];
+const result = position(arr, 2); // [0, 4]
 ```
 
 - 字符串翻转
 
 ```js
 function reverseStr(str) {
-  return str.split('').reduceRight((t, v) => t + v)
+  return str.split("").reduceRight((t, v) => t + v);
 }
 
-const str = 'reduce最牛逼'
-const result = reverseStr(str) // "逼牛最ecuder"
+const str = "reduce最牛逼";
+const result = reverseStr(str); // "逼牛最ecuder"
 ```
 
 - 斐波那契数列
 
 ```js
 function fibonacci(len = 2) {
-  const arr = [...new Array(len).keys()]
+  const arr = [...new Array(len).keys()];
   return arr.reduce((t, v, i) => (i > 1 && t.push(t[i - 1] + t[i - 2]), t), [
     0,
     1,
-  ])
+  ]);
 }
 
-const result = fibonacci(10) // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+const result = fibonacci(10); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
 ```
 
 ## `sort`函数解析
@@ -435,9 +438,9 @@ const result = fibonacci(10) // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
 此时排序的方式是按照`ascii`码进行排序，它会先将数组里的元素全部转为字符串进行比较
 
 ```js
-const arr = [23, 12, 32, 5, 21, 7, 1]
-arr.sort()
-console.log(arr) // [1, 12, 21, 23, 32, 5, 7]
+const arr = [23, 12, 32, 5, 21, 7, 1];
+arr.sort();
+console.log(arr); // [1, 12, 21, 23, 32, 5, 7]
 ```
 
 ### 有参数时的使用
@@ -445,31 +448,31 @@ console.log(arr) // [1, 12, 21, 23, 32, 5, 7]
 - 首先我们来看一下`a`指代的到底是什么
 
 ```js
-const arr = [23, 12, 32, 5, 21, 7, 1]
+const arr = [23, 12, 32, 5, 21, 7, 1];
 
 arr.sort((a, b) => {
-  console.log('a:' + a)
-  return 1
-})
-console.log(arr)
+  console.log("a:" + a);
+  return 1;
+});
+console.log(arr);
 ```
 
-![有参数](/js/5.png '有参数')  
+![有参数](/js/5.png "有参数")  
 很容易看出`a`的范围是`[arr[1],arr[arr.length-1]]`；另外我们还能看出当函数返回一个正值时，数组并没有发生变化（0 也是）
 
 - 我们再看一`b`指的是什么
 
 ```js
-const arr = [23, 12, 32, 5, 21, 7, 1]
+const arr = [23, 12, 32, 5, 21, 7, 1];
 
 arr.sort((a, b) => {
-  console.log('b:' + b)
-  return -1
-})
-console.log(arr)
+  console.log("b:" + b);
+  return -1;
+});
+console.log(arr);
 ```
 
-![有参数](/js/6.png '有参数')  
+![有参数](/js/6.png "有参数")  
 `b`的范围`[arr[0],arr[arr.length-2]`；另外在这里我们还得到一个使数组反序的方法
 
 - 数字排序  
@@ -478,7 +481,7 @@ console.log(arr)
 ```js
 // 从小到大排序
 function sortNumber(a, b) {
-  return a - b
+  return a - b;
 }
 ```
 
@@ -491,55 +494,55 @@ function sortNumber(a, b) {
 
 ```js
 // 5. Let xString be ? ToString(x).
-const xString = ToString_Inline(x)
+const xString = ToString_Inline(x);
 
 // 6. Let yString be ? ToString(y).
-const yString = ToString_Inline(y)
+const yString = ToString_Inline(y);
 
 // 7. Let xSmaller be the result of performing
 //    Abstract Relational Comparison xString < yString.
 // 8. If xSmaller is true, return -1.
-if (StringLessThan(context, xString, yString) == True) return -1
+if (StringLessThan(context, xString, yString) == True) return -1;
 
 // 9. Let ySmaller be the result of performing
 //    Abstract Relational Comparison yString < xString.
 // 10. If ySmaller is true, return 1.
-if (StringLessThan(context, yString, xString) == True) return 1
+if (StringLessThan(context, yString, xString) == True) return 1;
 
 // 11. Return +0.
-return 0
+return 0;
 ```
 
-详细解析：[v8 array-sort](https://github.com/v8/v8/blob/master/third_party/v8/builtins/array-sort.tq 'v8 array-sort')
+详细解析：[v8 array-sort](https://github.com/v8/v8/blob/master/third_party/v8/builtins/array-sort.tq "v8 array-sort")
 
 ## 原型和原型链
 
 ```js
 function Foo() {}
 
-let f1 = new Foo()
-let f2 = new Foo()
+let f1 = new Foo();
+let f2 = new Foo();
 ```
 
-![原型和原型链](/js/7.png '原型和原型链')  
-推荐阅读：[JavaScript 深入之从原型到原型链](https://github.com/mqyqingfeng/blog/issues/2 'JavaScript深入之从原型到原型链')、[轻松理解 JS 原型原型链](https://juejin.cn/post/6844903989088092174 '轻松理解JS原型原型链')
+![原型和原型链](/js/7.png "原型和原型链")  
+推荐阅读：[JavaScript 深入之从原型到原型链](https://github.com/mqyqingfeng/blog/issues/2 "JavaScript深入之从原型到原型链")、[轻松理解 JS 原型原型链](https://juejin.cn/post/6844903989088092174 "轻松理解JS原型原型链")
 
 ## instanceof 实现原理
 
 ```js
 function myInstanceof(leftValue, rightValue) {
   // 取右表达式的 prototype 值
-  const rightProto = rightValue.prototype
+  const rightProto = rightValue.prototype;
   // 取左表达式的__proto__值
-  leftValue = leftValue.__proto__
+  leftValue = leftValue.__proto__;
   while (true) {
     if (leftValue === null) {
-      return false
+      return false;
     }
     if (leftValue === rightProto) {
-      return true
+      return true;
     }
-    leftValue = leftValue.__proto__
+    leftValue = leftValue.__proto__;
   }
 }
 ```
@@ -549,35 +552,35 @@ function myInstanceof(leftValue, rightValue) {
 - JavaScript 采用的是词法作用域，函数的作用域在函数定义的时候就决定了
 
 ```js
-const value = 1
+const value = 1;
 
 function foo() {
-  console.log(value)
+  console.log(value);
 }
 
 function bar() {
-  const value = 2
-  foo()
+  const value = 2;
+  foo();
 }
 
-bar()
+bar();
 ```
 
 - 在进入执行上下文时，首先会处理函数声明，其次会处理变量声明，如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性
 
 ```js
-console.log(foo)
+console.log(foo);
 
 function foo() {
-  console.log('foo')
+  console.log("foo");
 }
 
-var foo = 1
+var foo = 1;
 ```
 
 > `a = 1`事实上是对属性赋值操作。首先，它会尝试在当前作用域链中解析`a`；如果在当前作用域链中找到`a`作用域链，则对其进行属性进行赋值，如果没有找到`a`，则它会在全局对象（即当前作用域链的最顶层对象，如`window`对象）中创造`a`属性并赋值。**注意！它并不是声明了一个全局变量，而是创建了一个全局对象的属性**
 
-顺序阅读：[JavaScript 深入之执行上下文栈](https://github.com/mqyqingfeng/Blog/issues/4 'JavaScript深入之执行上下文栈')、[JavaScript 深入之变量对象](https://github.com/mqyqingfeng/Blog/issues/5 'JavaScript深入之变量对象')、[JavaScript 深入之作用域链](https://github.com/mqyqingfeng/Blog/issues/6 'JavaScript深入之作用域链')、[JavaScript 深入之执行上下文](https://github.com/mqyqingfeng/Blog/issues/8 'JavaScript深入之执行上下文')
+顺序阅读：[JavaScript 深入之执行上下文栈](https://github.com/mqyqingfeng/Blog/issues/4 "JavaScript深入之执行上下文栈")、[JavaScript 深入之变量对象](https://github.com/mqyqingfeng/Blog/issues/5 "JavaScript深入之变量对象")、[JavaScript 深入之作用域链](https://github.com/mqyqingfeng/Blog/issues/6 "JavaScript深入之作用域链")、[JavaScript 深入之执行上下文](https://github.com/mqyqingfeng/Blog/issues/8 "JavaScript深入之执行上下文")
 
 ## 闭包
 
@@ -587,47 +590,47 @@ var foo = 1
 
 ```js
 var t = function() {
-  var n = 99
+  var n = 99;
   var t2 = function() {
-    n++
-    console.log(n)
-  }
-  return t2
-}
+    n++;
+    console.log(n);
+  };
+  return t2;
+};
 
-var a1 = t()
-var a2 = t()
+var a1 = t();
+var a2 = t();
 
-a1() // 100
-a1() // 101
+a1(); // 100
+a1(); // 101
 
-a2() // 100
-a2() // 101
+a2(); // 100
+a2(); // 101
 ```
 
 我们会发现，`n`的值都是从 99 开始，执行一次`a1()`的时候，值会加一，再执行一次，值再加一，但是`n`在`a1()`和`a2()`并不是公用的。你可以理解为：同一个函数形成的多个闭包的值都是相互独立的。  
 接下来看这道题目，关键在于`nAdd`函数
 
 ```js
-var nAdd
+var nAdd;
 var t = function() {
-  var n = 99
+  var n = 99;
   nAdd = function() {
-    n++
-  }
+    n++;
+  };
   var t2 = function() {
-    console.log(n)
-  }
-  return t2
-}
+    console.log(n);
+  };
+  return t2;
+};
 
-var a1 = t()
-var a2 = t()
+var a1 = t();
+var a2 = t();
 
-nAdd()
+nAdd();
 
-a1() // 99
-a2() // 100
+a1(); // 99
+a2(); // 100
 ```
 
 当执行`var a1 = t()`的时候，变量`nAdd`被赋值为一个函数，这个函数是`function (){n++}`，我们命名这个匿名函数为`fn1`吧。接着执行`var a2 = t()`的时候，变量`nAdd`又被重写了，这个函数跟以前的函数长得一模一样，也是`function (){n++}`，但是这已经是一个新的函数了，我们就命名为`fn2`吧
@@ -643,21 +646,21 @@ a2() // 100
 每一个继承 Object 的对象都有`toString`方法，如果`toString`方法没有重写的话，会返回`[Object type]`，其中 type 为对象的类型。但当除了 Object 类型的对象外，其他类型直接使用`toString`方法时，会直接返回都是内容的字符串，所以我们需要使用`call`或者`apply`方法来改变`toString`方法的执行上下文
 
 ```js
-const an = ['Hello', 'An']
-an.toString() // "Hello,An"
-Object.prototype.toString.call(an) // "[object Array]"
+const an = ["Hello", "An"];
+an.toString(); // "Hello,An"
+Object.prototype.toString.call(an); // "[object Array]"
 ```
 
 这种方法对于所有基本的数据类型都能进行判断，即使是 null 和 undefined
 
 ```js
-Object.prototype.toString.call('An') // "[object String]"
-Object.prototype.toString.call(1) // "[object Number]"
-Object.prototype.toString.call(Symbol(1)) // "[object Symbol]"
-Object.prototype.toString.call(null) // "[object Null]"
-Object.prototype.toString.call(undefined) // "[object Undefined]"
-Object.prototype.toString.call(function() {}) // "[object Function]"
-Object.prototype.toString.call({ name: 'An' }) // "[object Object]"
+Object.prototype.toString.call("An"); // "[object String]"
+Object.prototype.toString.call(1); // "[object Number]"
+Object.prototype.toString.call(Symbol(1)); // "[object Symbol]"
+Object.prototype.toString.call(null); // "[object Null]"
+Object.prototype.toString.call(undefined); // "[object Undefined]"
+Object.prototype.toString.call(function() {}); // "[object Function]"
+Object.prototype.toString.call({ name: "An" }); // "[object Object]"
 ```
 
 `Object.prototype.toString.call()`常用于判断浏览器内置对象时
@@ -668,13 +671,13 @@ Object.prototype.toString.call({ name: 'An' }) // "[object Object]"
 使用`instanceof`判断一个对象是否为数组，`instanceof`会判断这个对象的原型链上是否会找到对应的`Array`的原型，找到返回`true`，否则返回`false`
 
 ```js
-;[] instanceof Array // true
+[] instanceof Array; // true
 ```
 
 但`instanceof`只能用来判断对象类型，原始类型不可以。并且所有对象类型`instanceof Object`都是`true`
 
 ```js
-;[] instanceof Object // true
+[] instanceof Object; // true
 ```
 
 ### Array.isArray()
@@ -685,16 +688,16 @@ Object.prototype.toString.call({ name: 'An' }) // "[object Object]"
   当检测 Array 实例时，`Array.isArray`优于`instanceof`，因为`Array.isArray`可以检测出`iframe`
 
 ```js
-const iframe = document.createElement('iframe')
-document.body.appendChild(iframe)
-xArray = window.frames[window.frames.length - 1].Array
-const arr = new xArray(1, 2, 3) // [1,2,3]
+const iframe = document.createElement("iframe");
+document.body.appendChild(iframe);
+xArray = window.frames[window.frames.length - 1].Array;
+const arr = new xArray(1, 2, 3); // [1,2,3]
 
 // Correctly checking for Array
-Array.isArray(arr) // true
-Object.prototype.toString.call(arr) // '[object Array]'
+Array.isArray(arr); // true
+Object.prototype.toString.call(arr); // '[object Array]'
 // Considered harmful, because doesn't work though iframe
-arr instanceof Array // false
+arr instanceof Array; // false
 ```
 
 - `isArray`与`Object.prototype.toString.call()`
@@ -703,8 +706,8 @@ arr instanceof Array // false
 ```js
 if (!Array.isArray) {
   Array.isArray = function(arg) {
-    return Object.prototype.toString.call(arg) === '[object Array]'
-  }
+    return Object.prototype.toString.call(arg) === "[object Array]";
+  };
 }
 ```
 
@@ -714,18 +717,18 @@ if (!Array.isArray) {
 // 模拟bind
 Function.prototype.bind1 = function() {
   // 将参数拆解为数组
-  const args = Array.prototype.slice.call(arguments)
+  const args = Array.prototype.slice.call(arguments);
   // 或者用...运算符
   // const args = [...arguments].slice(1);
   // 获取this(即数组第一项)
-  const t = args.shift()
+  const t = args.shift();
   // fn.bind(...)中的fn
-  const self = this
+  const self = this;
   // 返回一个函数
   return function() {
-    return self.apply(t, args)
-  }
-}
+    return self.apply(t, args);
+  };
+};
 ```
 
 ## promise
@@ -740,19 +743,19 @@ Function.prototype.bind1 = function() {
 Promise.resolve(1)
   .then(2)
   .then(Promise.resolve(3))
-  .then(console.log)
+  .then(console.log);
 // 1
 ```
 
 ```js
 Promise.resolve(1)
   .then(function() {
-    return 2
+    return 2;
   })
   .then(() => {
-    Promise.resolve(3) // 未return promise
+    Promise.resolve(3); // 未return promise
   })
-  .then(console.log) // undefined
+  .then(console.log); // undefined
 ```
 
 - 正常链式调用
@@ -760,12 +763,12 @@ Promise.resolve(1)
 ```js
 Promise.resolve(1)
   .then(() => {
-    return 2
+    return 2;
   })
   .then(() => {
-    return 3
+    return 3;
   })
-  .then(console.log)
+  .then(console.log);
 // 3
 ```
 
@@ -776,19 +779,19 @@ Promise.resolve(1)
 ```js
 Promise.reject(1)
   .then((res) => {
-    console.log(res)
+    console.log(res);
   })
   .then(
     (res) => {
-      console.log(res)
+      console.log(res);
     },
     (rej) => {
-      console.log(`rej****${rej}`) // rej****1
+      console.log(`rej****${rej}`); // rej****1
     }
   )
   .catch((err) => {
-    console.log(`err****${err}`)
-  })
+    console.log(`err****${err}`);
+  });
 ```
 
 - 被 then 捕获的错误也会传给下一个链式调用成功的状态，值为`undefined`
@@ -796,27 +799,27 @@ Promise.reject(1)
 ```js
 Promise.reject(1)
   .then((res) => {
-    console.log(res)
+    console.log(res);
   })
   .then(
     (res) => {
-      console.log(res)
+      console.log(res);
     },
     (rej) => {
-      console.log(`rej****${rej}`) // rej****1
+      console.log(`rej****${rej}`); // rej****1
     }
   )
   .then(
     (res) => {
-      console.log(`res****${res}`) // res****undefined
+      console.log(`res****${res}`); // res****undefined
     },
     (rej) => {
-      console.log(`rej****${rej}`)
+      console.log(`rej****${rej}`);
     }
   )
   .catch((err) => {
-    console.log(`err${err}`)
-  })
+    console.log(`err${err}`);
+  });
 ```
 
 ### 实现 Promise
@@ -829,107 +832,107 @@ class Promise1 {
   // 构造器
   constructor(executor) {
     // 初始化state为等待态
-    this.state = 'pending'
+    this.state = "pending";
     // 成功的值
-    this.value = undefined
+    this.value = undefined;
     // 失败的原因
-    this.reason = undefined
+    this.reason = undefined;
     // 成功存放的数组
-    this.onResolvedCallbacks = []
+    this.onResolvedCallbacks = [];
     // 失败存放法数组
-    this.onRejectedCallbacks = []
+    this.onRejectedCallbacks = [];
 
     const resolve = (value) => {
       // state改变,resolve调用就会失败
-      if (this.state === 'pending') {
+      if (this.state === "pending") {
         // resolve调用后，state转化为成功态
-        this.state = 'fulfilled'
+        this.state = "fulfilled";
         // 储存成功的值
-        this.value = value
+        this.value = value;
         // 一旦resolve执行，调用成功数组的函数
-        this.onResolvedCallbacks.forEach((fn) => fn())
+        this.onResolvedCallbacks.forEach((fn) => fn());
       }
-    }
+    };
 
     const reject = (reason) => {
       // state改变,reject调用就会失败
-      if (this.state === 'pending') {
+      if (this.state === "pending") {
         // reject调用后，state转化为失败态
-        this.state = 'rejected'
+        this.state = "rejected";
         // 储存失败的原因
-        this.reason = reason
+        this.reason = reason;
         // 一旦reject执行，调用失败数组的函数
-        this.onRejectedCallbacks.forEach((fn) => fn())
+        this.onRejectedCallbacks.forEach((fn) => fn());
       }
-    }
+    };
 
     // 如果executor执行报错，直接执行reject
     try {
-      executor(resolve, reject)
+      executor(resolve, reject);
     } catch (err) {
-      reject(err)
+      reject(err);
     }
   }
 
   #handle(callback, data, resolve, reject) {
     try {
-      const result = callback(data)
+      const result = callback(data);
       if (result instanceof Promise) {
         // 2. 如果回调函数返回的是promise，return的promise的结果就是这个promise的结果
         result.then(
           (value) => {
-            resolve(value)
+            resolve(value);
           },
           (reason) => {
-            reject(reason)
+            reject(reason);
           }
-        )
+        );
       } else {
         // 1. 如果回调函数返回的不是promise，return的promise的状态是resolved，value就是返回的值。
-        resolve(result)
+        resolve(result);
       }
     } catch (error) {
       //  3.如果执行onResolved的时候抛出错误，则返回的promise的状态为rejected
-      reject(error)
+      reject(error);
     }
   }
 
   // then 方法 有两个参数onFulfilled onRejected
   then(onFulfilled, onRejected) {
     onFulfilled =
-      typeof onFulfilled === 'function' ? onFulfilled : (value) => value
+      typeof onFulfilled === "function" ? onFulfilled : (value) => value;
     onRejected =
-      typeof onRejected === 'function'
+      typeof onRejected === "function"
         ? onRejected
         : (reason) => {
-            throw reason
-          }
+            throw reason;
+          };
 
     return new Promise1((resolve, reject) => {
       // 状态为fulfilled，执行onFulfilled，传入成功的值
-      if (this.state === 'fulfilled') {
-        this.#handle(onFulfilled, this.value, resolve, reject)
+      if (this.state === "fulfilled") {
+        this.#handle(onFulfilled, this.value, resolve, reject);
       }
       // 状态为rejected，执行onRejected，传入失败的原因
-      if (this.state === 'rejected') {
-        this.#handle(onRejected, this.reason, resolve, reject)
+      if (this.state === "rejected") {
+        this.#handle(onRejected, this.reason, resolve, reject);
       }
       // 当状态state为pending时
-      if (this.state === 'pending') {
+      if (this.state === "pending") {
         // onFulfilled传入到成功数组
         this.onResolvedCallbacks.push(() => {
-          this.#handle(onFulfilled, this.value, resolve, reject)
-        })
+          this.#handle(onFulfilled, this.value, resolve, reject);
+        });
         // onRejected传入到失败数组
         this.onRejectedCallbacks.push(() => {
-          this.#handle(onRejected, this.reason, resolve, reject)
-        })
+          this.#handle(onRejected, this.reason, resolve, reject);
+        });
       }
-    })
+    });
   }
 
   catch(fn) {
-    return this.then(null, fn)
+    return this.then(null, fn);
   }
 }
 
@@ -939,50 +942,50 @@ Promise1.resolve = function(value) {
       // 如果 value 是 promise
       value.then(
         (value) => {
-          resolve(value)
+          resolve(value);
         },
         (reason) => {
-          reject(reason)
+          reject(reason);
         }
-      )
+      );
     } else {
       // 如果 value 不是 promise
-      resolve(value)
+      resolve(value);
     }
-  })
-}
+  });
+};
 
 Promise1.reject = function(value) {
   return new Promise1((resolve, reject) => {
-    reject(value)
-  })
-}
+    reject(value);
+  });
+};
 
 Promise1.all = function(promises) {
-  const values = []
+  const values = [];
   // 状态为resolved的promise的数量
-  var resolvedCount = 0
+  var resolvedCount = 0;
   return new Promise1((resolve, reject) => {
     // 遍历promises，获取每个promise的结果
     promises.forEach((p, index) => {
       Promise.resolve(p).then(
         (value) => {
           // p状态为resolved，将值保存起来
-          values[index] = value
-          resolvedCount++
+          values[index] = value;
+          resolvedCount++;
           // 如果全部p都为resolved状态，return的promise状态为resolved
           if (resolvedCount === promises.length) {
-            resolve(values)
+            resolve(values);
           }
         },
         (reason) => {
           // 只要有一个失败，return的promise状态就为reject
-          reject(reason)
+          reject(reason);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 Promise.race = function(promises) {
   return new Promise((resolve, reject) => {
@@ -991,16 +994,16 @@ Promise.race = function(promises) {
       Promise.resolve(p).then(
         (value) => {
           // 只要有一个成功，返回的promise的状态就为resolved
-          resolve(value)
+          resolve(value);
         },
         (reason) => {
           // 只要有一个失败，return的promise状态就为reject
-          reject(reason)
+          reject(reason);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 ```
 
 ## 模块化
@@ -1031,21 +1034,21 @@ Promise.race = function(promises) {
 ```js
 // 定义没有依赖的模块
 define(function() {
-  return 模块
-})
+  return 模块;
+});
 
 // 定义有依赖的模块
-define(['module1', 'module2'], function(m1, m2) {
-  return 模块
-})
+define(["module1", "module2"], function(m1, m2) {
+  return 模块;
+});
 ```
 
 - 引入使用模块
 
 ```js
-require(['module1', 'module2'], function(m1, m2) {
+require(["module1", "module2"], function(m1, m2) {
   // 使用 m1 / m2
-})
+});
 ```
 
 ### CMD
@@ -1059,30 +1062,30 @@ require(['module1', 'module2'], function(m1, m2) {
 ```js
 // 定义没有依赖的模块
 define(function(require, exports, module) {
-  exports.xxx = value
-  module.exports = value
-})
+  exports.xxx = value;
+  module.exports = value;
+});
 
 // 定义有依赖的模块
 define(function(require, exports, module) {
   // 引入依赖模块(同步)
-  var module2 = require('./module2')
+  var module2 = require("./module2");
   // 引入依赖模块(异步)
-  require.async('./module3', function(m3) {})
+  require.async("./module3", function(m3) {});
   // 暴露模块
-  exports.xxx = value
-})
+  exports.xxx = value;
+});
 ```
 
 - 引入使用模块
 
 ```js
 define(function(require) {
-  var m1 = require('./module1')
-  var m4 = require('./module4')
-  m1.show()
-  m4.show()
-})
+  var m1 = require("./module1");
+  var m4 = require("./module4");
+  m1.show();
+  m4.show();
+});
 ```
 
 ### ES6 模块化
@@ -1095,16 +1098,16 @@ define(function(require) {
 
 ```js
 /** 定义模块 math.js **/
-const basicNum = 0
+const basicNum = 0;
 const add = function(a, b) {
-  return a + b
-}
-export { basicNum, add }
+  return a + b;
+};
+export { basicNum, add };
 
 /** 引用模块 **/
-import { basicNum, add } from './math'
+import { basicNum, add } from "./math";
 function test(ele) {
-  ele.textContent = add(99 + basicNum)
+  ele.textContent = add(99 + basicNum);
 }
 ```
 
@@ -1113,12 +1116,12 @@ function test(ele) {
 ```js
 // 定义
 export default function() {
-  console.log('foo')
+  console.log("foo");
 }
 
 // 引入
-import customName from './export-default'
-customName()
+import customName from "./export-default";
+customName();
 ```
 
 ### 区别
@@ -1127,3 +1130,10 @@ customName()
 - `AMD`规范在浏览器环境中异步加载模块，而且可以并行加载多个模块。不过，`AMD`规范开发成本高，代码的阅读和书写比较困难，模块定义方式的语义不顺畅
 - `CMD`规范与`AMD`规范很相似，都用于浏览器编程，依赖就近，延迟执行，可以很容易在`Node.js`中运行。不过，依赖`SPM`打包，模块的加载逻辑偏重
 - `ES6`在语言标准的层面上，实现了模块功能，而且实现得相当简单，完全可以取代`CommonJS`和`AMD`规范，成为浏览器和服务器通用的模块解决方案
+- `require,exports,module.exports`属于`CommonJS`规范，`import,export,export default`属于`ES6`规范
+- `require`支持动态导入，动态匹配路径，`import`对这两者都不支持
+- `require`是运行时调用，`import`是编译时调用
+- `require`是赋值过程，`import`是解构过程
+- 对于`export`和`export default`不同的使用方式，`import`就要采取不同的引用方式，主要区别在于是否存在`{}`，`export`导出的，`import`导入需要`{}`，导入和导出一一对应，`export default`默认导出的，`import`导入不需要`{}`
+- `exports`是`module.exports`一种简写形式，不能直接给`exports`赋值
+- `module.exports`与`exports`同时使用时，`exports`会失效
