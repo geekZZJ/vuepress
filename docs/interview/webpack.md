@@ -4,7 +4,7 @@
 
 - 拆分配置和 merge  
   拆分 webpack.common.js、webpack.dev.js、webpack.prod.js
-  ![拆分配置和 merge](/webpack/merge.png '拆分配置和 merge')
+  ![拆分配置和 merge](/webpack/merge.png "拆分配置和 merge")
 - 启动本地服务
 
 ```js
@@ -343,11 +343,11 @@ devServer: {
 // 开启热更新之后的代码逻辑
 if (module.hot) {
   // math.js中代码发生变化页面不会整体刷新
-  module.hot.accept('./math.js', () => {
+  module.hot.accept("./math.js", () => {
     // 热更新的回调函数
-    const sumRes = sum(10, 20)
-    console.log('热更新', sumRes)
-  })
+    const sumRes = sum(10, 20);
+    console.log("热更新", sumRes);
+  });
 }
 ```
 
@@ -496,7 +496,7 @@ plugins: [
 - chunk - 多模块合并成的
 - bundle - 最终的输出文件
 
-![module chunk bundle 的区别](/webpack/module.png 'module chunk bundle 的区别')
+![module chunk bundle 的区别](/webpack/module.png "module chunk bundle 的区别")
 
 ### ES6 Module 和 Commonjs 区别
 
@@ -534,6 +534,25 @@ plugins: [
 - 如 Class 可以用 function 模拟
 - 如 Promise 可以用 callback 来模拟
 - 但 Proxy 的功能用 Object.defineProperty 无法模拟
+
+## webpack 按需加载原理
+
+### 懒加载（按需加载）的前提
+
+进行懒加载的子模块（子组件）需要是一个单独的文件。因为懒加载是对子模块（子组件）进行延后加载。如果子模块（子组件）不单独打包，而是和别的模块掺和在一起，那其他模块加载时就会将整个文件加载出来了，这样子模块（子组件）就被提前加载出来了。所以，要实现懒加载，就得先将进行懒加载的子模块（子组件）分离出来
+
+### 借助函数实现懒加载（按需加载）
+
+无论使用函数声明还是函数表达式创建函数，函数被创建后并不会立即执行函数内部的代码，只有等到函数被调用之后，才执行内部的代码
+
+只要将需要进行懒加载的`子模块文件（children chunk）`的引入语句（`特指import()`）放到一个函数内部。然后在需要加载的时候执行该函数。这样就可以实现懒加载（按需加载）。这也就是是懒加载（按需加载）的原理了
+
+```js
+// import和require的比较
+import 是解构过程并且是编译时执行
+require 是赋值过程并且是运行时才执行，也就是异步加载
+require的性能相对于import稍低，因为require是在运行时才引入模块并且还赋值给某个变量
+```
 
 ## plugin 执行顺序
 
