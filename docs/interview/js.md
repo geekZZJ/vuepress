@@ -1137,3 +1137,18 @@ customName();
 - 对于`export`和`export default`不同的使用方式，`import`就要采取不同的引用方式，主要区别在于是否存在`{}`，`export`导出的，`import`导入需要`{}`，导入和导出一一对应，`export default`默认导出的，`import`导入不需要`{}`
 - `exports`是`module.exports`一种简写形式，不能直接给`exports`赋值
 - `module.exports`与`exports`同时使用时，`exports`会失效
+
+## Map 与 Object 的区别
+
+`Map`是为了快速搜索和查找数据而生的。`Map`中的键和值可以是任何数据类型，不仅限于字符串或整数
+
+- 键：`Object`遵循普通的字典规则，键必须是单一类型，并且只能是整数、字符串或是`Symbol`类型。但在`Map`中，`key`可以为任意数据类型（`Object`、`Array`等）
+- 元素顺序：`Map`会保留所有元素的顺序，而`Object`并不会保证属性的顺序
+- 继承：`Map`是`Object`的实例对象，而`Object`显然不可能是`Map`的实例对象
+
+### 使用对比
+
+- `JSON`直接支持`Object`，但尚未支持`Map`
+- 针对于存在大量增删操作的场景，使用`Map`更合适
+- `Map`会保留所有元素的顺序
+- `Map`在存储大量数据的场景下表现更好，尤其是在`key`为未知状态
