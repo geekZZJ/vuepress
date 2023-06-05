@@ -571,3 +571,30 @@ require的性能相对于import稍低，因为require是在运行时才引入模
 - compiler 事件钩子
 
 https://webpack.js.org/api/compiler-hooks/
+
+## webpack proxy 原理
+
+目的是为了便于开发者在开发模式下解决跨域问题（浏览器安全策略限制）
+
+### 工作原理
+
+`proxy`工作原理实质上是利用`http-proxy-middleware`这个`http`代理中间件，实现请求转发给其他服务器
+
+在开发阶段，本地地址为`http://localhost:3000`，该浏览器发送一个前缀带有`/api`标识的请求到服务端获取数据，但响应这个请求的服务器只是将请求转发到另一台服务器中
+
+```js
+const express = require("express");
+const proxy = require("http-proxy-middleware");
+
+const app = express();
+
+app.use(
+  "/api",
+  proxy({ target: "http://www.example.org", changeOrigin: true })
+);
+app.listen(3000);
+
+// http://localhost:3000/api/foo/bar -> http://www.example.org/api/foo/bar
+```
+
+**服务器与服务器之间请求数据并不会存在跨域行为，跨域行为是浏览器安全策略限制**
