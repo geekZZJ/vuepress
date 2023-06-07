@@ -1255,6 +1255,29 @@ commit = (method, arg) => {
 - diff 算法中通过 tag 和 key 来判断，是否是 sameNode
 - 减少渲染次数，提升渲染性能
 
+### v-for 与 v-if 为何不能同时使用
+
+结论：`v-for`优先级比`v-if`高
+
+- 永远不要把`v-if`和`v-for`同时用在同一个元素上，带来性能方面的浪费（每次渲染都会先循环再进行条件判断）
+- 如果避免出现这种情况，则在外层嵌套`template`（页面渲染不生成`dom`节点），在这一层进行`v-if`判断，然后在内部进行`v-for`循环
+
+```vue
+<template v-if="isShow"><p v-for="item in items"></p></template>
+```
+
+- 如果条件出现在循环内部，可通过计算属性`computed`提前过滤掉那些不需要显示的项
+
+```js
+computed: {
+  items: function() {
+    return this.list.filter(function (item) {
+      return item.isShow
+    })
+  }
+}
+```
+
 ### 组件间通信
 
 - 父子组件 props 和\$emit
