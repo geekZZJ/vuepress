@@ -261,6 +261,23 @@ function deepClone(obj) {
 }
 ```
 
+### 转数字方法
+
+```js
+function toNumber(val) {
+  return +val;
+}
+```
+
+特殊点：无法转`BigInt`和`Symbol`类型
+
+```js
+console.log(toNumber(10n)); // 在一个整数字面量后面加 n 的方式定义一个 BigInt
+toNumber(Symbol.for("a"));
+```
+
+### 强制类型转换
+
 ## 原型和原型链
 
 ### 类型判断 instanceof
