@@ -263,6 +263,8 @@ function deepClone(obj) {
 
 ### 转数字方法
 
+- 通过`+`转换
+
 ```js
 function toNumber(val) {
   return +val;
@@ -276,7 +278,57 @@ console.log(toNumber(10n)); // 在一个整数字面量后面加 n 的方式定�
 toNumber(Symbol.for("a"));
 ```
 
+- 通过位移转换
+
+```js
+function toNumber(val) {
+  // 有符号位移
+  return val >> 0;
+}
+
+function toNumber2(val) {
+  // 无符号位移
+  return val >>> 0;
+}
+
+toNumber(Number.MAX_SAFE_INTEGER); // -1
+toNumber2(Number.MAX_SAFE_INTEGER); // 4294967295
+```
+
+问题原因解析：
+
+```js
+// 无符号位移
+const val = Number.MAX_SAFE_INTEGER.toString(2);
+// 11111111111111111111111111111111111111111111111111111
+const val1 = val.substring(0, 32);
+// 11111111111111111111111111111111
+const num = parseInt(val1, 2); // 4294967295
+
+// 有符号位移 ---------------
+// 十进制转二进制：原码 => 反码 加一（补码）
+// 二进制转十进制：减一 => 反码 => 原码
+const val = Number.MAX_SAFE_INTEGER.toString(2);
+// 11111111111111111111111111111111111111111111111111111
+const val1 = val.substring(0, 32);
+// 11111111111111111111111111111111
+//  减1
+// 11111111111111111111111111111110
+// 取反
+// 00000000000000000000000000000001 = 1
+// 有符号位，最高位为 1，表示负数
+// -1
+```
+
 ### 强制类型转换
+
+- NaN 只等于 NaN
+- bigInt 与 Symbol 比较是否是同类型，类型不同返回 false
+- null == undefined
+- 布尔类型与其他类型相等比较，布尔值转为数字比较
+- 数字类型与字符串类型相等比较，字符串会转为数字比较
+- 对象类型与原始类型相等比较，对象转为原始数据类型
+- 对象类型与对象类型比较，比较两者地址
 
 ## 原型和原型链
 
