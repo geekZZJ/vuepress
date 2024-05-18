@@ -553,6 +553,10 @@ const nums = [1, 2, 3];
 })();
 ```
 
+## 对象遍历
+
+![对象遍历](/all/9.png "对象遍历")
+
 ## 宏任务和微任务
 
 - 宏任务：setTimeout、setInterval、Ajax、DOM 事件，在 DOM 渲染后触发
