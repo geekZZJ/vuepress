@@ -411,3 +411,28 @@ function createUser(v, index) {
 }
 const users = createValues(createUser, 1000);
 ```
+
+## 数组求交集
+
+```js
+// 引用类型
+function intersect(arr1, arr2, key) {
+  const map = new Map();
+  arr1.forEach((val) => map.set(val[key]));
+  console.log(map);
+
+  return arr2.filter((val) => {
+    return map.has(val[key]);
+  });
+}
+
+// 原始数据类型
+function intersectBase(arr1, arr2) {
+  const map = new Map();
+  arr1.forEach((val) => map.set(val));
+
+  return arr2.filter((val) => {
+    return map.has(val);
+  });
+}
+```
