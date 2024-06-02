@@ -439,3 +439,11 @@ function intersectBase(arr1, arr2) {
 
 > 为什么不使用`includes`
 > 使用`includes`在数组中查找元素时性能较差，主要是由于其线性时间复杂度`O(n)`。在处理大数据集时，这会导致较高的计算开销。通过使用`Map`，可以将查找操作的时间复杂度降到`O(1)`，从而显著提高求交集操作的性能。
+
+## 求数组最大值和最小值
+
+```js
+const numArray = [1, 3, 8, 666, 22, 9982, 11, 0];
+const max = Math.max.apply(Math, numArray);
+const min = Math.min.apply(Math, numArray);
+```
