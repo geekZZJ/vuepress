@@ -21,7 +21,7 @@
 - 将`npm`项目安装到`node`的`lib/node_modules`
 - 在`node`的`bin`目录下配置`vue`软链接指向`lib/node_modules/@vue/cli/bin/vue.js`
 
-## 为什么全局安装`@vue/c1i`后会添加的命令为`vue`
+## 为什么全局安装`@vue/cli`后会添加的命令为`vue`
 
 在`node`的`bin`目录下配置`vue`软链接指向`lib/node_modules/@vue/cli/bin/vue.js`，在`lib/node_modules/@vue/cli/package.json`中配置`bin`为`vue`，`vue`指向当前目录下的`bin/vue.js`
 
@@ -36,3 +36,7 @@
 
 - 在`node`的`bin`目录下查找`vue`，找到软链接，软链接指向`lib/node_modules/@vue/cli/bin/vue.js`
 - 执行`vue.js`，因为文件顶部有`#!/usr/bin/env node`，会在当前环境变量中查找`node`并运行起来，所以`node`会自动执行`vue.js`
+
+## 为什么在`node/bin`目录下有`vue`命令就可以在全局使用
+
+原因：该目录被包含在你的系统`PATH`环境变量中，当你在命令行输入一个命令时，系统会在`PATH`中列出的目录中查找相应的可执行文件。只要`node/bin`在`PATH`中，系统就能找到并执行其中的命令
